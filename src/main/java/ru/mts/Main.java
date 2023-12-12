@@ -1,20 +1,20 @@
 package ru.mts;
+import shop.Product;
 
-// Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
-// then press Enter. You can now see whitespace characters in your code.
 public class Main {
+
+    public static void printSumOfPurchase(Product product)
+    {
+        System.out.println("Сумма покупки без скидки: " + product.sum * product.quantity + " Со скидкой: " + product.getDiscountSum());
+    }
     public static void main(String[] args) {
-        // Press Alt+Enter with your caret at the highlighted text to see how
-        // IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
 
-        // Press Shift+F10 or click the green arrow button in the gutter to run the code.
-        for (int i = 1; i <= 5; i++) {
+        Product Bread = new Product(10,25,0.75),
+                Water = new Product(5,30,42.575),
+                Butter = new Product(25,100,59.1);
 
-            // Press Shift+F9 to start debugging your code. We have set one breakpoint
-            // for you, but you can always add more by pressing Ctrl+F8.
-            System.out.println("i = " + i);
-
-        }
+        printSumOfPurchase(Bread);
+        printSumOfPurchase(Water);
+        printSumOfPurchase(Butter);
     }
 }
