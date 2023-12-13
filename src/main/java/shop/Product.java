@@ -16,7 +16,7 @@ public class Product
         this.discount = discount;
     }
 
-    public Double getDiscountSum() //Возвращает посчитанную цену товара со скидкой округленную до 2х знаков после запятой
+    public Double getDiscountSum() //Возвращает посчитанную цену товара со скидкой
     {
         return (sum * quantity) - ((sum * quantity)/100) * discount;
     }
