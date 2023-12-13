@@ -16,11 +16,9 @@ public class Product
         this.discount = discount;
     }
 
-    public String getDiscountSum() //Возвращает посчитанную цену товара со скидкой округленную до 2х знаков после запятой
+    public Double getDiscountSum() //Возвращает посчитанную цену товара со скидкой округленную до 2х знаков после запятой
     {
-        double number = (sum * quantity) - ((sum * quantity)/100) * discount;
-
-        return Double.toString(Math.round(number*100.0)/100.0);
+        return (sum * quantity) - ((sum * quantity)/100) * discount;
     }
 
 

@@ -5,7 +5,7 @@ public class Main {
 
     public static void printSumOfPurchase(Product product)
     {
-        System.out.println("Сумма покупки без скидки: " + product.sum * product.quantity + " Со скидкой: " + product.getDiscountSum());
+        System.out.println("Сумма покупки без скидки: " + product.sum * product.quantity + " Со скидкой: " + String.format("%.2f", product.getDiscountSum()));
     }
     public static void main(String[] args) {
 
