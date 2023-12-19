@@ -13,14 +13,15 @@ public interface CreateAnimalService
      * @see CreateAnimalServiceLmpl#getAnimals()
      * @return Массив из 10 случайных животных
      */
+    AbstractAnimal getRandomAnimal();
+
     default AbstractAnimal[] getAnimals()
     {
-        CreateAnimalServiceLmpl createAnimalServiceLmpl = new CreateAnimalServiceLmpl();
         int i = 0;
         AbstractAnimal[] animalArray = new AbstractAnimal[10];
         while(i < 10)
         {
-            animalArray[i] = createAnimalServiceLmpl.getRandomAnimal();   // получаем случайного зверя через getRandomAnimal()
+            animalArray[i] = getRandomAnimal();   // получаем случайного зверя через getRandomAnimal()
             i++;
         }
         return animalArray;
