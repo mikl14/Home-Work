@@ -12,8 +12,8 @@ public class CreateAnimalServiceLmpl implements CreateAnimalService
      * использует дефолтный метод <b>getRandomAnimal()</b> из интерфейса <b>CreateAnimalService</b>
      * @see CreateAnimalService#getRandomAnimal()
      */
-    @Override
-    public AbstractAnimal[] getNumberOfAnimals(int numberAnimals) {
+
+    public AbstractAnimal[] getAnimals(int numberAnimals) {
 
         AbstractAnimal[] animalArray = new AbstractAnimal[numberAnimals];
         for(int i = 0; i < numberAnimals;i++)

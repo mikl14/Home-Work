@@ -7,15 +7,6 @@ import java.util.Random;
 
 public interface CreateAnimalService
 {
-
-    /**
-     *  Метод <b>getNumberOfAnimals</b> будет переопределен в классе <b>CreateAnimalServiceLmpl</b>
-     * @param numberAnimals количество уникальных животных которых необходимо создать
-     * @see CreateAnimalServiceLmpl#getNumberOfAnimals(int)
-     *  */
-    AbstractAnimal[] getNumberOfAnimals(int numberAnimals);
-
-
     /**
      *  Метод <b>getRandomAnimal</b>
      * @return случайное животное, генерирует 4 вида животных с уникальными параметрами

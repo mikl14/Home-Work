@@ -21,7 +21,7 @@ public class Main {
 
         System.out.println("Случайные "+n+" животных: ");
 
-        animals = createAnimalServiceLmpl.getNumberOfAnimals(n);
+        animals = createAnimalServiceLmpl.getAnimals(n);
         for(AbstractAnimal animal:animals)
         {
             System.out.println(animal.toString());
