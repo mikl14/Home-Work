@@ -69,7 +69,6 @@ public interface CreateAnimalService
         while(i < 10)
         {
             animalArray[i] = getRandomAnimal();   // получаем случайного зверя через getRandomAnimal()
-            System.out.println(animalArray[i].toString());
             i++;
         }
         return animalArray;

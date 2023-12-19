@@ -5,12 +5,12 @@ import java.math.BigDecimal;
 public abstract class Predator extends AbstractAnimal
 {
     protected String livingEnvironment;
-    protected int Weight;
+    protected int weight;
 
     public Predator(String breed, String name, String character, BigDecimal cost, String livingEnvironment, int weight) {
         super(breed, name, character, cost);
         this.livingEnvironment = livingEnvironment;
-        Weight = weight;
+        weight = weight;
     }
 
     public String getLivingEnvironment() {
@@ -18,7 +18,7 @@ public abstract class Predator extends AbstractAnimal
     }
 
     public int getWeight() {
-        return Weight;
+        return weight;
     }
 
 }

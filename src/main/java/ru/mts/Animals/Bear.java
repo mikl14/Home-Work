@@ -11,7 +11,7 @@ public class Bear extends Predator {
     public String toString() {
         return "i'm Bear! my name:" + name +
                 " livingEnvironment='" + livingEnvironment + '\'' +
-                ", Weight=" + Weight +
+                ", Weight=" + weight +
                 ", breed='" + breed + '\'' +
                 ", character='" + character + '\'' +
                 ", cost=" + cost +

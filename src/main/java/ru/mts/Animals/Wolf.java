@@ -11,7 +11,7 @@ public class Wolf extends Predator{
     public String toString() {
         return "i'm Big Bad Wolf! my name:" + name +
                 " livingEnvironment='" + livingEnvironment + '\'' +
-                ", Weight=" + Weight +
+                ", Weight=" + weight +
                 ", breed='" + breed + '\'' +
                 ", character='" + character + '\'' +
                 ", cost=" + cost +

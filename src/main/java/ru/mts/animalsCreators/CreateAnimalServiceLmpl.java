@@ -19,7 +19,6 @@ public class CreateAnimalServiceLmpl implements CreateAnimalService
         for(int i = 0; i < numberAnimals;i++)
         {
             animalArray[i] = getRandomAnimal();
-            System.out.println(animalArray[i].toString());
         }
         return animalArray;
     }
@@ -37,7 +36,6 @@ public class CreateAnimalServiceLmpl implements CreateAnimalService
         do
         {
             animalArray[i] = getRandomAnimal();
-            System.out.println(animalArray[i].toString());
             i++;
         }
         while(i < 10);
@@ -45,6 +43,4 @@ public class CreateAnimalServiceLmpl implements CreateAnimalService
         return animalArray;
 
     }
-
-
 }
