@@ -10,7 +10,7 @@ public abstract class Predator extends AbstractAnimal
     public Predator(String breed, String name, String character, BigDecimal cost, String livingEnvironment, int weight) {
         super(breed, name, character, cost);
         this.livingEnvironment = livingEnvironment;
-        weight = weight;
+        this.weight = weight;
     }
 
     public String getLivingEnvironment() {

@@ -6,7 +6,7 @@ import ru.mts.animalsCreators.CreateAnimalServiceLmpl;
 public class Main {
     public static void main(String[] args) {
 
-        int n = 4;
+        int n = 6;
         CreateAnimalServiceLmpl createAnimalServiceLmpl = new CreateAnimalServiceLmpl();
 
         AbstractAnimal[] animals;
