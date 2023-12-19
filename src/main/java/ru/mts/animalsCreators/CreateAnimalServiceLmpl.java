@@ -7,7 +7,7 @@ import java.util.Random;
 
 public class CreateAnimalServiceLmpl implements CreateAnimalService
 {
-    Random random = new Random();
+    private Random random = new Random();
 
     /**
      *  Метод <b>generateRandomName</b>
