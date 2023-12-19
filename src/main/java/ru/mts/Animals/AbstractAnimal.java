@@ -20,7 +20,7 @@ public abstract class AbstractAnimal implements Animal
         this.breed = breed;
         this.name = name;
         this.character = character;
-        this.cost = cost.setScale(2, RoundingMode.HALF_UP);
+        this.cost = cost.setScale(2, BigDecimal.ROUND_HALF_UP);
     }
 
     @Override
