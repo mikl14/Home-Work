@@ -20,7 +20,7 @@ public abstract class AbstractAnimal implements Animal
         this.breed = breed;
         this.name = name;
         this.character = character;
-        this.cost = BigDecimal.valueOf(Double.valueOf(Math.round(cost.doubleValue()*100))/100);
+        this.cost = cost.setScale(2, RoundingMode.HALF_UP);
     }
 
     @Override
