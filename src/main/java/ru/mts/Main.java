@@ -1,20 +1,30 @@
 package ru.mts;
-import shop.Product;
+
+import ru.mts.Animals.AbstractAnimal;
+import ru.mts.animalsCreators.CreateAnimalServiceLmpl;
 
 public class Main {
-
-    public static void printSumOfPurchase(Product product)
-    {
-        System.out.println("Сумма покупки без скидки: " + product.sum * product.quantity + " Со скидкой: " + String.format("%.2f", product.getDiscountSum()));
-    }
     public static void main(String[] args) {
 
-        Product Bread = new Product(10,25,0.75),
-                Water = new Product(5,30,42.575),
-                Butter = new Product(25,100,59.1);
+        int n = 6;
+        CreateAnimalServiceLmpl createAnimalServiceLmpl = new CreateAnimalServiceLmpl();
 
-        printSumOfPurchase(Bread);
-        printSumOfPurchase(Water);
-        printSumOfPurchase(Butter);
+        AbstractAnimal[] animals;
+
+        System.out.println("Случайные 10 животных: ");
+
+        animals = createAnimalServiceLmpl.getAnimals();
+        for(AbstractAnimal animal:animals)
+        {
+            System.out.println(animal.toString());
+        }
+
+        System.out.println("Случайные "+n+" животных: ");
+
+        animals = createAnimalServiceLmpl.getAnimals(n);
+        for(AbstractAnimal animal:animals)
+        {
+            System.out.println(animal.toString());
+        }
     }
 }
