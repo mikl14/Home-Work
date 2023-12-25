@@ -2,7 +2,6 @@ package ru.mts.Animals;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.chrono.ChronoLocalDate;
 import java.time.format.DateTimeFormatter;
 
 public abstract class AbstractAnimal implements Animal,Comparable
@@ -26,7 +25,7 @@ public abstract class AbstractAnimal implements Animal,Comparable
         this.name = name;
         this.birthDate = birthDate;
         this.character = character;
-        this.cost = cost.setScale(2, BigDecimal.ROUND_HALF_UP);
+        this.cost = cost.setScale(2, java.math.RoundingMode.HALF_UP);
     }
 
     @Override

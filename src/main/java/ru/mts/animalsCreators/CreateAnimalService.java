@@ -1,10 +1,6 @@
 package ru.mts.animalsCreators;
 
-import ru.mts.Animals.*;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.Random;
+import ru.mts.Animals.AbstractAnimal;
 
 public interface CreateAnimalService
 {
