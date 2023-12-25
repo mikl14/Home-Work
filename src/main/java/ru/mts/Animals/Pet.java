@@ -26,7 +26,7 @@ public abstract class Pet extends AbstractAnimal
     @Override
     public String toString() {
         return "my name: " + name +
-                " my birth date: "+birthDate +'\'' +
+                " my birth date: "+getFormatDate("dd-MM-yyyy") +'\'' +
                 " , essentialFood='" + essentialFood + '\'' +
                 ", lifeSpan=" + lifeSpan +
                 ", breed='" + breed + '\'' +

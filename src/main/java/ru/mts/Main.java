@@ -12,9 +12,9 @@ public class Main {
     public static void main(String[] args) {
 
         CreateAnimalServiceLmpl createAnimalServiceLmpl = new CreateAnimalServiceLmpl();
-
-
         SearchServiceLmpl searchServiceLmpl = new SearchServiceLmpl();
+
+        //руками создал массив чтобы в нем были дубликаты животные с частично одинаковыми параметрами
 
         AbstractAnimal[] duplicateArray = new AbstractAnimal[]{
                 new Cat("Abis","Pan","Evil", LocalDate.of(2015,12,1),BigDecimal.valueOf(123), "meat",12),
@@ -25,13 +25,13 @@ public class Main {
         duplicateArray =  searchServiceLmpl.findDuplicate(duplicateArray);
 
 
-        System.out.println("\nДубликаты животных: ");
+        System.out.println("\nДубликаты животных: "); //дубликат если равны порода, имя и даты рождения
         for(AbstractAnimal animal:duplicateArray)
         {
             System.out.println(animal.toString());
         }
 
-        AbstractAnimal[] leapYearsAnimals = createAnimalServiceLmpl.getAnimals(20);
+        AbstractAnimal[] leapYearsAnimals = createAnimalServiceLmpl.getAnimals(20); //новый массив случайных 20 зверей
         String[] leapYearsAnimalsNames = searchServiceLmpl.findLeapYearNames(leapYearsAnimals);
 
         System.out.println("\nЖивотные рожденные в високосный год: ");
@@ -40,13 +40,13 @@ public class Main {
             System.out.println(animal);
         }
 
-        AbstractAnimal[] olderYearsAnimals = createAnimalServiceLmpl.getAnimals(1000);
+        AbstractAnimal[] olderYearsAnimals = createAnimalServiceLmpl.getAnimals(1000);//новый массив случайных 1000 зверей, с запасом чтобы точно было хоть несколько заданного возраста
         olderYearsAnimals = searchServiceLmpl.findOlderAnimal(olderYearsAnimals,10);
 
         System.out.println("\nЖивотные возрастом 10 лет: ");
         for(AbstractAnimal animal:olderYearsAnimals)
         {
-            System.out.println(animal.getName() +" "+ animal.getBirthDate());
+            System.out.println(animal.getName() +" "+ animal.getFormatDate("dd-MM-yyyy"));
         }
 
     }

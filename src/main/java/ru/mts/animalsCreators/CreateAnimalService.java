@@ -10,12 +10,17 @@ public interface CreateAnimalService
 {
     /**
      * Метод <b>getAnimals</b>
+     * Определен <b>CreateAnimalServiceLmpl<b>
+     * @see CreateAnimalServiceLmpl#getRandomAnimal()
+     */
+    AbstractAnimal getRandomAnimal();
+
+    /**
+     * Метод <b>getAnimals</b>
      * Был Перегружен в <b>CreateAnimalServiceLmpl<b> по т.з
      * @see CreateAnimalServiceLmpl#getAnimals()
      * @return Массив из 10 случайных животных
      */
-    AbstractAnimal getRandomAnimal();
-
     default AbstractAnimal[] getAnimals()
     {
         int i = 0;

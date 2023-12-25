@@ -7,8 +7,6 @@ import java.time.LocalDate;
 import java.util.Random;
 
 public class AnimalFactory {
-
-
     private Random random = new Random();
 
     public enum AnimalType {
@@ -18,6 +16,10 @@ public class AnimalFactory {
         FISH
     }
 
+    /**
+     *  Метод <b>generateRandomDate</b>
+     * @return LocalDate
+     *  */
     private LocalDate generateRandomDate()
     {
         Long epoch = (long) (random.nextDouble() * (LocalDate.now().toEpochDay()));
@@ -40,11 +42,22 @@ public class AnimalFactory {
         return nameBuilder.toString();
     }
 
+    /**
+     * <b>getAnimal()</b> перегрузка,
+     * вызывает getAnimal(AnimalType type) передавая в него случайный тип
+     * @return AbstractAnimal
+     */
+
     public AbstractAnimal getAnimal()
     {
-        return getAnimal(AnimalType.values()[random.nextInt(4)]);
+        return getAnimal(AnimalType.values()[random.nextInt(AnimalType.values().length)]); // Возвращаем массив всех типов и берем от него значение со случайным индексом
     }
 
+    /**
+     * <b>AbstractAnimal</b> - возвращает животное заданного типа
+     * @param type
+     * @return AbstractAnimal
+     */
     public AbstractAnimal getAnimal(AnimalType type) {
         String name = generateRandomName();
 

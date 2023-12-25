@@ -3,6 +3,7 @@ package ru.mts.Animals;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.chrono.ChronoLocalDate;
+import java.time.format.DateTimeFormatter;
 
 public abstract class AbstractAnimal implements Animal,Comparable
 {
@@ -14,6 +15,7 @@ public abstract class AbstractAnimal implements Animal,Comparable
      * Конструктор AbstractAnimal
      * @param breed порода животного
      * @param name имя животного
+     * @param birthDate дата рождения
      * @param character характер животного
      * @param cost цена животного
      *
@@ -50,8 +52,24 @@ public abstract class AbstractAnimal implements Animal,Comparable
         return birthDate;
     }
 
+    /**
+     * <b>getFormatDate</b>
+     * @param format формат строки
+     * @return дату в формате format
+     */
+    public String getFormatDate(String format)
+    {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+        return formatter.format(birthDate);
+    }
+
+    /**
+     * <b>equals</b>
+     * @param obj формат строки
+     * @return true или false в зависимости от равенства объектов
+     */
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(Object obj) { // будут равны если равны имена, даты рождения и порода
         if(this == obj) return true;
 
         if(obj == null || getClass() != obj.getClass()) return false;
@@ -59,10 +77,17 @@ public abstract class AbstractAnimal implements Animal,Comparable
         return (name.equals(((AbstractAnimal) obj).name) &&
                 birthDate.equals(((AbstractAnimal) obj).birthDate) &&
                 breed.equals(((AbstractAnimal) obj).breed));
+
+
     }
 
+    /**
+     * <b>compareTo</b>
+     * @param o формат строки
+     * @return разницу по дате
+     */
     @Override
     public int compareTo(Object o) {
-        return birthDate.compareTo(((AbstractAnimal)o).birthDate);
+        return birthDate.compareTo(((AbstractAnimal)o).birthDate); // сравнение по дате рождение
     }
 }

@@ -8,6 +8,11 @@ import java.util.List;
 
 public class SearchServiceLmpl implements SearchService
 {
+    /**
+     * <b>findLeapYearNames</b> выполняет поиск животных рожденных в високосный год, по массиву животных
+     * @param animalArray массив животных для поиска
+     * @return String[] имя животного + дата рождения в формате dd-MM-yyyy
+     */
     @Override
     public String[] findLeapYearNames(AbstractAnimal[] animalArray) {
 
@@ -16,13 +21,19 @@ public class SearchServiceLmpl implements SearchService
         {
             if(animal.getBirthDate().isLeapYear())
             {
-                leapYearBirthAnimal.add(animal.getName()+" " + animal.getBirthDate());
+                leapYearBirthAnimal.add(animal.getName()+" " + animal.getFormatDate("dd-MM-yyyy"));
             }
         }
         String[] leapYearBirthAnimalArray = leapYearBirthAnimal.toArray(new String[0]);
         return leapYearBirthAnimalArray;
     }
 
+    /**
+     *<b>findOlderAnimal</b>
+     * @param animalArray массив животных для поиска
+     * @param olderYears искомый возраст
+     * @return AbstractAnimal[] - массив зверей olderYears возраста
+     */
     @Override
     public AbstractAnimal[] findOlderAnimal(AbstractAnimal[] animalArray,int olderYears) {
 
@@ -42,6 +53,11 @@ public class SearchServiceLmpl implements SearchService
         return olderAnimalArray;
     }
 
+    /**
+     * <b>findDuplicate</b>
+     * @param animalArray массив животных для поиска
+     * @return AbstractAnimal[] массив животных имеющих дубликаты в animalArray
+     */
     @Override
     public AbstractAnimal[] findDuplicate(AbstractAnimal[] animalArray) {
 

@@ -25,7 +25,7 @@ public abstract class Predator extends AbstractAnimal
     @Override
     public String toString() {
         return "my name: " + name +
-                " my birth date: "+birthDate +'\'' +
+                " my birth date: "+getFormatDate("dd-MM-yyyy") +'\'' +
                 " livingEnvironment='" + livingEnvironment + '\'' +
                 ", Weight=" + weight +
                 ", breed='" + breed + '\'' +
