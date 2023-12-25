@@ -3,6 +3,7 @@ package ru.mts.animalsCreators;
 import ru.mts.Animals.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Random;
 
 public interface CreateAnimalService
@@ -26,4 +27,5 @@ public interface CreateAnimalService
         }
         return animalArray;
     }
+
 }

@@ -1,20 +1,15 @@
 package ru.mts.Animals;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public class Bear extends Predator {
-    public Bear(String breed, String name, String character, BigDecimal cost, String livingEnvironment, int weight) {
-        super(breed, name, character, cost, livingEnvironment, weight);
+    public Bear(String breed, String name, String character, LocalDate birthDate, BigDecimal cost, String livingEnvironment, int weight) {
+        super(breed, name, character,birthDate, cost, livingEnvironment, weight);
     }
 
     @Override
     public String toString() {
-        return "i'm Bear! my name:" + name +
-                " livingEnvironment='" + livingEnvironment + '\'' +
-                ", Weight=" + weight +
-                ", breed='" + breed + '\'' +
-                ", character='" + character + '\'' +
-                ", cost=" + cost +
-                '}';
+        return "i'm Bear! " + super.toString();
     }
 }

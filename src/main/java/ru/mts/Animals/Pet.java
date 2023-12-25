@@ -1,6 +1,7 @@
 package ru.mts.Animals;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public abstract class Pet extends AbstractAnimal
 {
@@ -8,8 +9,8 @@ public abstract class Pet extends AbstractAnimal
 
     protected int lifeSpan;
 
-    public Pet(String breed, String name, String character, BigDecimal cost, String essentialFood, int lifeSpan) {
-        super(breed, name, character, cost);
+    public Pet(String breed, String name, String character, LocalDate birthDate, BigDecimal cost, String essentialFood, int lifeSpan) {
+        super(breed, name, birthDate,character, cost);
         this.essentialFood = essentialFood;
         this.lifeSpan = lifeSpan;
     }
@@ -20,5 +21,17 @@ public abstract class Pet extends AbstractAnimal
 
     public int getLifeSpan() {
         return lifeSpan;
+    }
+
+    @Override
+    public String toString() {
+        return "my name: " + name +
+                " my birth date: "+birthDate +'\'' +
+                " , essentialFood='" + essentialFood + '\'' +
+                ", lifeSpan=" + lifeSpan +
+                ", breed='" + breed + '\'' +
+                ", character='" + character + '\'' +
+                ", cost=" + cost +
+                '}';
     }
 }

@@ -1,6 +1,7 @@
 package ru.mts.Animals;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 /**
  *  интерфейс Животных с методами :
@@ -12,6 +13,7 @@ import java.math.BigDecimal;
 
 public interface Animal
 {
+
     /**
      * getBreed - Возвращает значение параметра Breed
      * @see AbstractAnimal#getBreed()
@@ -33,5 +35,7 @@ public interface Animal
      * @see AbstractAnimal#getCharacter()
      */
     String getCharacter();
+
+    LocalDate getBirthDate();
 
 }
