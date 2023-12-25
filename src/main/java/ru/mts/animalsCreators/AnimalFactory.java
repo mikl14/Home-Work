@@ -18,6 +18,7 @@ public class AnimalFactory {
 
     /**
      *  Метод <b>generateRandomDate</b>
+     *  возвращает случайную дату
      * @return LocalDate
      *  */
     private LocalDate generateRandomDate()
