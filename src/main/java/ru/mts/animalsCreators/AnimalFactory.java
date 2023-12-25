@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.util.Random;
 
 public class AnimalFactory {
-    private final Random random = new Random();
+    private Random random = new Random();
 
     public enum AnimalType {
         CAT,
