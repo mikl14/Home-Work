@@ -32,6 +32,13 @@ public abstract class AbstractAnimal implements Animal, Comparable {
         this.cost = cost.setScale(2, RoundingMode.HALF_UP);
     }
 
+    /**
+     * Конструктор AbstractAnimal - в этой реализации остальные параметры будут сгенерированы методами
+     *
+     * @param character характер животного
+     * @see #generateRandomDate()
+     * @see #generateRandomName()
+     */
     public AbstractAnimal(String character) {
         this.breed = "Порода №" + (random.nextInt(1000));
         this.name = generateRandomName();

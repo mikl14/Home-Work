@@ -8,12 +8,30 @@ public abstract class Pet extends AbstractAnimal {
 
     protected int lifeSpan;
 
+    /**
+     * Pet конструктор
+     *
+     * @param character     характер животного
+     * @param essentialFood пища животного
+     * @see AbstractAnimal
+     */
     public Pet(String character, String essentialFood) {
         super(character);
         this.essentialFood = essentialFood;
         this.lifeSpan = random.nextInt(12 - 9) + 9;
     }
 
+    /**
+     * Pet конструктор
+     *
+     * @param breed         порода животного
+     * @param name          имя животного
+     * @param birthDate     дата рождения
+     * @param character     характер животного
+     * @param cost          цена животного
+     * @param essentialFood характер животного
+     * @param lifeSpan      пища животного
+     */
     public Pet(String breed, String name, String character, LocalDate birthDate, BigDecimal cost, String essentialFood, int lifeSpan) {
         super(breed, name, birthDate, character, cost);
         this.essentialFood = essentialFood;
