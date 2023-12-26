@@ -2,51 +2,50 @@ package ru.mts.animalsCreators;
 
 import ru.mts.Animals.AbstractAnimal;
 
-public class CreateAnimalServiceLmpl implements CreateAnimalService
-{
+public class CreateAnimalServiceLmpl implements CreateAnimalService {
     private final AnimalFactory animalFactory = new AnimalFactory();
 
     /**
      * <b>getRandomAnimal</b>
      * возвращает случайное животное
+     *
      * @return
      */
     public AbstractAnimal getRandomAnimal() {
-      return animalFactory.getAnimal();
+        return animalFactory.getAnimal();
     }
 
     /**
-     *<b>getAnimals</b>
+     * <b>getAnimals</b>
+     *
      * @param numberAnimals количество уникальных животных которых необходимо создать
      * @return Массив животных длинной numberAnimals
      */
-
     public AbstractAnimal[] getAnimals(int numberAnimals) {
 
         AbstractAnimal[] animalArray = new AbstractAnimal[numberAnimals];
-        for(int i = 0; i < numberAnimals;i++)
-        {
+        for (int i = 0; i < numberAnimals; i++) {
             animalArray[i] = animalFactory.getAnimal();
         }
         return animalArray;
     }
 
     /**
+     * <b>getAnimals()</b>
      * Перегружен в соответствии с т.з
+     *
      * @return Массив животных длинной 10
      */
-
     @Override
     public AbstractAnimal[] getAnimals() {
 
         int i = 0;
         AbstractAnimal[] animalArray = new AbstractAnimal[10];
-        do
-        {
+        do {
             animalArray[i] = getRandomAnimal();
             i++;
         }
-        while(i < 10);
+        while (i < 10);
 
         return animalArray;
 

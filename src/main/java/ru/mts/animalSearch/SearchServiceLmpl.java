@@ -3,13 +3,16 @@ package ru.mts.animalSearch;
 import ru.mts.Animals.AbstractAnimal;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-public class SearchServiceLmpl implements SearchService
-{
+public class SearchServiceLmpl implements SearchService {
     /**
      * <b>findLeapYearNames</b> выполняет поиск животных рожденных в високосный год, по массиву животных
+     *
      * @param animalArray массив животных для поиска
      * @return String[] имя животного + дата рождения в формате dd-MM-yyyy
      */
@@ -17,11 +20,9 @@ public class SearchServiceLmpl implements SearchService
     public String[] findLeapYearNames(AbstractAnimal[] animalArray) {
 
         List<String> leapYearBirthAnimal = new ArrayList<>();
-        for(AbstractAnimal animal : animalArray)
-        {
-            if(animal.getBirthDate().isLeapYear())
-            {
-                leapYearBirthAnimal.add(animal.getName()+" " + animal.getFormatDate("dd-MM-yyyy"));
+        for (AbstractAnimal animal : animalArray) {
+            if (animal.getBirthDate().isLeapYear()) {
+                leapYearBirthAnimal.add(animal.getName() + " " + animal.getFormatDate("dd-MM-yyyy"));
             }
         }
         String[] leapYearBirthAnimalArray = leapYearBirthAnimal.toArray(new String[0]);
@@ -29,52 +30,44 @@ public class SearchServiceLmpl implements SearchService
     }
 
     /**
-     *<b>findOlderAnimal</b>
+     * <b>findOlderAnimal</b>
+     *
      * @param animalArray массив животных для поиска
-     * @param olderYears искомый возраст
+     * @param olderYears  искомый возраст
      * @return AbstractAnimal[] - массив зверей olderYears возраста
      */
     @Override
-    public AbstractAnimal[] findOlderAnimal(AbstractAnimal[] animalArray,int olderYears) {
+    public AbstractAnimal[] findOlderAnimal(AbstractAnimal[] animalArray, int olderYears) {
 
         List<AbstractAnimal> olderAnimal = new ArrayList<>();
+        LocalDate currentDate = LocalDate.now();
 
-        for(int i = 0 ; i < animalArray.length;i++)
-        {
-            long ss = LocalDate.now().toEpochDay()- animalArray[i].getBirthDate().toEpochDay();
-
-            if(LocalDate.ofEpochDay(ss).getYear()- 1970 == olderYears)
-            {
-                olderAnimal.add(animalArray[i]);
+        for (AbstractAnimal animal : animalArray) {
+            int age = Period.between(animal.getBirthDate(), currentDate).getYears();
+            if (age == olderYears) {
+                olderAnimal.add(animal);
             }
         }
-        AbstractAnimal[] olderAnimalArray = olderAnimal.toArray(new AbstractAnimal[0]);
-
-        return olderAnimalArray;
+        return olderAnimal.toArray(new AbstractAnimal[0]);
     }
 
     /**
      * <b>findDuplicate</b>
+     *
      * @param animalArray массив животных для поиска
      * @return AbstractAnimal[] массив животных имеющих дубликаты в animalArray
      */
     @Override
     public AbstractAnimal[] findDuplicate(AbstractAnimal[] animalArray) {
 
-        List<AbstractAnimal> equalAnimal = new ArrayList<>();
+        List<AbstractAnimal> duplicates = new ArrayList<>();
+        Set<AbstractAnimal> uniqueElements = new HashSet<>();
 
-        for(int i = 0; i <animalArray.length;i++)
-        {
-            for(int j = 0; j < animalArray.length;j++)
-            {
-                if( i != j && animalArray[i].equals(animalArray[j]))
-                {
-                    equalAnimal.add(animalArray[i]);
-                }
+        for (AbstractAnimal animal : animalArray) {
+            if (!uniqueElements.add(animal)) {
+                duplicates.add(animal);
             }
         }
-
-        AbstractAnimal[] equalAnimalArray = equalAnimal.toArray(new AbstractAnimal[0]);
-        return equalAnimalArray;
+        return duplicates.toArray(new AbstractAnimal[0]);
     }
 }

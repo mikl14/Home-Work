@@ -15,19 +15,18 @@ public class Main {
         SearchServiceLmpl searchServiceLmpl = new SearchServiceLmpl();
 
         //руками создал массив чтобы в нем были дубликаты животные с частично одинаковыми параметрами
-
         AbstractAnimal[] duplicateArray = new AbstractAnimal[]{
-                new Cat("Abis","Pan","Evil", LocalDate.of(2015,12,1),BigDecimal.valueOf(123), "meat",12),
-                new Cat("Not abris","Not Pan","Evil", LocalDate.of(2015,12,1),BigDecimal.valueOf(123), "meat",12),
-                new Cat("Great","Piter","Evil", LocalDate.of(2015,12,1),BigDecimal.valueOf(123), "meat",12),
-                new Cat("Great","Piter Pan","Evil", LocalDate.of(2015,12,1),BigDecimal.valueOf(123), "meat",12),
-                new Cat("Abis","Pan","Evil", LocalDate.of(2015,12,1),BigDecimal.valueOf(123), "meat",12)};
-        duplicateArray =  searchServiceLmpl.findDuplicate(duplicateArray);
+                new Cat("Abis", "Pan", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12),
+                new Cat("Abis", "Pan", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12),
+                new Cat("Not abris", "Not Pan", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12),
+                new Cat("Great", "Piter", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12),
+                new Cat("Great", "Piter Pan", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12),
+                new Cat("Abis", "Pan", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12)};
 
+        AbstractAnimal[] duplicateArrayResult = searchServiceLmpl.findDuplicate(duplicateArray);
 
         System.out.println("\nДубликаты животных: "); //дубликат если равны порода, имя и даты рождения
-        for(AbstractAnimal animal:duplicateArray)
-        {
+        for (AbstractAnimal animal : duplicateArrayResult) {
             System.out.println(animal.toString());
         }
 
@@ -35,19 +34,16 @@ public class Main {
         String[] leapYearsAnimalsNames = searchServiceLmpl.findLeapYearNames(leapYearsAnimals);
 
         System.out.println("\nЖивотные рожденные в високосный год: ");
-        for(String animal:leapYearsAnimalsNames)
-        {
+        for (String animal : leapYearsAnimalsNames) {
             System.out.println(animal);
         }
 
         AbstractAnimal[] olderYearsAnimals = createAnimalServiceLmpl.getAnimals(1000);//новый массив случайных 1000 зверей, с запасом чтобы точно было хоть несколько заданного возраста
-        olderYearsAnimals = searchServiceLmpl.findOlderAnimal(olderYearsAnimals,10);
+        AbstractAnimal[] olderYearsAnimalsResult = searchServiceLmpl.findOlderAnimal(olderYearsAnimals, 10);
 
         System.out.println("\nЖивотные возрастом 10 лет: ");
-        for(AbstractAnimal animal:olderYearsAnimals)
-        {
-            System.out.println(animal.getName() +" "+ animal.getFormatDate("dd-MM-yyyy"));
+        for (AbstractAnimal animal : olderYearsAnimalsResult) {
+            System.out.println(animal.getName() + " " + animal.getFormatDate("dd-MM-yyyy"));
         }
-
     }
 }

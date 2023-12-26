@@ -3,13 +3,18 @@ package ru.mts.Animals;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public abstract class Predator extends AbstractAnimal
-{
+public abstract class Predator extends AbstractAnimal {
     protected String livingEnvironment;
     protected int weight;
 
+    public Predator(String character, String livingEnvironment) {
+        super(character);
+        this.livingEnvironment = livingEnvironment;
+        this.weight = random.nextInt(150 - 80) + 80;
+    }
+
     public Predator(String breed, String name, String character, LocalDate birthDate, BigDecimal cost, String livingEnvironment, int weight) {
-        super(breed, name,birthDate, character, cost);
+        super(breed, name, birthDate, character, cost);
         this.livingEnvironment = livingEnvironment;
         this.weight = weight;
     }
@@ -25,7 +30,7 @@ public abstract class Predator extends AbstractAnimal
     @Override
     public String toString() {
         return "my name: " + name +
-                " my birth date: "+getFormatDate("dd-MM-yyyy") +'\'' +
+                " my birth date: " + getFormatDate("dd-MM-yyyy") + '\'' +
                 " livingEnvironment='" + livingEnvironment + '\'' +
                 ", Weight=" + weight +
                 ", breed='" + breed + '\'' +
