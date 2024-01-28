@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.Random;
 
-public abstract class AbstractAnimal implements Animal, Comparable {
+public abstract class AbstractAnimal implements Animal{
     protected Random random = new Random();
     protected LocalDate birthDate;
     protected String breed, name, character;
@@ -93,7 +93,7 @@ public abstract class AbstractAnimal implements Animal, Comparable {
     public boolean equals(Object obj) { // будут равны если равны имена, даты рождения и порода
 
         if (this == obj) return true;
-
+        if (obj == null || getClass() != obj.getClass()) return false;
         var animalObj = ((AbstractAnimal) obj);
 
         return Objects.equals(name, animalObj.name)
@@ -104,17 +104,6 @@ public abstract class AbstractAnimal implements Animal, Comparable {
     @Override
     public int hashCode() {
         return Objects.hash(name, birthDate, breed);
-    }
-
-    /**
-     * <b>compareTo</b>
-     *
-     * @param o формат строки
-     * @return разницу по дате
-     */
-    @Override
-    public int compareTo(Object o) {
-        return birthDate.compareTo(((AbstractAnimal) o).birthDate); // сравнение по дате рождение
     }
 
     /**

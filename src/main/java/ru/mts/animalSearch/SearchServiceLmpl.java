@@ -25,8 +25,7 @@ public class SearchServiceLmpl implements SearchService {
                 leapYearBirthAnimal.add(animal.getName() + " " + animal.getFormatDate("dd-MM-yyyy"));
             }
         }
-        String[] leapYearBirthAnimalArray = leapYearBirthAnimal.toArray(new String[0]);
-        return leapYearBirthAnimalArray;
+        return leapYearBirthAnimal.toArray(new String[0]);
     }
 
     /**
