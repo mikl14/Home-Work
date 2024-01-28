@@ -2,6 +2,7 @@ package ru.mts.animalSearch;
 
 import ru.mts.Animals.AbstractAnimal;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ public class SearchServiceLmpl implements SearchService {
     @Override
     public AbstractAnimal[] findOlderAnimal(AbstractAnimal[] animalArray, int olderYears) {
 
+        if(olderYears < 0) throw new ArithmeticException();
         List<AbstractAnimal> olderAnimal = new ArrayList<>();
         LocalDate currentDate = LocalDate.now();
 
