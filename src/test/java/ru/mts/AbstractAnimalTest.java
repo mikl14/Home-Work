@@ -32,7 +32,7 @@ public class AbstractAnimalTest {
      * Когда у животных разные типы
      */
     @Test
-    void equalsFalse() {
+    void equalsFalseTest() {
         boolean res = animal.equals(new Cat("Abi", "Pan", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12));
         Assertions.assertFalse(res);
 
@@ -53,7 +53,7 @@ public class AbstractAnimalTest {
      * Когда у животных одного типа одинаковые имена, породы и даты рождения, но разный характер
      */
     @Test
-    void equalsTrue() {
+    void equalsTrueTest() {
         boolean res = animal.equals(new Cat("Abis", "Pan", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12));
         Assertions.assertTrue(res);
 

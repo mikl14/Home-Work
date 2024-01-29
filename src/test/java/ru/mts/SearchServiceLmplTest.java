@@ -33,7 +33,7 @@ public class SearchServiceLmplTest {
      * Ожидаемый результат: обнаружение 3х животных рожденных в високосный год
      */
     @Test
-    void findLeapYearNames() {
+    void findLeapYearNamesTest() {
         AbstractAnimal[] leapYearsAnimals = new AbstractAnimal[]{
                 new Fish("Abis", "Pan", "Evil", LocalDate.of(2012, 12, 1), BigDecimal.valueOf(123), "meat", 12),
                 new Bear("White", "Beluga", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "forest", 120),
@@ -53,7 +53,7 @@ public class SearchServiceLmplTest {
      * Ожидаемый результат: IllegalArgumentException так как передан отрицательный возраст
      */
     @Test
-    void findOlderAnimalException() {
+    void findOlderAnimalExceptionTest() {
         AbstractAnimal[] olderYearsAnimals = new AbstractAnimal[]{
                 new Fish("Abis", "Pan", "Evil", LocalDate.of(2012, 12, 1), BigDecimal.valueOf(123), "meat", 12),
                 new Bear("White", "Beluga", "Evil", LocalDate.of(2000, 12, 1), BigDecimal.valueOf(123), "forest", 120)};
@@ -68,7 +68,7 @@ public class SearchServiceLmplTest {
      */
     @ParameterizedTest
     @ValueSource(ints = {3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 15, 20})
-    void findOlderAnimal(Integer olds) {
+    void findOlderAnimalTest(Integer olds) {
         AbstractAnimal[] olderYearsAnimals = new AbstractAnimal[]{
                 new Fish("Abis", "Pan", "Evil", LocalDate.of(2012, 12, 1), BigDecimal.valueOf(123), "meat", 12),
                 new Bear("White", "Beluga", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "forest", 120),
@@ -91,7 +91,7 @@ public class SearchServiceLmplTest {
      * Ожидаемый результат: обнаружение 2х дубликатов кота с именем Pan
      */
     @Test
-    void findDuplicate() {
+    void findDuplicateTest() {
         AbstractAnimal[] duplicateArray = new AbstractAnimal[]{
                 new Cat("Abis", "Pan", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12),
                 new Cat("Abis", "Pan", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12),
