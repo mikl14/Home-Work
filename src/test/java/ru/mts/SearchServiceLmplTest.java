@@ -26,6 +26,7 @@ public class SearchServiceLmplTest {
     void setUpSearchServiceLmpl() {
         searchServiceLmpl = new SearchServiceLmpl();
     }
+
     /**
      * <b>findLeapYearNames</b>
      * - Тестирование метода поиска животных рожденных в високосный год
@@ -43,12 +44,13 @@ public class SearchServiceLmplTest {
 
         String[] leapYearsAnimalsNames = searchServiceLmpl.findLeapYearNames(leapYearsAnimals);
 
-        Assertions.assertArrayEquals(leapYearsAnimalsNames,new String[]{"Pan 01-12-2012","Not Pan 01-12-2008","Piter Pan 01-11-2012"}); // Ожидается обнаружение 3х животных рожденных в високосный год
+        Assertions.assertArrayEquals(leapYearsAnimalsNames, new String[]{"Pan 01-12-2012", "Not Pan 01-12-2008", "Piter Pan 01-11-2012"}); // Ожидается обнаружение 3х животных рожденных в високосный год
     }
+
     /**
      * <b>findOlderAnimalException</b>
      * - Тестирование метода поиска животных по возрасту
-     * Ожидаемый результат: ArithmeticException так как передан отрицательный возраст
+     * Ожидаемый результат: IllegalArgumentException так как передан отрицательный возраст
      */
     @Test
     void findOlderAnimalException() {
@@ -56,7 +58,7 @@ public class SearchServiceLmplTest {
                 new Fish("Abis", "Pan", "Evil", LocalDate.of(2012, 12, 1), BigDecimal.valueOf(123), "meat", 12),
                 new Bear("White", "Beluga", "Evil", LocalDate.of(2000, 12, 1), BigDecimal.valueOf(123), "forest", 120)};
 
-                Assertions.assertThrows(ArithmeticException.class,() -> searchServiceLmpl.findOlderAnimal(olderYearsAnimals, -12));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> searchServiceLmpl.findOlderAnimal(olderYearsAnimals, -12));
     }
 
     /**
@@ -65,8 +67,8 @@ public class SearchServiceLmplTest {
      * Ожидаемый результат: Все найденные значения возраста будут соответствовать искомому
      */
     @ParameterizedTest
-    @ValueSource(ints = {3,4,5,6,7,8,9,10,11,12,15,20})
-    void findOlderAnimal(Integer olds){
+    @ValueSource(ints = {3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 15, 20})
+    void findOlderAnimal(Integer olds) {
         AbstractAnimal[] olderYearsAnimals = new AbstractAnimal[]{
                 new Fish("Abis", "Pan", "Evil", LocalDate.of(2012, 12, 1), BigDecimal.valueOf(123), "meat", 12),
                 new Bear("White", "Beluga", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "forest", 120),
@@ -77,11 +79,12 @@ public class SearchServiceLmplTest {
 
         AbstractAnimal[] olderYearsAnimalsResult = searchServiceLmpl.findOlderAnimal(olderYearsAnimals, olds);
 
-        for (AbstractAnimal animal:olderYearsAnimalsResult) {
-            Assertions.assertEquals(Period.between(animal.getBirthDate(), LocalDate.now()).getYears(),olds);
+        for (AbstractAnimal animal : olderYearsAnimalsResult) {
+            Assertions.assertEquals(Period.between(animal.getBirthDate(), LocalDate.now()).getYears(), olds);
         }
 
     }
+
     /**
      * <b>findDuplicate</b>
      * - Тестирование метода поиска дубликатов в массиве животных
@@ -99,6 +102,6 @@ public class SearchServiceLmplTest {
 
         AbstractAnimal[] duplicateArrayResult = searchServiceLmpl.findDuplicate(duplicateArray);
 
-        Assertions.assertArrayEquals(duplicateArrayResult,new AbstractAnimal[]{duplicateArray[1],duplicateArray[5]}); // Ожидается обнаружение 2х дубликатов кота с именем Pan
+        Assertions.assertArrayEquals(duplicateArrayResult, new AbstractAnimal[]{duplicateArray[1], duplicateArray[5]}); // Ожидается обнаружение 2х дубликатов кота с именем Pan
     }
 }

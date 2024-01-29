@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.mts.Animals.AbstractAnimal;
-import ru.mts.Animals.Bear;
 import ru.mts.Animals.Cat;
 import ru.mts.Animals.Fish;
 
@@ -17,34 +16,33 @@ public class AbstractAnimalTest {
 
     /**
      * <b>setUpAnimal</b>
-     *
+     * <p>
      * - инициализация животного для сравнения
      */
     @BeforeEach
-    void setUpAnimal()
-    {
-        animal =  new Cat("Abis", "Pan", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12);
+    void setUpAnimal() {
+        animal = new Cat("Abis", "Pan", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12);
     }
+
     /**
      * <b>equalsFalse</b> -
-     *
+     * <p>
      * Тест проверяющий случаи когда equals должен возвращать false
      * Когда у животных разные имена или дата рождения, а так же породы
      * Когда у животных разные типы
      */
     @Test
-    void equalsFalse()
-    {
-        boolean res = animal.equals( new Cat("Abi", "Pan", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12));
+    void equalsFalse() {
+        boolean res = animal.equals(new Cat("Abi", "Pan", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12));
         Assertions.assertFalse(res);
 
-        res = animal.equals( new Cat("Abis", "Peter", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12));
+        res = animal.equals(new Cat("Abis", "Peter", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12));
         Assertions.assertFalse(res);
 
-        res = animal.equals( new Cat("Abis", "Pan", "Evil", LocalDate.of(2021, 12, 1), BigDecimal.valueOf(123), "meat", 12));
+        res = animal.equals(new Cat("Abis", "Pan", "Evil", LocalDate.of(2021, 12, 1), BigDecimal.valueOf(123), "meat", 12));
         Assertions.assertFalse(res);
 
-        res = animal.equals( new Fish("Abis", "Pan", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12));
+        res = animal.equals(new Fish("Abis", "Pan", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12));
         Assertions.assertFalse(res);
     }
 
@@ -55,12 +53,11 @@ public class AbstractAnimalTest {
      * Когда у животных одного типа одинаковые имена, породы и даты рождения, но разный характер
      */
     @Test
-    void equalsTrue()
-    {
-        boolean res = animal.equals( new Cat("Abis", "Pan", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12));
+    void equalsTrue() {
+        boolean res = animal.equals(new Cat("Abis", "Pan", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12));
         Assertions.assertTrue(res);
 
-        res = animal.equals( new Cat("Abis", "Pan", "Good", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12));
+        res = animal.equals(new Cat("Abis", "Pan", "Good", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12));
         Assertions.assertTrue(res);
     }
 

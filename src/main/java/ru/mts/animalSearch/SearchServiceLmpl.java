@@ -39,7 +39,7 @@ public class SearchServiceLmpl implements SearchService {
     @Override
     public AbstractAnimal[] findOlderAnimal(AbstractAnimal[] animalArray, int olderYears) {
 
-        if(olderYears < 0) throw new ArithmeticException();
+        if (olderYears < 0) throw new IllegalArgumentException();
         List<AbstractAnimal> olderAnimal = new ArrayList<>();
         LocalDate currentDate = LocalDate.now();
 
