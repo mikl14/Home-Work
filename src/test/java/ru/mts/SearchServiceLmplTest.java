@@ -64,7 +64,7 @@ public class SearchServiceLmplTest {
     /**
      * <b>findOlderAnimal</b>
      * - Тестирование метода поиска животных по возрасту
-     * Ожидаемый результат: Все найденные значения возраста будут соответствовать искомому
+     * Ожидаемый результат: Все найденные значения возраста будут больше искомого
      */
     @ParameterizedTest
     @ValueSource(ints = {7, 8, 9, 10, 11})
@@ -80,7 +80,7 @@ public class SearchServiceLmplTest {
         AbstractAnimal[] olderYearsAnimalsResult = searchServiceLmpl.findOlderAnimal(olderYearsAnimals, olds);
 
         for (AbstractAnimal animal : olderYearsAnimalsResult) {
-            Assertions.assertEquals(Period.between(animal.getBirthDate(), LocalDate.now()).getYears(), olds); //проверяем что все животные в массиве соответствуют заданному возрасту
+            Assertions.assertTrue(Period.between(animal.getBirthDate(), LocalDate.now()).getYears() > olds); //проверяем что все животные в массиве больше заданного возраста
         }
 
     }

@@ -35,7 +35,7 @@ public class SearchServiceLmpl implements SearchService {
      *
      * @param animalArray массив животных для поиска
      * @param olderYears  искомый возраст
-     * @return AbstractAnimal[] - массив зверей olderYears возраста
+     * @return AbstractAnimal[] - массив зверей большего чем olderYears возраста
      */
     @Override
     public AbstractAnimal[] findOlderAnimal(AbstractAnimal[] animalArray, int olderYears) {
@@ -46,7 +46,7 @@ public class SearchServiceLmpl implements SearchService {
 
         for (AbstractAnimal animal : animalArray) {
             int age = Period.between(animal.getBirthDate(), currentDate).getYears();
-            if (age == olderYears) {
+            if (age > olderYears) {
                 olderAnimal.add(animal);
             }
 
