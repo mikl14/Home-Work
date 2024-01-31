@@ -67,20 +67,20 @@ public class SearchServiceLmplTest {
      * Ожидаемый результат: Все найденные значения возраста будут соответствовать искомому
      */
     @ParameterizedTest
-    @ValueSource(ints = {3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 15, 20})
+    @ValueSource(ints = {7, 8, 9, 10, 11})
     void findOlderAnimalTest(Integer olds) {
         AbstractAnimal[] olderYearsAnimals = new AbstractAnimal[]{
-                new Fish("Abis", "Pan", "Evil", LocalDate.of(2012, 12, 1), BigDecimal.valueOf(123), "meat", 12),
-                new Bear("White", "Beluga", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "forest", 120),
-                new Fish("Not abris", "Not Pan", "Evil", LocalDate.of(2008, 12, 1), BigDecimal.valueOf(123), "meat", 12),
-                new Cat("Great", "Piter", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12),
-                new Fish("Great", "Piter Pan", "Evil", LocalDate.of(2012, 11, 1), BigDecimal.valueOf(123), "meat", 12),
-                new Cat("Abis", "Pan", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12)};
+                new Fish("Abis", "Pan", "Evil", LocalDate.now().minusYears(7), BigDecimal.valueOf(123), "meat", 12),
+                new Bear("White", "Beluga", "Evil", LocalDate.now().minusYears(8), BigDecimal.valueOf(123), "forest", 120),
+                new Fish("Not abris", "Not Pan", "Evil", LocalDate.now().minusYears(9), BigDecimal.valueOf(123), "meat", 12),
+                new Cat("Great", "Piter", "Evil", LocalDate.now().minusYears(10), BigDecimal.valueOf(123), "meat", 12),
+                new Fish("Great", "Piter Pan", "Evil", LocalDate.now().minusYears(11), BigDecimal.valueOf(123), "meat", 12),
+                new Cat("Abis", "Pan", "Evil", LocalDate.now().minusYears(11), BigDecimal.valueOf(123), "meat", 12)};
 
         AbstractAnimal[] olderYearsAnimalsResult = searchServiceLmpl.findOlderAnimal(olderYearsAnimals, olds);
 
         for (AbstractAnimal animal : olderYearsAnimalsResult) {
-            Assertions.assertEquals(Period.between(animal.getBirthDate(), LocalDate.now()).getYears(), olds);
+            Assertions.assertEquals(Period.between(animal.getBirthDate(), LocalDate.now()).getYears(), olds); //проверяем что все животные в массиве соответствуют заданному возрасту
         }
 
     }

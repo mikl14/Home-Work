@@ -3,6 +3,7 @@ package ru.mts.animalSearch;
 import ru.mts.Animals.AbstractAnimal;
 
 import java.time.DateTimeException;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
@@ -48,6 +49,7 @@ public class SearchServiceLmpl implements SearchService {
             if (age == olderYears) {
                 olderAnimal.add(animal);
             }
+
         }
         return olderAnimal.toArray(new AbstractAnimal[0]);
     }
