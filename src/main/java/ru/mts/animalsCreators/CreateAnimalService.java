@@ -3,6 +3,7 @@ package ru.mts.animalsCreators;
 import ru.mts.Animals.AbstractAnimal;
 
 public interface CreateAnimalService {
+
     /**
      * Метод <b>getAnimals</b>
      * Определен <b>CreateAnimalServiceLmpl<b>

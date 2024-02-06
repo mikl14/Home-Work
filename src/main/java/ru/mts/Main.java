@@ -1,49 +1,33 @@
 package ru.mts;
 
-import ru.mts.Animals.AbstractAnimal;
-import ru.mts.Animals.Cat;
-import ru.mts.animalSearch.SearchServiceLmpl;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import ru.mts.animalRepository.AnimalRepositoryImpl;
 import ru.mts.animalsCreators.CreateAnimalServiceLmpl;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-
+@Configuration
+@ComponentScan
 public class Main {
-    public static void main(String[] args) {
 
-        CreateAnimalServiceLmpl createAnimalServiceLmpl = new CreateAnimalServiceLmpl();
-        SearchServiceLmpl searchServiceLmpl = new SearchServiceLmpl();
-
-        //руками создал массив чтобы в нем были дубликаты животные с частично одинаковыми параметрами
-        AbstractAnimal[] duplicateArray = new AbstractAnimal[]{
-                new Cat("Abis", "Pan", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12),
-                new Cat("Abis", "Pan", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12),
-                new Cat("Not abris", "Not Pan", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12),
-                new Cat("Great", "Piter", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12),
-                new Cat("Great", "Piter Pan", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12),
-                new Cat("Abis", "Pan", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12)};
-
-        AbstractAnimal[] duplicateArrayResult = searchServiceLmpl.findDuplicate(duplicateArray);
-
-        System.out.println("\nДубликаты животных: "); //дубликат если равны порода, имя и даты рождения
-        for (AbstractAnimal animal : duplicateArrayResult) {
+    private static void printArray(Object[] animalArray) { //метод для вывода в консоль массива
+        System.out.println();
+        for (Object animal : animalArray) {
             System.out.println(animal.toString());
         }
+    }
 
-        AbstractAnimal[] leapYearsAnimals = createAnimalServiceLmpl.getAnimals(20); //новый массив случайных 20 зверей
-        String[] leapYearsAnimalsNames = searchServiceLmpl.findLeapYearNames(leapYearsAnimals);
+    public static void main(String[] args) {
 
-        System.out.println("\nЖивотные рожденные в високосный год: ");
-        for (String animal : leapYearsAnimalsNames) {
-            System.out.println(animal);
-        }
+        ApplicationContext context = new AnnotationConfigApplicationContext(Main.class); //создал контекст
+        AnimalRepositoryImpl animalRepositoryBean = context.getBean(AnimalRepositoryImpl.class);
 
-        AbstractAnimal[] olderYearsAnimals = createAnimalServiceLmpl.getAnimals(1000);//новый массив случайных 1000 зверей, с запасом чтобы точно было хоть несколько заданного возраста
-        AbstractAnimal[] olderYearsAnimalsResult = searchServiceLmpl.findOlderAnimal(olderYearsAnimals, 10);
+        System.out.println(context.getBean(CreateAnimalServiceLmpl.class).getAnimal()); //вывел тип созданного CreateAnimalServiceLmpl для проверки постпроцессора
 
-        System.out.println("\nЖивотные возрастом 10 лет: ");
-        for (AbstractAnimal animal : olderYearsAnimalsResult) {
-            System.out.println(animal.getName() + " " + animal.getFormatDate("dd-MM-yyyy"));
-        }
+        printArray(animalRepositoryBean.findLeapYearNames()); //вывожу возвращенные значения всех методов в консоль
+        printArray(animalRepositoryBean.findDuplicate());
+        printArray(animalRepositoryBean.findOlderAnimal(10));
+
     }
 }

@@ -1,18 +1,32 @@
 package ru.mts.animalsCreators;
 
+import org.springframework.stereotype.Component;
 import ru.mts.Animals.AbstractAnimal;
 
+@Component
 public class CreateAnimalServiceLmpl implements CreateAnimalService {
     private final AnimalFactory animalFactory = new AnimalFactory();
+
+    public AnimalFactory.AnimalType animalType; // хранит тип животного который вернет getAnimal()
 
     /**
      * <b>getRandomAnimal</b>
      * возвращает случайное животное
      *
-     * @return
+     * @return AbstractAnimal
      */
     public AbstractAnimal getRandomAnimal() {
         return animalFactory.getAnimal();
+    }
+
+    /**
+     * <b>getAnimal</b>
+     * возвращает случайное животное заданного типа
+     *
+     * @return AbstractAnimal
+     */
+    public AbstractAnimal getAnimal() {
+        return animalFactory.getAnimal(animalType);
     }
 
     /**
