@@ -9,22 +9,23 @@ import ru.mts.Animals.AbstractAnimal;
 import ru.mts.Animals.Bear;
 import ru.mts.Animals.Cat;
 import ru.mts.Animals.Fish;
-import ru.mts.animalSearch.SearchServiceLmpl;
+import ru.mts.animalRepository.AnimalRepositoryImpl;
+import ru.mts.animalsCreators.CreateAnimalServiceImpl;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
 
-public class SearchServiceLmplTest {
-    private SearchServiceLmpl searchServiceLmpl;
+public class AnimalRepositoryImplTest {
+    private AnimalRepositoryImpl animalRepository;
 
     /**
      * <b>setUpSearchServiceLmpl</b>
      * - инициализация searchServiceLmpl
      */
     @BeforeEach
-    void setUpSearchServiceLmpl() {
-        searchServiceLmpl = new SearchServiceLmpl();
+    void setUpAnimalRepositoryImpl() {
+        animalRepository = new AnimalRepositoryImpl(new CreateAnimalServiceImpl());
     }
 
     /**
@@ -42,7 +43,8 @@ public class SearchServiceLmplTest {
                 new Fish("Great", "Piter Pan", "Evil", LocalDate.of(2012, 11, 1), BigDecimal.valueOf(123), "meat", 12),
                 new Cat("Abis", "Pan", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12)};
 
-        String[] leapYearsAnimalsNames = searchServiceLmpl.findLeapYearNames(leapYearsAnimals);
+        animalRepository.setAnimalArray(leapYearsAnimals);
+        String[] leapYearsAnimalsNames = animalRepository.findLeapYearNames();
 
         Assertions.assertArrayEquals(leapYearsAnimalsNames, new String[]{"Pan 01-12-2012", "Not Pan 01-12-2008", "Piter Pan 01-11-2012"}); // Ожидается обнаружение 3х животных рожденных в високосный год
     }
@@ -55,10 +57,11 @@ public class SearchServiceLmplTest {
     @Test
     void findOlderAnimalExceptionTest() {
         AbstractAnimal[] olderYearsAnimals = new AbstractAnimal[]{
+
                 new Fish("Abis", "Pan", "Evil", LocalDate.of(2012, 12, 1), BigDecimal.valueOf(123), "meat", 12),
                 new Bear("White", "Beluga", "Evil", LocalDate.of(2000, 12, 1), BigDecimal.valueOf(123), "forest", 120)};
-
-        Assertions.assertThrows(IllegalArgumentException.class, () -> searchServiceLmpl.findOlderAnimal(olderYearsAnimals, -12));
+        animalRepository.setAnimalArray(olderYearsAnimals);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> animalRepository.findOlderAnimal(-12));
     }
 
     /**
@@ -76,11 +79,11 @@ public class SearchServiceLmplTest {
                 new Cat("Great", "Piter", "Evil", LocalDate.now().minusYears(10), BigDecimal.valueOf(123), "meat", 12),
                 new Fish("Great", "Piter Pan", "Evil", LocalDate.now().minusYears(11), BigDecimal.valueOf(123), "meat", 12),
                 new Cat("Abis", "Pan", "Evil", LocalDate.now().minusYears(11), BigDecimal.valueOf(123), "meat", 12)};
-
-        AbstractAnimal[] olderYearsAnimalsResult = searchServiceLmpl.findOlderAnimal(olderYearsAnimals, olds);
+        animalRepository.setAnimalArray(olderYearsAnimals);
+        AbstractAnimal[] olderYearsAnimalsResult = animalRepository.findOlderAnimal(olds);
 
         for (AbstractAnimal animal : olderYearsAnimalsResult) {
-            System.out.println(olds + " " +animal.getName());
+            System.out.println(olds + " " + animal.getName());
             Assertions.assertTrue(Period.between(animal.getBirthDate(), LocalDate.now()).getYears() > olds); //проверяем что все животные в массиве больше заданного возраста
         }
 
@@ -100,8 +103,8 @@ public class SearchServiceLmplTest {
                 new Cat("Great", "Piter", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12),
                 new Cat("Great", "Piter Pan", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12),
                 new Cat("Abis", "Pan", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12)};
-
-        AbstractAnimal[] duplicateArrayResult = searchServiceLmpl.findDuplicate(duplicateArray);
+        animalRepository.setAnimalArray(duplicateArray);
+        AbstractAnimal[] duplicateArrayResult = animalRepository.findDuplicate();
 
         Assertions.assertArrayEquals(duplicateArrayResult, new AbstractAnimal[]{duplicateArray[1], duplicateArray[5]}); // Ожидается обнаружение 2х дубликатов кота с именем Pan
     }

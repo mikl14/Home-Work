@@ -1,15 +1,15 @@
 package ru.mts.config;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
-import ru.mts.animalsCreators.CreateAnimalServiceLmpl;
+import org.springframework.stereotype.Component;
+import ru.mts.animalsCreators.CreateAnimalServiceImpl;
 
 @Configuration
+@Component
 public class ConfigurationApp {
-    @Bean
     @Scope("prototype")
-    public CreateAnimalServiceLmpl createAnimalServiceLmpl() {
-        return new CreateAnimalServiceLmpl();
+    public CreateAnimalServiceImpl createAnimalServiceImpl() {
+        return new CreateAnimalServiceImpl();
     }
 }

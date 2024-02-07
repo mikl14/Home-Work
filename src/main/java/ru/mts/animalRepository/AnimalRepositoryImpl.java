@@ -3,8 +3,7 @@ package ru.mts.animalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.mts.Animals.AbstractAnimal;
-import ru.mts.animalSearch.SearchServiceLmpl;
-import ru.mts.animalsCreators.CreateAnimalServiceLmpl;
+import ru.mts.animalsCreators.CreateAnimalServiceImpl;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
@@ -18,15 +17,15 @@ import java.util.Set;
 public class AnimalRepositoryImpl implements AnimalRepository {
 
     private AbstractAnimal[] animalArray;
-
+    private CreateAnimalServiceImpl createAnimalService;
     /**
      * <b>AnimalRepositoryImpl</b>
      * Передается бин CreateAnimalServiceLmpl и заполняется animalArray
-     * @param createAnimalServiceLmpl
+     * @param createAnimalServiceImpl
      */
     @Autowired
-    public AnimalRepositoryImpl(CreateAnimalServiceLmpl createAnimalServiceLmpl) {
-        animalArray = createAnimalServiceLmpl.getAnimals();
+    public AnimalRepositoryImpl(CreateAnimalServiceImpl createAnimalServiceImpl) {
+        createAnimalService = createAnimalServiceImpl;
     }
     /**
      * <b>init</b> запускается после конструктора
@@ -34,14 +33,17 @@ public class AnimalRepositoryImpl implements AnimalRepository {
      */
     @PostConstruct
     public void init() {
+        animalArray = createAnimalService.getAnimals();
+    }
 
+    public void setAnimalArray(AbstractAnimal[] animalArray) {
+        this.animalArray = animalArray;
     }
 
     /**
      * <b>findLeapYearNames</b> выполняет поиск животных рожденных в високосный год, по массиву животных
      *
      * @return String[] имя животного + дата рождения в формате dd-MM-yyyy
-     * @see SearchServiceLmpl findLeapYearNames
      */
     @Override
     public String[] findLeapYearNames() {

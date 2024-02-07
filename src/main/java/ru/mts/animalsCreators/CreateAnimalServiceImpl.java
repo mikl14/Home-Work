@@ -4,10 +4,19 @@ import org.springframework.stereotype.Component;
 import ru.mts.Animals.AbstractAnimal;
 
 @Component
-public class CreateAnimalServiceLmpl implements CreateAnimalService {
+public class CreateAnimalServiceImpl implements CreateAnimalService {
     private final AnimalFactory animalFactory = new AnimalFactory();
 
-    public AnimalFactory.AnimalType animalType; // хранит тип животного который вернет getAnimal()
+
+    private AnimalFactory.AnimalType animalType; // хранит тип животного который вернет getAnimal()
+
+    public void setAnimalType(AnimalFactory.AnimalType animalType) {
+        this.animalType = animalType;
+    }
+
+    public AnimalFactory.AnimalType getAnimalType() {
+        return animalType;
+    }
 
     /**
      * <b>getRandomAnimal</b>

@@ -5,7 +5,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import ru.mts.animalRepository.AnimalRepositoryImpl;
-import ru.mts.animalsCreators.CreateAnimalServiceLmpl;
+import ru.mts.animalsCreators.CreateAnimalServiceImpl;
 
 @Configuration
 @ComponentScan
@@ -23,7 +23,7 @@ public class Main {
         ApplicationContext context = new AnnotationConfigApplicationContext(Main.class); //создал контекст
         AnimalRepositoryImpl animalRepositoryBean = context.getBean(AnimalRepositoryImpl.class);
 
-        System.out.println(context.getBean(CreateAnimalServiceLmpl.class).getAnimal()); //вывел тип созданного CreateAnimalServiceLmpl для проверки постпроцессора
+        System.out.println(context.getBean(CreateAnimalServiceImpl.class).getAnimal()); //вывел тип созданного CreateAnimalServiceLmpl для проверки постпроцессора
 
         printArray(animalRepositoryBean.findLeapYearNames()); //вывожу возвращенные значения всех методов в консоль
         printArray(animalRepositoryBean.findDuplicate());
