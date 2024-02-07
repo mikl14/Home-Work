@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Configuration;
 import ru.mts.animalRepository.AnimalRepositoryImpl;
 import ru.mts.animalsCreators.CreateAnimalServiceImpl;
 
-@Configuration
 @ComponentScan
 public class Main {
 

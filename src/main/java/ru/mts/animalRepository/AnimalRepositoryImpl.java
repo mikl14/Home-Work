@@ -23,7 +23,7 @@ public class AnimalRepositoryImpl implements AnimalRepository {
      * Передается бин CreateAnimalServiceLmpl и заполняется animalArray
      * @param createAnimalServiceImpl
      */
-    @Autowired
+
     public AnimalRepositoryImpl(CreateAnimalServiceImpl createAnimalServiceImpl) {
         createAnimalService = createAnimalServiceImpl;
     }
