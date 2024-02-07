@@ -83,7 +83,6 @@ public class AnimalRepositoryImplTest {
         AbstractAnimal[] olderYearsAnimalsResult = animalRepository.findOlderAnimal(olds);
 
         for (AbstractAnimal animal : olderYearsAnimalsResult) {
-            System.out.println(olds + " " + animal.getName());
             Assertions.assertTrue(Period.between(animal.getBirthDate(), LocalDate.now()).getYears() > olds); //проверяем что все животные в массиве больше заданного возраста
         }
 

@@ -29,7 +29,7 @@ public class AnimalRepositoryImpl implements AnimalRepository {
     }
     /**
      * <b>init</b> запускается после конструктора
-     * В данный момент делает ничего
+     * Заполняет массив animalArray
      */
     @PostConstruct
     public void init() {
