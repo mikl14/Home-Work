@@ -1,4 +1,4 @@
-package ru.mts.Animals;
+package ru.mtsbank.fintech.Animals;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -13,8 +13,8 @@ public abstract class Predator extends AbstractAnimal {
      * @param character         характер животного
      * @param livingEnvironment ареал обитания
      */
-    public Predator(String character, String livingEnvironment) {
-        super(character);
+    public Predator(String name, String character, String livingEnvironment) {
+        super(name,character);
         this.livingEnvironment = livingEnvironment;
         this.weight = random.nextInt(150 - 80) + 80;
     }

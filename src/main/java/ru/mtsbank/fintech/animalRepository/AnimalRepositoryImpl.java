@@ -1,9 +1,9 @@
-package ru.mts.animalRepository;
+package ru.mtsbank.fintech.animalRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.mts.Animals.AbstractAnimal;
-import ru.mts.animalsCreators.CreateAnimalServiceImpl;
+import ru.mtsbank.fintech.Animals.AbstractAnimal;
+import ru.mtsbank.fintech.animalsCreators.CreateAnimalServiceImpl;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
@@ -17,6 +17,7 @@ import java.util.Set;
 public class AnimalRepositoryImpl implements AnimalRepository {
 
     private AbstractAnimal[] animalArray;
+
     private CreateAnimalServiceImpl createAnimalService;
     /**
      * <b>AnimalRepositoryImpl</b>
@@ -26,6 +27,7 @@ public class AnimalRepositoryImpl implements AnimalRepository {
 
     public AnimalRepositoryImpl(CreateAnimalServiceImpl createAnimalServiceImpl) {
         createAnimalService = createAnimalServiceImpl;
+        System.out.println(createAnimalService);
     }
     /**
      * <b>init</b> запускается после конструктора

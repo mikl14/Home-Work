@@ -1,4 +1,4 @@
-package ru.mts.Animals;
+package ru.mtsbank.fintech.Animals;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -6,12 +6,20 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.Random;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Component;
 
+@PropertySource("application.properties")
+@Component
 public abstract class AbstractAnimal implements Animal {
     protected Random random = new Random();
     protected LocalDate birthDate;
     protected String breed, name, character;
     protected BigDecimal cost;
+
+    @Value("${cat.names}")
+    private String[] namesArray;
 
     /**
      * Конструктор AbstractAnimal
@@ -39,9 +47,9 @@ public abstract class AbstractAnimal implements Animal {
      * @see #generateRandomDate()
      * @see #generateRandomName()
      */
-    public AbstractAnimal(String character) {
+    public AbstractAnimal(String name, String character) {
         this.breed = "Порода №" + (random.nextInt(1000));
-        this.name = generateRandomName();
+        this.name = name;
         this.birthDate = generateRandomDate();
         this.character = character;
         this.cost = (BigDecimal.valueOf(random.nextDouble() * 1000)).setScale(2, RoundingMode.HALF_UP);
@@ -122,11 +130,4 @@ public abstract class AbstractAnimal implements Animal {
      *
      * @return строку случайных символов со случайной длинной в диапазоне от 4 до 10
      */
-    private String generateRandomName() {
-        var nameBuilder = new StringBuilder();
-        for (int j = 0; j < random.nextInt(10 - 4) + 4; j++) {
-            nameBuilder.append((char) (random.nextInt(10) + 'A'));
-        }
-        return nameBuilder.toString();
-    }
 }

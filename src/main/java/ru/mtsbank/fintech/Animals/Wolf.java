@@ -1,12 +1,12 @@
-package ru.mts.Animals;
+package ru.mtsbank.fintech.Animals;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class Wolf extends Predator {
 
-    public Wolf(String character, String livingEnvironment) {
-        super(character, livingEnvironment);
+    public Wolf(String name, String character, String livingEnvironment) {
+        super(name, character, livingEnvironment);
     }
 
     public Wolf(String breed, String name, String character, LocalDate birthDate, BigDecimal cost, String livingEnvironment, int weight) {

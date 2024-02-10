@@ -1,10 +1,10 @@
-package ru.mts.bpp;
+package ru.mtsbank.fintech.bpp;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.annotation.Configuration;
-import ru.mts.animalsCreators.AnimalFactory;
-import ru.mts.animalsCreators.CreateAnimalServiceImpl;
+import ru.mtsbank.fintech.animalsCreators.AnimalFactory;
+import ru.mtsbank.fintech.animalsCreators.CreateAnimalServiceImpl;
 
 import java.util.Random;
 
@@ -23,7 +23,11 @@ public class CreateAnimalServiceBeanPostProcessor implements BeanPostProcessor {
         if (beanName.equalsIgnoreCase("createanimalserviceimpl")) {
             CreateAnimalServiceImpl beanBuf = (CreateAnimalServiceImpl) bean;
             beanBuf.setAnimalType(AnimalFactory.AnimalType.values()[new Random().nextInt(3)]);
+
+
         }
+
+        System.out.println("Created" + beanName);
         return bean;
     }
     /**

@@ -1,4 +1,4 @@
-package ru.mts.Animals;
+package ru.mtsbank.fintech.Animals;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -15,8 +15,8 @@ public abstract class Pet extends AbstractAnimal {
      * @param essentialFood пища животного
      * @see AbstractAnimal
      */
-    public Pet(String character, String essentialFood) {
-        super(character);
+    public Pet(String name, String character, String essentialFood) {
+        super(name,character);
         this.essentialFood = essentialFood;
         this.lifeSpan = random.nextInt(12 - 9) + 9;
     }
