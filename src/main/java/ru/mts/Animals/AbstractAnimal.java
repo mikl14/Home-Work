@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.Random;
 
-public abstract class AbstractAnimal implements Animal{
+public abstract class AbstractAnimal implements Animal {
     protected Random random = new Random();
     protected LocalDate birthDate;
     protected String breed, name, character;

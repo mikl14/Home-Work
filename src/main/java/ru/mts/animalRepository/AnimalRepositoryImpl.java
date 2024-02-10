@@ -1,9 +1,11 @@
-package ru.mts.animalSearch;
+package ru.mts.animalRepository;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import ru.mts.Animals.AbstractAnimal;
+import ru.mts.animalsCreators.CreateAnimalServiceImpl;
 
-import java.time.DateTimeException;
-import java.time.Duration;
+import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
@@ -11,16 +13,40 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class SearchServiceLmpl implements SearchService {
+@Service
+public class AnimalRepositoryImpl implements AnimalRepository {
+
+    private AbstractAnimal[] animalArray;
+    private CreateAnimalServiceImpl createAnimalService;
+    /**
+     * <b>AnimalRepositoryImpl</b>
+     * Передается бин CreateAnimalServiceLmpl и заполняется animalArray
+     * @param createAnimalServiceImpl
+     */
+
+    public AnimalRepositoryImpl(CreateAnimalServiceImpl createAnimalServiceImpl) {
+        createAnimalService = createAnimalServiceImpl;
+    }
+    /**
+     * <b>init</b> запускается после конструктора
+     * Заполняет массив animalArray
+     */
+    @PostConstruct
+    public void init() {
+        animalArray = createAnimalService.getAnimals();
+    }
+
+    public void setAnimalArray(AbstractAnimal[] animalArray) {
+        this.animalArray = animalArray;
+    }
+
     /**
      * <b>findLeapYearNames</b> выполняет поиск животных рожденных в високосный год, по массиву животных
      *
-     * @param animalArray массив животных для поиска
      * @return String[] имя животного + дата рождения в формате dd-MM-yyyy
      */
     @Override
-    public String[] findLeapYearNames(AbstractAnimal[] animalArray) {
-
+    public String[] findLeapYearNames() {
         List<String> leapYearBirthAnimal = new ArrayList<>();
         for (AbstractAnimal animal : animalArray) {
             if (animal.getBirthDate().isLeapYear()) {
@@ -33,20 +59,18 @@ public class SearchServiceLmpl implements SearchService {
     /**
      * <b>findOlderAnimal</b>
      *
-     * @param animalArray массив животных для поиска
-     * @param olderYears  искомый возраст
+     * @param age искомый возраст
      * @return AbstractAnimal[] - массив зверей большего чем olderYears возраста
      */
     @Override
-    public AbstractAnimal[] findOlderAnimal(AbstractAnimal[] animalArray, int olderYears) {
-
-        if (olderYears < 0) throw new IllegalArgumentException();
+    public AbstractAnimal[] findOlderAnimal(int age) {
+        if (age < 0) throw new IllegalArgumentException();
         List<AbstractAnimal> olderAnimal = new ArrayList<>();
         LocalDate currentDate = LocalDate.now();
 
         for (AbstractAnimal animal : animalArray) {
-            int age = Period.between(animal.getBirthDate(), currentDate).getYears();
-            if (age > olderYears) {
+            int olderYears = Period.between(animal.getBirthDate(), currentDate).getYears();
+            if (olderYears > age) {
                 olderAnimal.add(animal);
             }
 
@@ -57,12 +81,10 @@ public class SearchServiceLmpl implements SearchService {
     /**
      * <b>findDuplicate</b>
      *
-     * @param animalArray массив животных для поиска
      * @return AbstractAnimal[] массив животных имеющих дубликаты в animalArray
      */
     @Override
-    public AbstractAnimal[] findDuplicate(AbstractAnimal[] animalArray) {
-
+    public AbstractAnimal[] findDuplicate() {
         List<AbstractAnimal> duplicates = new ArrayList<>();
         Set<AbstractAnimal> uniqueElements = new HashSet<>();
 
@@ -73,4 +95,6 @@ public class SearchServiceLmpl implements SearchService {
         }
         return duplicates.toArray(new AbstractAnimal[0]);
     }
+
+
 }
