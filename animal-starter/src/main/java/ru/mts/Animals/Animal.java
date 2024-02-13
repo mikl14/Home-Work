@@ -1,4 +1,4 @@
-package ru.mtsbank.fintech.Animals;
+package ru.mts.Animals;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

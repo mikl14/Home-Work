@@ -1,6 +1,6 @@
-package ru.mtsbank.fintech.animalsCreators;
+package ru.mts.animalsCreators;
 
-import ru.mtsbank.fintech.Animals.AbstractAnimal;
+import ru.mts.Animals.AbstractAnimal;
 
 public interface CreateAnimalService {
 

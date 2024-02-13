@@ -33,6 +33,6 @@ private AnimalRepositoryImpl animalRepository;
 
 		log.info("FindLeapYearNames animal {}",printArray(animalRepository.findLeapYearNames()));
 
-		log.info("The time is now {}",printArray(animalRepository.findDuplicate()));
+		log.info("FindDuplicate animal {}",printArray(animalRepository.findDuplicate()));
 	}
 }

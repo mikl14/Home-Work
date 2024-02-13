@@ -1,14 +1,15 @@
-package ru.mtsbank.fintech.animalsCreators;
+package ru.mts.animalsCreators;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import ru.mtsbank.fintech.Animals.AbstractAnimal;
+import ru.mts.Animals.AbstractAnimal;
+import ru.mts.config.animalStarterProperties;
 
 @Component
 public class CreateAnimalServiceImpl implements CreateAnimalService {
+
     @Autowired
-    private AnimalFactory animalFactory;
+    private AnimalFactory animalFactory ;
 
     private AnimalFactory.AnimalType animalType; // хранит тип животного который вернет getAnimal()
 

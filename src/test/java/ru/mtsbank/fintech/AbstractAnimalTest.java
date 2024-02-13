@@ -3,9 +3,9 @@ package ru.mtsbank.fintech;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.mtsbank.fintech.Animals.AbstractAnimal;
-import ru.mtsbank.fintech.Animals.Cat;
-import ru.mtsbank.fintech.Animals.Fish;
+import ru.mts.Animals.AbstractAnimal;
+import ru.mts.Animals.Cat;
+import ru.mts.Animals.Fish;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

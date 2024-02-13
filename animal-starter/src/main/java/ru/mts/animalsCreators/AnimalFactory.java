@@ -1,26 +1,18 @@
-package ru.mtsbank.fintech.animalsCreators;
+package ru.mts.animalsCreators;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.mtsbank.fintech.Animals.*;
+import ru.mts.Animals.*;
+import ru.mts.config.animalStarterProperties;
 
 import java.util.Random;
 
 @Component
 public class AnimalFactory {
     private Random random = new Random();
+    @Autowired
+    private animalStarterProperties properties;
 
-    @Value("${animal.catNames}")
-    private String[] catNames;
-
-    @Value("${animal.fishNames}")
-    private String[] fishNames;
-
-    @Value("${animal.wolfNames}")
-    private String[] wolfNames;
-    @Value("${animal.bearNames}")
-    private String[] bearNames;
 
     public enum AnimalType {
         CAT, BEAR, WOLF, FISH
@@ -46,13 +38,13 @@ public class AnimalFactory {
 
         switch (type) {
             case CAT:
-                return new Cat(catNames[random.nextInt(catNames.length)],"Кошачий", "Кошачий корм");
+                return new Cat(properties.getCatNames()[random.nextInt(properties.getCatNames().length)], "Кошачий", "Кошачий корм");
             case FISH:
-                return new Fish(fishNames[random.nextInt(catNames.length)],"Молчунья", "Рыбий корм");
+                return new Fish(properties.getFishNames()[random.nextInt(properties.getFishNames().length)], "Молчунья", "Рыбий корм");
             case WOLF:
-                return new Wolf(wolfNames[random.nextInt(catNames.length)],"Серый", "Лес");
+                return new Wolf(properties.getWolfNames()[random.nextInt(properties.getWolfNames().length)], "Серый", "Лес");
             case BEAR:
-                return new Bear(bearNames[random.nextInt(catNames.length)],"Горящий", "Тайга");
+                return new Bear(properties.getBearNames()[random.nextInt(properties.getBearNames().length)], "Горящий", "Тайга");
             default:
                 return null;
         }
