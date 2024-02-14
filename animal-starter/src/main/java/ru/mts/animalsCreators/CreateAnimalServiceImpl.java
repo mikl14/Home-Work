@@ -8,7 +8,7 @@ import ru.mts.config.animalStarterProperties;
 @Component
 public class CreateAnimalServiceImpl implements CreateAnimalService {
 
-    @Autowired
+
     private AnimalFactory animalFactory ;
 
     private AnimalFactory.AnimalType animalType; // хранит тип животного который вернет getAnimal()
@@ -19,6 +19,10 @@ public class CreateAnimalServiceImpl implements CreateAnimalService {
 
     public AnimalFactory.AnimalType getAnimalType() {
         return animalType;
+    }
+
+    public CreateAnimalServiceImpl(AnimalFactory animalFactory) {
+        this.animalFactory = animalFactory;
     }
 
     /**

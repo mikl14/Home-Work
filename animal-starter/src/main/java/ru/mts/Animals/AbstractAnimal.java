@@ -11,16 +11,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.Random;
 
-@PropertySource("application.properties")
 @Component
 public abstract class AbstractAnimal implements Animal {
     protected Random random = new Random();
     protected LocalDate birthDate;
     protected String breed, name, character;
     protected BigDecimal cost;
-
-    @Value("${cat.names}")
-    private String[] namesArray;
 
     /**
      * Конструктор AbstractAnimal
@@ -46,7 +42,6 @@ public abstract class AbstractAnimal implements Animal {
      *
      * @param character характер животного
      * @see #generateRandomDate()
-     * @see #generateRandomName()
      */
     public AbstractAnimal(String name, String character) {
         this.breed = "Порода №" + (random.nextInt(1000));

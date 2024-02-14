@@ -10,9 +10,11 @@ import java.util.Random;
 @Component
 public class AnimalFactory {
     private Random random = new Random();
-    @Autowired
     private animalStarterProperties properties;
 
+    public AnimalFactory(animalStarterProperties properties) {
+        this.properties = properties;
+    }
 
     public enum AnimalType {
         CAT, BEAR, WOLF, FISH

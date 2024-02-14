@@ -11,11 +11,13 @@ import java.text.SimpleDateFormat;
 
 @Component
 public class ScheduledTasks {
-    @Autowired
     private AnimalRepositoryImpl animalRepository;
     private static final Logger log = LoggerFactory.getLogger(ScheduledTasks.class);
-
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+
+    public ScheduledTasks(AnimalRepositoryImpl animalRepository) {
+        this.animalRepository = animalRepository;
+    }
 
     private static String printArray(Object[] animalArray) { //метод для вывода в консоль массива
         StringBuffer sb = new StringBuffer();

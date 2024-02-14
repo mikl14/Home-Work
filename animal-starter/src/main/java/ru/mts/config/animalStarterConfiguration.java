@@ -11,12 +11,12 @@ import ru.mts.animalsCreators.CreateAnimalServiceImpl;
 public class animalStarterConfiguration {
 
     @Bean
-    public CreateAnimalServiceImpl createAnimalService() {
-        return new CreateAnimalServiceImpl();
+    public CreateAnimalServiceImpl createAnimalService(AnimalFactory animalFactory) {
+        return new CreateAnimalServiceImpl(animalFactory);
     }
 
     @Bean
-    public AnimalFactory animalFactory() {
-        return new AnimalFactory();
+    public AnimalFactory animalFactory(animalStarterProperties properties) {
+        return new AnimalFactory(properties);
     }
 }
