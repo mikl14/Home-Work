@@ -1,8 +1,8 @@
 package ru.mtsbank.fintech.animalRepository;
 
 import org.springframework.stereotype.Service;
-import ru.mts.Animals.AbstractAnimal;
-import ru.mts.animalsCreators.CreateAnimalServiceImpl;
+import ru.mts.animals.AbstractAnimal;
+import ru.mts.animals_creators.CreateAnimalServiceImpl;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;

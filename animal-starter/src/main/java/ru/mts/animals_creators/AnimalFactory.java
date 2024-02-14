@@ -1,8 +1,7 @@
-package ru.mts.animalsCreators;
+package ru.mts.animals_creators;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.mts.Animals.*;
+import ru.mts.animals.*;
 import ru.mts.config.animalStarterProperties;
 
 import java.util.Random;

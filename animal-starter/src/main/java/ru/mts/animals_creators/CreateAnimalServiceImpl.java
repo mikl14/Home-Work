@@ -1,9 +1,7 @@
-package ru.mts.animalsCreators;
+package ru.mts.animals_creators;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.mts.Animals.AbstractAnimal;
-import ru.mts.config.animalStarterProperties;
+import ru.mts.animals.AbstractAnimal;
 
 @Component
 public class CreateAnimalServiceImpl implements CreateAnimalService {

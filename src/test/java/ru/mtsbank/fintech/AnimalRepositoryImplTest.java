@@ -5,9 +5,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import ru.mts.Animals.*;
+import ru.mts.animals.*;
 import ru.mtsbank.fintech.animalRepository.AnimalRepositoryImpl;
-import ru.mts.animalsCreators.CreateAnimalServiceImpl;
+import ru.mts.animals_creators.CreateAnimalServiceImpl;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

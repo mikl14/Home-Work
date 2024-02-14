@@ -3,8 +3,8 @@ package ru.mtsbank.fintech.bpp;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.annotation.Configuration;
-import ru.mts.animalsCreators.AnimalFactory;
-import ru.mts.animalsCreators.CreateAnimalServiceImpl;
+import ru.mts.animals_creators.AnimalFactory;
+import ru.mts.animals_creators.CreateAnimalServiceImpl;
 
 import java.util.Random;
 

@@ -1,6 +1,6 @@
-package ru.mts.animalsCreators;
+package ru.mts.animals_creators;
 
-import ru.mts.Animals.AbstractAnimal;
+import ru.mts.animals.AbstractAnimal;
 
 public interface CreateAnimalService {
 

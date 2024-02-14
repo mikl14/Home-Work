@@ -1,6 +1,6 @@
 package ru.mtsbank.fintech.animalRepository;
 
-import ru.mts.Animals.AbstractAnimal;
+import ru.mts.animals.AbstractAnimal;
 
 
 public interface AnimalRepository {

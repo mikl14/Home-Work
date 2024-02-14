@@ -3,8 +3,8 @@ package ru.mts.config;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import ru.mts.animalsCreators.AnimalFactory;
-import ru.mts.animalsCreators.CreateAnimalServiceImpl;
+import ru.mts.animals_creators.AnimalFactory;
+import ru.mts.animals_creators.CreateAnimalServiceImpl;
 
 @Configuration
 @EnableConfigurationProperties(animalStarterProperties.class)
