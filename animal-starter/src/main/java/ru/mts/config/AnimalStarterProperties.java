@@ -3,7 +3,7 @@ package ru.mts.config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "animal-starter.animal")
-public class animalStarterProperties {
+public class AnimalStarterProperties {
     private String[] catNames;
     private String[] fishNames;
     private String[] wolfNames;

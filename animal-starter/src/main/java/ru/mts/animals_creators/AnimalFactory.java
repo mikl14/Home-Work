@@ -2,16 +2,16 @@ package ru.mts.animals_creators;
 
 import org.springframework.stereotype.Component;
 import ru.mts.animals.*;
-import ru.mts.config.animalStarterProperties;
+import ru.mts.config.AnimalStarterProperties;
 
 import java.util.Random;
 
 @Component
 public class AnimalFactory {
     private Random random = new Random();
-    private animalStarterProperties properties;
+    private AnimalStarterProperties properties;
 
-    public AnimalFactory(animalStarterProperties properties) {
+    public AnimalFactory(AnimalStarterProperties properties) {
         this.properties = properties;
     }
 

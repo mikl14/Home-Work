@@ -6,7 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import ru.mts.animals.*;
-import ru.mtsbank.fintech.animalRepository.AnimalRepositoryImpl;
+import ru.mts.animals_creators.AnimalFactory;
+import ru.mts.config.AnimalStarterProperties;
+import ru.mtsbank.fintech.animal_repository.AnimalRepositoryImpl;
 import ru.mts.animals_creators.CreateAnimalServiceImpl;
 
 import java.math.BigDecimal;
@@ -14,6 +16,7 @@ import java.time.LocalDate;
 import java.time.Period;
 
 public class AnimalRepositoryImplTest {
+
     private AnimalRepositoryImpl animalRepository;
 
     /**
@@ -22,7 +25,7 @@ public class AnimalRepositoryImplTest {
      */
     @BeforeEach
     void setUpAnimalRepositoryImpl() {
-        animalRepository = new AnimalRepositoryImpl(new CreateAnimalServiceImpl());
+        animalRepository = new AnimalRepositoryImpl(new CreateAnimalServiceImpl(new AnimalFactory(new AnimalStarterProperties())));
     }
 
     /**

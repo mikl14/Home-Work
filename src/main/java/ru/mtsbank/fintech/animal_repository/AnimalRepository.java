@@ -1,4 +1,4 @@
-package ru.mtsbank.fintech.animalRepository;
+package ru.mtsbank.fintech.animal_repository;
 
 import ru.mts.animals.AbstractAnimal;
 

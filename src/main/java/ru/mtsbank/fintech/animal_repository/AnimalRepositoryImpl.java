@@ -1,4 +1,4 @@
-package ru.mtsbank.fintech.animalRepository;
+package ru.mtsbank.fintech.animal_repository;
 
 import org.springframework.stereotype.Service;
 import ru.mts.animals.AbstractAnimal;
