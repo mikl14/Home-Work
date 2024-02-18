@@ -7,17 +7,22 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import ru.mts.animals.Bear;
 import ru.mts.animals.Fish;
 import ru.mts.animals_creators.AnimalFactory;
 import ru.mts.animals_creators.CreateAnimalServiceImpl;
+import ru.mtsbank.fintech.starter_tests.test_config.TestsConfiguration;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @ActiveProfiles("test")
 @SpringBootTest
+
+@Import(TestsConfiguration.class)
+
 public class AnimalStarterTests {
     @Autowired
     CreateAnimalServiceImpl createAnimalServiceImpl;
