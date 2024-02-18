@@ -18,9 +18,11 @@ public class AnimalRepositoryImpl implements AnimalRepository {
     private AbstractAnimal[] animalArray;
 
     private CreateAnimalServiceImpl createAnimalService;
+
     /**
      * <b>AnimalRepositoryImpl</b>
      * Передается бин CreateAnimalServiceLmpl и заполняется animalArray
+     *
      * @param createAnimalServiceImpl
      */
 
@@ -28,9 +30,11 @@ public class AnimalRepositoryImpl implements AnimalRepository {
         createAnimalService = createAnimalServiceImpl;
         System.out.println(createAnimalService);
     }
+
+
     /**
      * <b>init</b> запускается после конструктора
-     * Заполняет массив animalArray
+     * Заполняет массив animalArray 10 случайными животными
      */
     @PostConstruct
     public void init() {
@@ -39,6 +43,10 @@ public class AnimalRepositoryImpl implements AnimalRepository {
 
     public void setAnimalArray(AbstractAnimal[] animalArray) {
         this.animalArray = animalArray;
+    }
+
+    public AbstractAnimal[] getAnimalArray() {
+        return animalArray;
     }
 
     /**

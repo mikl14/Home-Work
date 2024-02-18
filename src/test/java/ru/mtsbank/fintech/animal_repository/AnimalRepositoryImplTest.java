@@ -1,4 +1,4 @@
-package ru.mtsbank.fintech;
+package ru.mtsbank.fintech.animal_repository;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

@@ -14,7 +14,7 @@ public interface AnimalRepository {
     /**
      * <b>findOlderAnimal</b>
      *
-     * @param age  искомый возраст
+     * @param age искомый возраст
      * @return AbstractAnimal[] - массив зверей olderYears возраста
      */
     AbstractAnimal[] findOlderAnimal(int age);

@@ -47,7 +47,7 @@ public class AnimalFactory {
             case BEAR:
                 return new Bear(properties.getBearNames()[random.nextInt(properties.getBearNames().length)], "Горящий", "Тайга");
             default:
-                return null;
+                throw new IllegalArgumentException();
         }
     }
 }
