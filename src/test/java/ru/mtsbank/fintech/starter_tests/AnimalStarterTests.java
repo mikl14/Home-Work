@@ -20,9 +20,7 @@ import java.time.LocalDate;
 
 @ActiveProfiles("test")
 @SpringBootTest
-
 @Import(TestsConfiguration.class)
-
 public class AnimalStarterTests {
     @Autowired
     CreateAnimalServiceImpl createAnimalServiceImpl;
