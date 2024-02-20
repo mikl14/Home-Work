@@ -28,7 +28,6 @@ public class AnimalStarterTests {
     CreateAnimalServiceImpl createAnimalServiceImpl;
     @InjectMocks
     CreateAnimalServiceImpl mockedCreateAnimalServiceImpl;
-
     @Mock
     AnimalFactory animalFactory;
 
@@ -37,28 +36,46 @@ public class AnimalStarterTests {
         Assertions.assertNotNull(createAnimalServiceImpl);
     }
 
+    /**
+     * <b>getAnimalsTest</b>
+     * проверяет что без аргументов метод getAnimals() вернул 10 животных
+     */
     @Test
     void getAnimalsTest() {
         Assertions.assertEquals(createAnimalServiceImpl.getAnimals().length, 10);
     }
 
-    @Test
-    void getAnimalTest() {
-        createAnimalServiceImpl.setAnimalType(AnimalFactory.AnimalType.BEAR);
-        Assertions.assertEquals(Bear.class, createAnimalServiceImpl.getAnimal().getClass());
-
-    }
-
+    /**
+     * <b>getAnimalsExceptionTest</b>
+     * проверяет исключение с отрицательны количеством запрашиваемых животных
+     */
     @Test
     void getAnimalsExceptionTest() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> createAnimalServiceImpl.getAnimals(-10));
     }
 
+    /**
+     * <b>getAnimalTypeTest</b>
+     * Проверяет соответствие типа запрашиваемого животного
+     * и возвращенного getAnimal()
+     */
+    @Test
+    void getAnimalTypeTest() {
+        createAnimalServiceImpl.setAnimalType(AnimalFactory.AnimalType.BEAR);
+        Assertions.assertEquals(Bear.class, createAnimalServiceImpl.getAnimal().getClass());
+    }
+
+    /**
+     * <b>getAnimalExceptionTest</b>
+     * проверяет исключение, неправильного типа животного
+     * полученного с фабрики.
+     */
     @Test
     void getAnimalExceptionTest() {
-        Mockito.when(animalFactory.getAnimal(AnimalFactory.AnimalType.CAT)).thenReturn(new Fish("Abis", "Pan", "Evil", LocalDate.of(2012, 12, 1), BigDecimal.valueOf(123), "meat", 12));
-        mockedCreateAnimalServiceImpl.setAnimalType(AnimalFactory.AnimalType.CAT);
-        Assertions.assertThrows(IllegalStateException.class, () -> mockedCreateAnimalServiceImpl.getAnimal());
+        Fish nemo = new Fish("Abis", "Pan", "Evil", LocalDate.of(2012, 12, 1), BigDecimal.valueOf(123), "meat", 12);
+        Mockito.when(animalFactory.getAnimal(AnimalFactory.AnimalType.CAT)).thenReturn(nemo); // Делаем через mockito возвращение рыбы при запросе
+        mockedCreateAnimalServiceImpl.setAnimalType(AnimalFactory.AnimalType.CAT);// выбираем тип кошка
+        Assertions.assertThrows(IllegalStateException.class, () -> mockedCreateAnimalServiceImpl.getAnimal()); // ожидаем исключение потому что фабрика вернет рыбу при запросе кошки
 
     }
 

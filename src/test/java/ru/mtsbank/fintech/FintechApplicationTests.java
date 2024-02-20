@@ -1,4 +1,4 @@
-package ru.mtsbank.fintech.starter_tests;
+package ru.mtsbank.fintech;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -23,12 +23,21 @@ class FintechApplicationTests {
 		Assertions.assertNotNull(animalRepository);
 	}
 
+	/**
+	 * <b>animalRepositoryArrayTest</b>
+	 * проверяет что после инициализации массив оказался заполнен
+	 */
 	@Test
 	void animalRepositoryArrayTest()
 	{
 		Assertions.assertNotEquals(animalRepository.getAnimalArray().length,0);
 	}
 
+	/**
+	 * <b>findOlderAnimalExceptionTest</b>
+	 * - Тестирование метода поиска животных по возрасту
+	 * Ожидаемый результат: IllegalArgumentException так как передан отрицательный возраст
+	 */
 	@Test
 	void findOlderAnimalExceptionTest()
 	{

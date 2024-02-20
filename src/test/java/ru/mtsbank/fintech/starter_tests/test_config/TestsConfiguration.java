@@ -1,6 +1,6 @@
 package ru.mtsbank.fintech.starter_tests.test_config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import ru.mts.animals_creators.CreateAnimalServiceImpl;
 import ru.mtsbank.fintech.animal_repository.AnimalRepositoryImpl;
 
@@ -8,7 +8,7 @@ import ru.mtsbank.fintech.animal_repository.AnimalRepositoryImpl;
 
 public class TestsConfiguration {
 
-    @Autowired
+    @Bean
     AnimalRepositoryImpl animalRepository(CreateAnimalServiceImpl createAnimalService) {
         return new AnimalRepositoryImpl(createAnimalService);
     }
