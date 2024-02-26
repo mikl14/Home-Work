@@ -14,9 +14,9 @@ public class AnimalStarterConfiguration {
     public CreateAnimalServiceImpl createAnimalService(AnimalFactory animalFactory) {
         return new CreateAnimalServiceImpl(animalFactory);
     }
-
     @Bean
     public AnimalFactory animalFactory(AnimalStarterProperties properties) {
         return new AnimalFactory(properties);
     }
+
 }

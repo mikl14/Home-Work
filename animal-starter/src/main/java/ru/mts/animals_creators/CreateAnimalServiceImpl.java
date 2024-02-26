@@ -3,11 +3,13 @@ package ru.mts.animals_creators;
 import org.springframework.stereotype.Component;
 import ru.mts.animals.AbstractAnimal;
 
+import java.util.Locale;
+
 @Component
 public class CreateAnimalServiceImpl implements CreateAnimalService {
 
 
-    private AnimalFactory animalFactory ;
+    private AnimalFactory animalFactory;
 
     private AnimalFactory.AnimalType animalType; // хранит тип животного который вернет getAnimal()
 
@@ -40,7 +42,11 @@ public class CreateAnimalServiceImpl implements CreateAnimalService {
      * @return AbstractAnimal
      */
     public AbstractAnimal getAnimal() {
-        return animalFactory.getAnimal(animalType);
+        AbstractAnimal animal = animalFactory.getAnimal(animalType);
+        String type = animal.getClass().getSimpleName().toUpperCase(Locale.ROOT);
+        if (animalType.toString().equals(type)) return animal;
+        else throw new IllegalStateException();
+
     }
 
     /**
@@ -50,7 +56,7 @@ public class CreateAnimalServiceImpl implements CreateAnimalService {
      * @return Массив животных длинной numberAnimals
      */
     public AbstractAnimal[] getAnimals(int numberAnimals) {
-
+        if (numberAnimals < 0) throw new IllegalArgumentException();
         AbstractAnimal[] animalArray = new AbstractAnimal[numberAnimals];
         for (int i = 0; i < numberAnimals; i++) {
             animalArray[i] = animalFactory.getAnimal();

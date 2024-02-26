@@ -1,0 +1,6 @@
+animal-starter:
+  animal:
+    catNames:  Testbarsik,Testpersik
+    fishNames: Testnemo,Testgoldie
+    wolfNames: Testrex,Testbuddy
+    bearNames: Testfluffy,Testthumper

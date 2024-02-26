@@ -23,8 +23,6 @@ public class CreateAnimalServiceBeanPostProcessor implements BeanPostProcessor {
         if (beanName.equalsIgnoreCase("createanimalserviceimpl")) {
             CreateAnimalServiceImpl beanBuf = (CreateAnimalServiceImpl) bean;
             beanBuf.setAnimalType(AnimalFactory.AnimalType.values()[new Random().nextInt(3)]);
-
-
         }
 
         return bean;
