@@ -3,7 +3,7 @@ package ru.mts.animals_creators;
 import org.springframework.stereotype.Component;
 import ru.mts.animals.AbstractAnimal;
 
-import java.util.Locale;
+import java.util.*;
 
 @Component
 public class CreateAnimalServiceImpl implements CreateAnimalService {
@@ -55,13 +55,18 @@ public class CreateAnimalServiceImpl implements CreateAnimalService {
      * @param numberAnimals количество уникальных животных которых необходимо создать
      * @return Массив животных длинной numberAnimals
      */
-    public AbstractAnimal[] getAnimals(int numberAnimals) {
+    public Map<String, List<AbstractAnimal>> getAnimals(int numberAnimals) {
+
         if (numberAnimals < 0) throw new IllegalArgumentException();
-        AbstractAnimal[] animalArray = new AbstractAnimal[numberAnimals];
+        Map<String, List<AbstractAnimal>> animalMap = new HashMap<>();
         for (int i = 0; i < numberAnimals; i++) {
-            animalArray[i] = animalFactory.getAnimal();
+            AbstractAnimal animal = animalFactory.getAnimal();
+            if(!animalMap.containsKey(animal.getAnimalType())) {
+                animalMap.put(animal.getAnimalType(),new ArrayList<>());
+            }
+            animalMap.get(animal.getAnimalType()).add(animal);
         }
-        return animalArray;
+        return animalMap;
     }
 
     /**
@@ -71,17 +76,21 @@ public class CreateAnimalServiceImpl implements CreateAnimalService {
      * @return Массив животных длинной 10
      */
     @Override
-    public AbstractAnimal[] getAnimals() {
+    public Map<String, List<AbstractAnimal>> getAnimals() {
 
         int i = 0;
-        AbstractAnimal[] animalArray = new AbstractAnimal[10];
+        Map<String, List<AbstractAnimal>> animalMap = new HashMap<>();
         do {
-            animalArray[i] = getRandomAnimal();
+            AbstractAnimal animal = animalFactory.getAnimal();
+            if(!animalMap.containsKey(animal.getAnimalType())) {
+                animalMap.put(animal.getAnimalType(),new ArrayList<>());
+            }
+            animalMap.get(animal.getAnimalType()).add(animal);
             i++;
         }
         while (i < 10);
 
-        return animalArray;
+        return animalMap;
 
     }
 }

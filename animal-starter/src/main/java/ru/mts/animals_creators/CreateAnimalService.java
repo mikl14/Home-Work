@@ -2,6 +2,10 @@ package ru.mts.animals_creators;
 
 import ru.mts.animals.AbstractAnimal;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public interface CreateAnimalService {
 
     /**
@@ -19,14 +23,15 @@ public interface CreateAnimalService {
      * @return Массив из 10 случайных животных
      * @see CreateAnimalServiceImpl#getAnimals()
      */
-    default AbstractAnimal[] getAnimals() {
+    default Map<String, List<AbstractAnimal>> getAnimals() {
         int i = 0;
-        AbstractAnimal[] animalArray = new AbstractAnimal[10];
+        Map<String, List<AbstractAnimal>> animalMap = new HashMap<>();
         while (i < 10) {
-            animalArray[i] = getRandomAnimal();   // получаем случайного зверя через getRandomAnimal()
+            AbstractAnimal animal = getRandomAnimal();
+            animalMap.get(animal.getAnimalType()).add(animal);
             i++;
         }
-        return animalArray;
+        return animalMap;
     }
 
 }

@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
 
@@ -119,9 +120,8 @@ public abstract class AbstractAnimal implements Animal {
         return LocalDate.ofEpochDay(epoch);
     }
 
-    /**
-     * Метод <b>generateRandomName</b>
-     *
-     * @return строку случайных символов со случайной длинной в диапазоне от 4 до 10
-     */
+    public String getAnimalType()
+    {
+        return this.getClass().getSimpleName().toUpperCase(Locale.ROOT);
+    }
 }

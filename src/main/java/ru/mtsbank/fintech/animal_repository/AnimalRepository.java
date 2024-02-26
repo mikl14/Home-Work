@@ -2,27 +2,30 @@ package ru.mtsbank.fintech.animal_repository;
 
 import ru.mts.animals.AbstractAnimal;
 
+import java.time.LocalDate;
+import java.util.Map;
+
 
 public interface AnimalRepository {
     /**
      * <b>findLeapYearNames</b> выполняет поиск животных рожденных в високосный год, по массиву животных
      *
-     * @return String[] имя животного + дата рождения в формате dd-MM-yyyy
+     * @return Map<String, LocalDate> ключ: тип + имя животного, значение: дата рождения
      */
-    String[] findLeapYearNames();
+    Map<String, LocalDate> findLeapYearNames();
 
     /**
      * <b>findOlderAnimal</b>
      *
      * @param age искомый возраст
-     * @return AbstractAnimal[] - массив зверей olderYears возраста
+     * @return Map<AbstractAnimal,Integer> - ключ: животное, значение: возраст
      */
-    AbstractAnimal[] findOlderAnimal(int age);
+    Map<AbstractAnimal,Integer> findOlderAnimal(int age);
 
     /**
      * <b>findDuplicate</b>
      *
-     * @return AbstractAnimal[] массив животных имеющих дубликаты в animalArray
+     * @return  Map<String,Integer> ключ: тип животного, значение: количество дубликатов
      */
-    AbstractAnimal[] findDuplicate();
+    Map<String,Integer> findDuplicate();
 }

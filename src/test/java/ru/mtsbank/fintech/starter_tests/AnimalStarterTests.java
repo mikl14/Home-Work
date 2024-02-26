@@ -40,7 +40,7 @@ public class AnimalStarterTests {
      */
     @Test
     void getAnimalsTest() {
-        Assertions.assertEquals(createAnimalServiceImpl.getAnimals().length, 10);
+        Assertions.assertEquals(createAnimalServiceImpl.getAnimals().size(), 4);
     }
 
     /**
