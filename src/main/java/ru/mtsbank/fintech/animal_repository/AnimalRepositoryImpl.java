@@ -37,10 +37,6 @@ public class AnimalRepositoryImpl implements AnimalRepository {
         animalMap = createAnimalService.getAnimals();
     }
 
-    public void setAnimalMap(Map<String, List<AbstractAnimal>> animalArray) {
-        this.animalMap = animalArray;
-    }
-
     public Map<String, List<AbstractAnimal>> getAnimalArray() {
         return animalMap;
     }

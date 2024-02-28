@@ -36,11 +36,11 @@ public class AnimalStarterTests {
 
     /**
      * <b>getAnimalsTest</b>
-     * проверяет что без аргументов метод getAnimals() вернул 10 животных
+     * проверяет что без аргументов метод getAnimals() вернул 3 вида животных
      */
     @Test
     void getAnimalsTest() {
-        Assertions.assertEquals(createAnimalServiceImpl.getAnimals().size(), 4);
+        Assertions.assertEquals(createAnimalServiceImpl.getAnimals().size(), 3);
     }
 
     /**

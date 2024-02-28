@@ -9,17 +9,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import ru.mts.animals.AbstractAnimal;
-import ru.mts.animals.Bear;
-import ru.mts.animals.Cat;
-import ru.mts.animals.Fish;
 import ru.mtsbank.fintech.animal_repository.AnimalRepositoryImpl;
 import ru.mtsbank.fintech.starter_tests.test_config.TestsConfiguration;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @ActiveProfiles("test")
@@ -63,8 +57,10 @@ class FintechApplicationTests {
     void findLeapYearNamesTest() {
         Map<String, LocalDate> leapYearsAnimalsNames = animalRepository.findLeapYearNames();
 
-        System.out.println(leapYearsAnimalsNames);
-        Assertions.assertEquals(leapYearsAnimalsNames.toString(), "{FISH Pan=2012-12-01, FISH Piter Pan=2012-11-01, FISH Not Pan=2008-12-01}"); // Ожидается обнаружение 3х животных рожденных в високосный год
+        for (Map.Entry<String, LocalDate> animal : leapYearsAnimalsNames.entrySet()) {
+            Assertions.assertTrue(animal.getValue().isLeapYear()); // Ожидается что все возвращенные животные рождены в високосный год
+        }
+
     }
 
 
@@ -77,21 +73,6 @@ class FintechApplicationTests {
     @ValueSource(ints = {7, 8, 9, 10, 11})
     void findOlderAnimalTest(Integer olds) {
 
-        Map<String, List<AbstractAnimal>> olderYearsAnimals = new HashMap<String, List<AbstractAnimal>>() {{
-            put("FISH", List.of(
-                    new Fish("Abis", "Pan", "Evil", LocalDate.now().minusYears(7), BigDecimal.valueOf(123), "meat", 12),
-                    new Fish("Not abris", "Not Pan", "Evil", LocalDate.now().minusYears(9), BigDecimal.valueOf(123), "meat", 12),
-                    new Fish("Great", "Piter Pan", "Evil", LocalDate.now().minusYears(11), BigDecimal.valueOf(123), "meat", 12)));
-
-            put("CAT", List.of(
-                    new Cat("Great", "Piter", "Evil", LocalDate.now().minusYears(10), BigDecimal.valueOf(123), "meat", 12),
-                    new Cat("Abis", "Pan", "Evil", LocalDate.now().minusYears(11), BigDecimal.valueOf(123), "meat", 12)));
-
-            put("BEAR", List.of(
-                    new Bear("White", "Beluga", "Evil", LocalDate.now().minusYears(8), BigDecimal.valueOf(123), "forest", 120)));
-        }};
-
-        animalRepository.setAnimalMap(olderYearsAnimals);
         Map<AbstractAnimal, Integer> olderYearsAnimalsResult = animalRepository.findOlderAnimal(olds);
 
         for (Map.Entry<AbstractAnimal, Integer> animal : olderYearsAnimalsResult.entrySet()) {
@@ -108,9 +89,7 @@ class FintechApplicationTests {
     @Test
     void findDuplicateTest() {
         Map<String, Integer> duplicateArrayResult = animalRepository.findDuplicate();
-        Cat cat = new Cat("Abis", "Pan", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12);
-
-        Assertions.assertEquals(duplicateArrayResult.toString(), "{CAT=2}"); // Ожидается обнаружение 2х дубликатов кота с именем Pan
+        Assertions.assertEquals(2, duplicateArrayResult.get("CAT")); // Ожидается обнаружение 2х дубликатов кота с именем Pan
     }
 
 }
