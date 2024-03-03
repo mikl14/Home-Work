@@ -18,25 +18,16 @@ public class ScheduledTasks {
         this.animalRepository = animalRepository;
     }
 
-    private static String printArray(Object[] animalArray) { //метод для вывода в консоль массива
-        StringBuffer sb = new StringBuffer();
-        sb.append('\n');
-        for (Object animal : animalArray) {
-            sb.append(animal.toString() + '\n');
-        }
-        return sb.toString();
-    }
-
     /**
      * <b>animalScheduledLog</b>
      * Выводит все методы animalRepository 1 раз в минуту
      */
     @Scheduled(fixedRate = 1000 * 60) // 1 минута
     public void animalScheduledLog() {
-        log.info("FindOlder animal {}", printArray(animalRepository.findOlderAnimal(10)));
+        log.info("FindOlder animal {}", animalRepository.findOlderAnimal(10).toString());
 
-        log.info("FindLeapYearNames animal {}", printArray(animalRepository.findLeapYearNames()));
+        log.info("FindLeapYearNames animal {}", animalRepository.findLeapYearNames());
 
-        log.info("FindDuplicate animal {}", printArray(animalRepository.findDuplicate()));
+        log.info("FindDuplicate animal {}", animalRepository.findDuplicate());
     }
 }

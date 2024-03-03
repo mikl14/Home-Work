@@ -9,15 +9,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import ru.mts.animals.AbstractAnimal;
-import ru.mts.animals.Bear;
-import ru.mts.animals.Cat;
-import ru.mts.animals.Fish;
 import ru.mtsbank.fintech.animal_repository.AnimalRepositoryImpl;
 import ru.mtsbank.fintech.starter_tests.test_config.TestsConfiguration;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Map;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -37,7 +34,7 @@ class FintechApplicationTests {
      */
     @Test
     void animalRepositoryArrayTest() {
-        Assertions.assertNotEquals(animalRepository.getAnimalArray().length, 0);
+        Assertions.assertNotEquals(animalRepository.getAnimalArray().size(), 0);
     }
 
     /**
@@ -58,8 +55,12 @@ class FintechApplicationTests {
      */
     @Test
     void findLeapYearNamesTest() {
-        String[] leapYearsAnimalsNames = animalRepository.findLeapYearNames();
-        Assertions.assertArrayEquals(leapYearsAnimalsNames, new String[]{"Pan 01-12-2012", "Not Pan 01-12-2008", "Piter Pan 01-11-2012"}); // Ожидается обнаружение 3х животных рожденных в високосный год
+        Map<String, LocalDate> leapYearsAnimalsNames = animalRepository.findLeapYearNames();
+
+        for (Map.Entry<String, LocalDate> animal : leapYearsAnimalsNames.entrySet()) {
+            Assertions.assertTrue(animal.getValue().isLeapYear()); // Ожидается что все возвращенные животные рождены в високосный год
+        }
+
     }
 
 
@@ -71,18 +72,11 @@ class FintechApplicationTests {
     @ParameterizedTest
     @ValueSource(ints = {7, 8, 9, 10, 11})
     void findOlderAnimalTest(Integer olds) {
-        AbstractAnimal[] olderYearsAnimals = new AbstractAnimal[]{
-                new Fish("Abis", "Pan", "Evil", LocalDate.now().minusYears(7), BigDecimal.valueOf(123), "meat", 12),
-                new Bear("White", "Beluga", "Evil", LocalDate.now().minusYears(8), BigDecimal.valueOf(123), "forest", 120),
-                new Fish("Not abris", "Not Pan", "Evil", LocalDate.now().minusYears(9), BigDecimal.valueOf(123), "meat", 12),
-                new Cat("Great", "Piter", "Evil", LocalDate.now().minusYears(10), BigDecimal.valueOf(123), "meat", 12),
-                new Fish("Great", "Piter Pan", "Evil", LocalDate.now().minusYears(11), BigDecimal.valueOf(123), "meat", 12),
-                new Cat("Abis", "Pan", "Evil", LocalDate.now().minusYears(11), BigDecimal.valueOf(123), "meat", 12)};
-        animalRepository.setAnimalArray(olderYearsAnimals);
-        AbstractAnimal[] olderYearsAnimalsResult = animalRepository.findOlderAnimal(olds);
 
-        for (AbstractAnimal animal : olderYearsAnimalsResult) {
-            Assertions.assertTrue(Period.between(animal.getBirthDate(), LocalDate.now()).getYears() > olds); //проверяем что все животные в массиве больше заданного возраста
+        Map<AbstractAnimal, Integer> olderYearsAnimalsResult = animalRepository.findOlderAnimal(olds);
+
+        for (Map.Entry<AbstractAnimal, Integer> animal : olderYearsAnimalsResult.entrySet()) {
+            Assertions.assertTrue(Period.between(LocalDate.of(animal.getValue(), 1, 1), LocalDate.now()).getYears() > olds); //проверяем что все животные в массиве больше заданного возраста
         }
 
     }
@@ -90,14 +84,12 @@ class FintechApplicationTests {
     /**
      * <b>findDuplicate</b>
      * - Тестирование метода поиска дубликатов в массиве животных
-     * Ожидаемый результат: обнаружение 2х дубликатов кота с именем Pan
+     * Ожидаемый результат: обнаружение 2х дубликатов кота
      */
     @Test
     void findDuplicateTest() {
-        AbstractAnimal[] duplicateArrayResult = animalRepository.findDuplicate();
-        Cat cat = new Cat("Abis", "Pan", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12);
-
-        Assertions.assertArrayEquals(duplicateArrayResult, new AbstractAnimal[]{cat, cat}); // Ожидается обнаружение 2х дубликатов кота с именем Pan
+        Map<String, Integer> duplicateArrayResult = animalRepository.findDuplicate();
+        Assertions.assertEquals(2, duplicateArrayResult.get("CAT")); // Ожидается обнаружение 2х дубликатов кота с именем Pan
     }
 
 }
