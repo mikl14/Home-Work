@@ -47,12 +47,12 @@ public class AnimalRepositoryImpl implements AnimalRepository {
      * @return Map<String, LocalDate> ключ: тип + имя животного, значение: дата рождения
      */
     @Override
-    public Map<String,LocalDate> findLeapYearNames() {
-        Map<String,LocalDate> leapYearBirthAnimal = new HashMap<>();
+    public Map<String, LocalDate> findLeapYearNames() {
+        Map<String, LocalDate> leapYearBirthAnimal = new HashMap<>();
         for (Map.Entry<String, List<AbstractAnimal>> entry : animalMap.entrySet()) {
-            for(AbstractAnimal animal : entry.getValue()) {
+            for (AbstractAnimal animal : entry.getValue()) {
                 if (animal.getBirthDate().isLeapYear()) {
-                    leapYearBirthAnimal.put( animal.getAnimalType() + " "+ animal.getName(),animal.getBirthDate());
+                    leapYearBirthAnimal.put(animal.getAnimalType() + " " + animal.getName(), animal.getBirthDate());
                 }
             }
         }
@@ -63,20 +63,19 @@ public class AnimalRepositoryImpl implements AnimalRepository {
      * <b>findOlderAnimal</b>
      *
      * @param age искомый возраст
-     * @return Map<AbstractAnimal,Integer> - ключ: животное, значение: возраст
+     * @return Map<AbstractAnimal, Integer> - ключ: животное, значение: возраст
      */
     @Override
-    public Map<AbstractAnimal,Integer> findOlderAnimal(int age) {
+    public Map<AbstractAnimal, Integer> findOlderAnimal(int age) {
         if (age < 0) throw new IllegalArgumentException();
-        Map<AbstractAnimal,Integer> olderAnimal = new HashMap<>();
+        Map<AbstractAnimal, Integer> olderAnimal = new HashMap<>();
         LocalDate currentDate = LocalDate.now();
 
         for (Map.Entry<String, List<AbstractAnimal>> entry : animalMap.entrySet()) {
-            for(AbstractAnimal animal : entry.getValue())
-            {
+            for (AbstractAnimal animal : entry.getValue()) {
                 int olderYears = Period.between(animal.getBirthDate(), currentDate).getYears();
                 if (olderYears > age) {
-                        olderAnimal.put(animal,olderYears);
+                    olderAnimal.put(animal, olderYears);
                 }
             }
         }
@@ -86,17 +85,17 @@ public class AnimalRepositoryImpl implements AnimalRepository {
     /**
      * <b>findDuplicate</b>
      *
-     * @return  Map<String,Integer> ключ: тип животного, значение: количество дубликатов
+     * @return Map<String, Integer> ключ: тип животного, значение: количество дубликатов
      */
     @Override
-    public Map<String,Integer> findDuplicate() {
-        Map<String,Integer> duplicates = new HashMap<>();
+    public Map<String, Integer> findDuplicate() {
+        Map<String, Integer> duplicates = new HashMap<>();
         Set<AbstractAnimal> uniqueElements = new HashSet<>();
 
         for (Map.Entry<String, List<AbstractAnimal>> entry : animalMap.entrySet()) {
-            for(AbstractAnimal animal : entry.getValue()) {
+            for (AbstractAnimal animal : entry.getValue()) {
                 if (!uniqueElements.add(animal)) {
-                    int currentValue = duplicates.getOrDefault(animal.getAnimalType(),0);
+                    int currentValue = duplicates.getOrDefault(animal.getAnimalType(), 0);
                     duplicates.put(animal.getAnimalType(), currentValue + 1);
                 }
             }
