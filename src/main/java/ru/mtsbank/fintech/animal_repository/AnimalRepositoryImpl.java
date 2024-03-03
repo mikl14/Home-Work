@@ -2,12 +2,14 @@ package ru.mtsbank.fintech.animal_repository;
 
 import org.springframework.stereotype.Service;
 import ru.mts.animals.AbstractAnimal;
+import ru.mts.animals_creators.AnimalFactory;
 import ru.mts.animals_creators.CreateAnimalServiceImpl;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class AnimalRepositoryImpl implements AnimalRepository {
@@ -49,12 +51,16 @@ public class AnimalRepositoryImpl implements AnimalRepository {
     @Override
     public Map<String, LocalDate> findLeapYearNames() {
         Map<String, LocalDate> leapYearBirthAnimal = new HashMap<>();
+
         for (Map.Entry<String, List<AbstractAnimal>> entry : animalMap.entrySet()) {
-            for (AbstractAnimal animal : entry.getValue()) {
-                if (animal.getBirthDate().isLeapYear()) {
-                    leapYearBirthAnimal.put(animal.getAnimalType() + " " + animal.getName(), animal.getBirthDate());
-                }
+            List<AbstractAnimal> animalList = entry.getValue().stream()
+                    .filter(value -> value.getBirthDate().isLeapYear())
+                    .collect(Collectors.toList());
+
+            for (AbstractAnimal animal : animalList) {
+                leapYearBirthAnimal.put(animal.getName(), animal.getBirthDate());
             }
+
         }
         return leapYearBirthAnimal;
     }
@@ -72,12 +78,14 @@ public class AnimalRepositoryImpl implements AnimalRepository {
         LocalDate currentDate = LocalDate.now();
 
         for (Map.Entry<String, List<AbstractAnimal>> entry : animalMap.entrySet()) {
-            for (AbstractAnimal animal : entry.getValue()) {
-                int olderYears = Period.between(animal.getBirthDate(), currentDate).getYears();
-                if (olderYears > age) {
-                    olderAnimal.put(animal, olderYears);
-                }
+            List<AbstractAnimal> animalList = entry.getValue().stream()
+                    .filter(value -> Period.between(value.getBirthDate(), currentDate).getYears() > age)
+                    .collect(Collectors.toList());
+
+            for (AbstractAnimal animal : animalList) {
+                olderAnimal.put(animal, Period.between(animal.getBirthDate(), currentDate).getYears());
             }
+
         }
         return olderAnimal;
     }
@@ -88,20 +96,17 @@ public class AnimalRepositoryImpl implements AnimalRepository {
      * @return Map<String, Integer> ключ: тип животного, значение: количество дубликатов
      */
     @Override
-    public Map<String, Integer> findDuplicate() {
-        Map<String, Integer> duplicates = new HashMap<>();
-        Set<AbstractAnimal> uniqueElements = new HashSet<>();
-
-        for (Map.Entry<String, List<AbstractAnimal>> entry : animalMap.entrySet()) {
-            for (AbstractAnimal animal : entry.getValue()) {
-                if (!uniqueElements.add(animal)) {
-                    int currentValue = duplicates.getOrDefault(animal.getAnimalType(), 0);
-                    duplicates.put(animal.getAnimalType(), currentValue + 1);
-                }
-            }
-        }
-        return duplicates;
+    public Map<String, List<AbstractAnimal>> findDuplicate() {
+        return animalMap.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream()
+                        .filter(animal -> entry.getValue().indexOf(animal) != entry.getValue().lastIndexOf(animal))
+                        .collect(Collectors.toList())));
     }
 
+    public double findAverageAge(List<AbstractAnimal> animalList)
+    {
+        LocalDate currentDate = LocalDate.now();
 
+        return animalList.stream().mapToLong(animal -> currentDate.getYear() - animal.getBirthDate().getYear()).average().orElse(0);
+    }
 }

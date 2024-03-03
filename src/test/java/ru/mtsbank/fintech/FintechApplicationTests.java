@@ -9,11 +9,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import ru.mts.animals.AbstractAnimal;
+import ru.mts.animals.Cat;
 import ru.mtsbank.fintech.animal_repository.AnimalRepositoryImpl;
 import ru.mtsbank.fintech.starter_tests.test_config.TestsConfiguration;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @ActiveProfiles("test")
@@ -88,8 +92,20 @@ class FintechApplicationTests {
      */
     @Test
     void findDuplicateTest() {
-        Map<String, Integer> duplicateArrayResult = animalRepository.findDuplicate();
-        Assertions.assertEquals(2, duplicateArrayResult.get("CAT")); // Ожидается обнаружение 2х дубликатов кота с именем Pan
+        Map<String, List<AbstractAnimal>> duplicateArrayResult = animalRepository.findDuplicate();
+        Assertions.assertEquals(List.of(
+                new Cat("Abis", "Pan", "Evil", LocalDate.now().minusYears(10), BigDecimal.valueOf(123), "meat", 12),
+                new Cat("Abis", "Pan", "Evil", LocalDate.now().minusYears(10), BigDecimal.valueOf(123), "meat", 12),
+                new Cat("Abis", "Pan", "Good", LocalDate.now().minusYears(10), BigDecimal.valueOf(123), "meat", 12)),
+                duplicateArrayResult.get("CAT")); // Ожидается обнаружение 2х дубликатов кота с именем Pan
+    }
+
+    @Test
+    void findAverageAge() {
+        Assertions.assertEquals(12.666666666666666,animalRepository.findAverageAge(List.of(
+                new Cat("Abis", "Pan", "Evil", LocalDate.now().minusYears(10), BigDecimal.valueOf(123), "meat", 12),
+                new Cat("Abis", "Pan", "Evil", LocalDate.now().minusYears(13), BigDecimal.valueOf(123), "meat", 12),
+                new Cat("Abis", "Pan", "Good", LocalDate.now().minusYears(15), BigDecimal.valueOf(123), "meat", 12)))); // Ожидается обнаружение 2х дубликатов кота с именем Pan
     }
 
 }
