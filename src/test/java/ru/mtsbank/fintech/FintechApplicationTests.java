@@ -10,13 +10,13 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import ru.mts.animals.AbstractAnimal;
 import ru.mts.animals.Cat;
+import ru.mts.animals.Fish;
 import ru.mtsbank.fintech.animal_repository.AnimalRepositoryImpl;
 import ru.mtsbank.fintech.starter_tests.test_config.TestsConfiguration;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -94,18 +94,66 @@ class FintechApplicationTests {
     void findDuplicateTest() {
         Map<String, List<AbstractAnimal>> duplicateArrayResult = animalRepository.findDuplicate();
         Assertions.assertEquals(List.of(
-                new Cat("Abis", "Pan", "Evil", LocalDate.now().minusYears(10), BigDecimal.valueOf(123), "meat", 12),
-                new Cat("Abis", "Pan", "Evil", LocalDate.now().minusYears(10), BigDecimal.valueOf(123), "meat", 12),
-                new Cat("Abis", "Pan", "Good", LocalDate.now().minusYears(10), BigDecimal.valueOf(123), "meat", 12)),
+                        new Cat("Abis", "Pan", "Evil", LocalDate.now().minusYears(10), BigDecimal.valueOf(123), "meat", 12),
+                        new Cat("Abis", "Pan", "Evil", LocalDate.now().minusYears(10), BigDecimal.valueOf(123), "meat", 12),
+                        new Cat("Abis", "Pan", "Good", LocalDate.now().minusYears(10), BigDecimal.valueOf(123), "meat", 12)),
                 duplicateArrayResult.get("CAT")); // Ожидается обнаружение 2х дубликатов кота с именем Pan
     }
 
+    /**
+     * <b>findAverageAgeTest</b>
+     * - Тестирование метода поиска среднего возраста животных
+     */
     @Test
-    void findAverageAge() {
-        Assertions.assertEquals(12.666666666666666,animalRepository.findAverageAge(List.of(
+    void findAverageAgeTest() {
+
+        Assertions.assertEquals((double) (10 + 13 + 15) / 3, animalRepository.findAverageAge(List.of(
                 new Cat("Abis", "Pan", "Evil", LocalDate.now().minusYears(10), BigDecimal.valueOf(123), "meat", 12),
                 new Cat("Abis", "Pan", "Evil", LocalDate.now().minusYears(13), BigDecimal.valueOf(123), "meat", 12),
                 new Cat("Abis", "Pan", "Good", LocalDate.now().minusYears(15), BigDecimal.valueOf(123), "meat", 12)))); // Ожидается обнаружение 2х дубликатов кота с именем Pan
+    }
+
+    /**
+     * <b>findOldAndExpensiveTest</b>
+     * - Тестирование метода поиска животных старше 5 лет и с ценой выше среднего
+     */
+    @Test
+    void findOldAndExpensiveTest() {
+
+        List<AbstractAnimal> animalList = List.of(
+                new Fish("Abis", "fishPan", "Good", LocalDate.now().minusYears(15), BigDecimal.valueOf(20), "meat", 12),
+                new Cat("Abis", "Pan", "Evil", LocalDate.now().minusYears(10), BigDecimal.valueOf(165), "meat", 12),
+                new Cat("Abis", "Pan", "Evil", LocalDate.now().minusYears(13), BigDecimal.valueOf(123), "meat", 12),
+                new Fish("Abis", "fishPan", "Evil", LocalDate.now().minusYears(2), BigDecimal.valueOf(123), "meat", 12),
+                new Fish("Abis", "fishPan", "Evil", LocalDate.now().minusYears(3), BigDecimal.valueOf(167), "meat", 12),
+                new Cat("Abis", "Pan", "Good", LocalDate.now().minusYears(5), BigDecimal.valueOf(1), "meat", 12)
+        );
+
+        List<AbstractAnimal> expectedAnimalList = List.of(
+                new Cat("Abis", "Pan", "Evil", LocalDate.now().minusYears(10), BigDecimal.valueOf(165), "meat", 12),
+                new Cat("Abis", "Pan", "Evil", LocalDate.now().minusYears(13), BigDecimal.valueOf(123), "meat", 12)
+        );
+
+        Assertions.assertEquals(expectedAnimalList, animalRepository.findOldAndExpensive(5, animalList)); // Ожидается обнаружение 2х дубликатов кота с именем Pan
+    }
+
+    /**
+     * <b>findMinConstAnimalsTest</b>
+     * - Тестирование метода поиска 3-х животных с самой низкой ценой
+     */
+    @Test
+    void findMinConstAnimalsTest() {
+
+        List<AbstractAnimal> animalList = List.of(
+                new Fish("AA", "AA", "Good", LocalDate.now().minusYears(15), BigDecimal.valueOf(20), "meat", 12),
+                new Cat("AB", "AB", "Evil", LocalDate.now().minusYears(10), BigDecimal.valueOf(165), "meat", 12),
+                new Cat("B", "B", "Evil", LocalDate.now().minusYears(13), BigDecimal.valueOf(123), "meat", 12),
+                new Fish("C", "C", "Evil", LocalDate.now().minusYears(2), BigDecimal.valueOf(1000), "meat", 12)
+        );
+
+        List<String> expectedAnimalList = List.of("C", "B", "AB");
+
+        Assertions.assertEquals(expectedAnimalList, animalRepository.findMinConstAnimals(animalList)); // Ожидается обнаружение 2х дубликатов кота с именем Pan
     }
 
 }
