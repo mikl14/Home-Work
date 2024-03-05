@@ -122,6 +122,7 @@ public class AnimalRepositoryImpl implements AnimalRepository {
      * @return List<AbstractAnimal> старше olds и с ценой выше средней
      */
     public List<AbstractAnimal> findOldAndExpensive(int olds, List<AbstractAnimal> animalList) {
+        if (olds < 0) throw new IllegalArgumentException();
         LocalDate currentDate = LocalDate.now();
 
         return animalList.stream().filter(animal -> (currentDate.getYear() - animal.getBirthDate().getYear()) > olds)

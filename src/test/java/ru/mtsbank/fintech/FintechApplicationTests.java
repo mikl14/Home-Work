@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
@@ -138,6 +139,16 @@ class FintechApplicationTests {
     }
 
     /**
+     * <b>findOldAndExpensiveExceptionTest</b>
+     * - Тестирование метода поиска животных старше 5 лет и с ценой выше среднего
+     * Ожидаемый результат: IllegalArgumentException так как передан отрицательный возраст
+     */
+    @Test
+    void findOldAndExpensiveExceptionTest() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> animalRepository.findOldAndExpensive(-12, Mockito.anyList()));
+    }
+
+    /**
      * <b>findMinConstAnimalsTest</b>
      * - Тестирование метода поиска 3-х животных с самой низкой ценой
      */
@@ -155,5 +166,6 @@ class FintechApplicationTests {
 
         Assertions.assertEquals(expectedAnimalList, animalRepository.findMinConstAnimals(animalList)); // Ожидается обнаружение 2х дубликатов кота с именем Pan
     }
+
 
 }
