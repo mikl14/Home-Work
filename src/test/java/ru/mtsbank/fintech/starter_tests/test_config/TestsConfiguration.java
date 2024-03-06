@@ -21,6 +21,7 @@ import java.util.Map;
 
 public class TestsConfiguration {
 
+    @Scope("singleton")
     @Bean
     CreateAnimalServiceImpl createAnimalServiceImpl(AnimalFactory animalFactory) {
         return new CreateAnimalServiceImpl(animalFactory) {
@@ -28,7 +29,8 @@ public class TestsConfiguration {
             public Map<String, List<AbstractAnimal>> getAnimals() {
                 return new HashMap<String, List<AbstractAnimal>>() {{
                     put("FISH", List.of(
-                            new Fish("Abis", "Pan", "Evil", LocalDate.now().minusYears(7), BigDecimal.valueOf(123), "meat", 12),
+                            new Fish("Abis", "Boris", "Evil", LocalDate.now().minusYears(5), BigDecimal.valueOf(123), "meat", 12),
+                            new Fish("Abis", "Blade", "Evil", LocalDate.now().minusYears(7), BigDecimal.valueOf(123), "meat", 12),
                             new Fish("Not abris", "Not Pan", "Evil", LocalDate.now().minusYears(9), BigDecimal.valueOf(123), "meat", 12),
                             new Fish("Great", "Piter Pan", "Evil", LocalDate.now().minusYears(11), BigDecimal.valueOf(123), "meat", 12)));
                     put("CAT", List.of(

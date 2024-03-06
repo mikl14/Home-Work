@@ -6,11 +6,7 @@ import ru.mts.animals_creators.CreateAnimalServiceImpl;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
-import java.time.Period;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,7 +43,6 @@ public class AnimalRepositoryImpl implements AnimalRepository {
 
     /**
      * <b>findLeapYearNames</b> выполняет поиск животных рожденных в високосный год, по массиву животных
-     *
      * @return Map<String, LocalDate> ключ: тип + имя животного, значение: дата рождения
      */
     @Override
@@ -55,41 +50,40 @@ public class AnimalRepositoryImpl implements AnimalRepository {
         Map<String, LocalDate> leapYearBirthAnimal = new HashMap<>();
 
         for (Map.Entry<String, List<AbstractAnimal>> entry : animalMap.entrySet()) {
-            List<AbstractAnimal> animalList = entry.getValue().stream()
+            leapYearBirthAnimal.putAll(entry.getValue().stream().distinct()
                     .filter(value -> value.getBirthDate().isLeapYear())
-                    .collect(Collectors.toList());
-
-            for (AbstractAnimal animal : animalList) {
-                leapYearBirthAnimal.put(animal.getName(), animal.getBirthDate());
-            }
-
+                    .collect(Collectors.toMap(AbstractAnimal::getName, AbstractAnimal::getBirthDate,(existingValue, newValue) -> newValue)));
         }
         return leapYearBirthAnimal;
     }
 
     /**
      * <b>findOlderAnimal</b>
-     *
+     * возвращает Map животных, старше заданного возраста или самое взрослое животное
      * @param age искомый возраст
      * @return Map<AbstractAnimal, Integer> - ключ: животное, значение: возраст
      */
     @Override
     public Map<AbstractAnimal, Integer> findOlderAnimal(int age) {
         if (age < 0) throw new IllegalArgumentException();
-        Map<AbstractAnimal, Integer> olderAnimal = new HashMap<>();
-        LocalDate currentDate = LocalDate.now();
+        Map<AbstractAnimal, Integer> olderAnimals = new HashMap<>();
 
+        List<AbstractAnimal> animalList = new ArrayList<>();
         for (Map.Entry<String, List<AbstractAnimal>> entry : animalMap.entrySet()) {
-            List<AbstractAnimal> animalList = entry.getValue().stream()
-                    .filter(value -> Period.between(value.getBirthDate(), currentDate).getYears() > age)
-                    .collect(Collectors.toList());
-
-            for (AbstractAnimal animal : animalList) {
-                olderAnimal.put(animal, Period.between(animal.getBirthDate(), currentDate).getYears());
-            }
-
+            animalList.addAll(entry.getValue());
         }
-        return olderAnimal;
+
+        olderAnimals.putAll(animalList.stream().distinct()
+                .filter(value -> value.getAge() > age)
+                .collect(Collectors.toMap(value -> value, AbstractAnimal::getAge)));
+
+        if (olderAnimals.isEmpty()) {
+
+            Optional<AbstractAnimal> optionalOlderAnimal = animalList.stream().max(Comparator.comparing(AbstractAnimal::getAge));
+            AbstractAnimal olderAnimal = optionalOlderAnimal.orElseThrow(() -> new IllegalArgumentException("ss"));
+            olderAnimals.put(olderAnimal, olderAnimal.getAge());
+        }
+        return olderAnimals;
     }
 
     /**
@@ -112,7 +106,6 @@ public class AnimalRepositoryImpl implements AnimalRepository {
      */
     public double findAverageAge(List<AbstractAnimal> animalList) {
         LocalDate currentDate = LocalDate.now();
-
         return animalList.stream().mapToLong(animal -> currentDate.getYear() - animal.getBirthDate().getYear()).average().orElse(0);
     }
 
@@ -136,12 +129,12 @@ public class AnimalRepositoryImpl implements AnimalRepository {
     /**
      * <b>findMinConstAnimals</b>
      *
-     * @return List<AbstractAnimal> с тремя самыми дешевыми животными отсортированный в обратном алфавитном порядке по именам
+     * @return List<AbstractAnimal> с limit самыми дешевыми животными отсортированный в обратном алфавитном порядке по именам
      */
-    public List<String> findMinConstAnimals(List<AbstractAnimal> animalList) {
+    public List<String> findMinConstAnimals(List<AbstractAnimal> animalList,int limit) {
         return animalList.stream()
                 .sorted(Comparator.comparing(AbstractAnimal::getCost).reversed())
-                .limit(3)
+                .limit(limit)
                 .map(AbstractAnimal::getName)
                 .sorted(Comparator.reverseOrder())
                 .collect(Collectors.toList());
