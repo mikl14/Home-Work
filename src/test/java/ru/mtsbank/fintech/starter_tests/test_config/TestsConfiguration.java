@@ -1,8 +1,8 @@
 package ru.mtsbank.fintech.starter_tests.test_config;
 
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
-import org.springframework.boot.test.context.TestConfiguration;
 import ru.mts.animals.AbstractAnimal;
 import ru.mts.animals.Bear;
 import ru.mts.animals.Cat;
@@ -39,7 +39,8 @@ public class TestsConfiguration {
                             new Cat("Abis", "Pan", "Evil", LocalDate.now().minusYears(10), BigDecimal.valueOf(123), "meat", 12),
                             new Cat("Abis", "Pan", "Good", LocalDate.now().minusYears(10), BigDecimal.valueOf(123), "meat", 12)));
                     put("BEAR", List.of(
-                            new Bear("White", "Beluga", "Evil", LocalDate.now().minusYears(8), BigDecimal.valueOf(123), "forest", 120)));
+                            new Bear("White", "Beluga", "Evil", LocalDate.now().minusYears(8), BigDecimal.valueOf(123), "forest", 120),
+                            new Bear("White", "Beluga", "norm", LocalDate.now().minusYears(8), BigDecimal.valueOf(123), "forest", 120)));
                 }};
             }
         };

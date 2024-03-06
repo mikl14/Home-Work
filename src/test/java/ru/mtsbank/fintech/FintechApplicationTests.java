@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import ru.mts.animals.AbstractAnimal;
+import ru.mts.animals.Bear;
 import ru.mts.animals.Cat;
 import ru.mts.animals.Fish;
 import ru.mtsbank.fintech.animal_repository.AnimalRepositoryImpl;
@@ -161,16 +162,24 @@ class FintechApplicationTests {
     /**
      * <b>findDuplicate</b>
      * - Тестирование метода поиска дубликатов в массиве животных
-     * Ожидаемый результат: обнаружение 2х дубликатов кота
+     * Ожидаемый результат: бнаружение 3х дубликатов кота с именем Pan и 2х медведей с именем Beluga
      */
     @Test
     void findDuplicateTest() {
         Map<String, List<AbstractAnimal>> duplicateArrayResult = animalRepository.findDuplicate();
-        Assertions.assertEquals(List.of(
-                        new Cat("Abis", "Pan", "Evil", LocalDate.now().minusYears(10), BigDecimal.valueOf(123), "meat", 12),
-                        new Cat("Abis", "Pan", "Evil", LocalDate.now().minusYears(10), BigDecimal.valueOf(123), "meat", 12),
-                        new Cat("Abis", "Pan", "Good", LocalDate.now().minusYears(10), BigDecimal.valueOf(123), "meat", 12)),
-                duplicateArrayResult.get("CAT")); // Ожидается обнаружение 2х дубликатов кота с именем Pan
+
+        List<AbstractAnimal> expectedList = List.of(
+                new Cat("Abis", "Pan", "Evil", LocalDate.now().minusYears(10), BigDecimal.valueOf(123), "meat", 12),
+                new Cat("Abis", "Pan", "Evil", LocalDate.now().minusYears(10), BigDecimal.valueOf(123), "meat", 12),
+                new Cat("Abis", "Pan", "Good", LocalDate.now().minusYears(10), BigDecimal.valueOf(123), "meat", 12),
+                new Bear("White", "Beluga", "Evil", LocalDate.now().minusYears(8), BigDecimal.valueOf(123), "forest", 120),
+                new Bear("White", "Beluga", "norm", LocalDate.now().minusYears(8), BigDecimal.valueOf(123), "forest", 120));
+
+        List<AbstractAnimal> actualList = new ArrayList<AbstractAnimal>();
+        for (Map.Entry<String, List<AbstractAnimal>> entry : duplicateArrayResult.entrySet()) {
+            actualList.addAll(entry.getValue());
+        }
+        Assertions.assertEquals(expectedList, actualList); // Ожидается обнаружение 3х дубликатов кота с именем Pan и 2х медведей с именем Beluga имеющих разные характеры, но одинаковые имена, даты и породы
     }
 
     /**
