@@ -5,6 +5,7 @@ import ru.mts.animals.AbstractAnimal;
 import ru.mts.animals_creators.CreateAnimalServiceImpl;
 
 import javax.annotation.PostConstruct;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -105,8 +106,7 @@ public class AnimalRepositoryImpl implements AnimalRepository {
      * @return double средний возраст животных в переданном списке
      */
     public double findAverageAge(List<AbstractAnimal> animalList) {
-        LocalDate currentDate = LocalDate.now();
-        return animalList.stream().mapToLong(animal -> currentDate.getYear() - animal.getBirthDate().getYear()).average().orElse(0);
+        return animalList.stream().mapToLong(AbstractAnimal::getAge).average().orElse(0);
     }
 
     /**
@@ -116,14 +116,18 @@ public class AnimalRepositoryImpl implements AnimalRepository {
      */
     public List<AbstractAnimal> findOldAndExpensive(int olds, List<AbstractAnimal> animalList) {
         if (olds < 0) throw new IllegalArgumentException();
-        LocalDate currentDate = LocalDate.now();
 
-        return animalList.stream().filter(animal -> (currentDate.getYear() - animal.getBirthDate().getYear()) > olds)
-                .filter(animal -> animal.getCost().longValue() > animalList.stream()
-                        .mapToLong(buf -> buf.getCost().longValue())
-                        .average().orElse(0))
-                .sorted(Comparator.comparing(AbstractAnimal::getBirthDate).reversed())
+        double averagePrice = animalList.stream()
+                .mapToDouble(buf -> buf.getCost().doubleValue())
+                .average()
+                .orElse(0.0);
+
+        List<AbstractAnimal> animalList1 = animalList.stream()
+                .filter(animal -> animal.getAge() > olds && animal.getCost().doubleValue() > averagePrice)
+                .sorted(Comparator.comparing(AbstractAnimal::getAge).reversed())
                 .collect(Collectors.toList());
+
+        return animalList1;
     }
 
     /**
@@ -133,10 +137,10 @@ public class AnimalRepositoryImpl implements AnimalRepository {
      */
     public List<String> findMinConstAnimals(List<AbstractAnimal> animalList,int limit) {
         return animalList.stream()
-                .sorted(Comparator.comparing(AbstractAnimal::getCost).reversed())
+                .sorted(Comparator.comparing(AbstractAnimal::getCost))
                 .limit(limit)
+                .sorted(Comparator.comparing(AbstractAnimal::getName).reversed())
                 .map(AbstractAnimal::getName)
-                .sorted(Comparator.reverseOrder())
                 .collect(Collectors.toList());
     }
 }

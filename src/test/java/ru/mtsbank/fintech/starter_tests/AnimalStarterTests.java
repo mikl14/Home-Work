@@ -36,11 +36,11 @@ public class AnimalStarterTests {
 
     /**
      * <b>getAnimalsTest</b>
-     * проверяет что без аргументов метод getAnimals() вернул 3 вида животных
+     * проверяет что без аргументов метод getAnimals() вернул 4 вида животных
      */
     @Test
     void getAnimalsTest() {
-        Assertions.assertEquals(createAnimalServiceImpl.getAnimals().size(), 3);
+        Assertions.assertEquals(createAnimalServiceImpl.getAnimals().size(), 4);
     }
 
     /**
@@ -74,7 +74,6 @@ public class AnimalStarterTests {
         Mockito.when(animalFactory.getAnimal(AnimalFactory.AnimalType.CAT)).thenReturn(nemo); // Делаем через mockito возвращение рыбы при запросе
         mockedCreateAnimalServiceImpl.setAnimalType(AnimalFactory.AnimalType.CAT);// выбираем тип кошка
         Assertions.assertThrows(IllegalStateException.class, () -> mockedCreateAnimalServiceImpl.getAnimal()); // ожидаем исключение потому что фабрика вернет рыбу при запросе кошки
-
     }
 
 }
