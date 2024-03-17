@@ -30,10 +30,10 @@ public class ScheduledTasks {
 
         log.info("FindAverageAge {}", animalRepository.findAverageAge(animalRepository.getAnimalArray().get("CAT")));
 
-        log.info("FindAverageAge {}", animalRepository.findOldAndExpensive(5, animalRepository.getAnimalArray().get("CAT")));
+        log.info("FindOldAndExpensive {}", animalRepository.findOldAndExpensive(5, animalRepository.getAnimalArray().get("CAT")));
         try {
             log.info("FindOlder animal {}", animalRepository.findOlderAnimal(10).toString());
-            log.info("FindAverageAge {}", animalRepository.findMinConstAnimals(animalRepository.getAnimalArray().get("CAT"), 3));
+            log.info("FindMinConstAnimals {}", animalRepository.findMinConstAnimals(animalRepository.getAnimalArray().get("CAT"), 3));
         } catch (Exception e) {
             System.out.println("Exception! : " + e);
         }
