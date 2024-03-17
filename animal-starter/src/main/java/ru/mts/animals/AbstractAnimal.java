@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.Objects;
@@ -116,8 +117,16 @@ public abstract class AbstractAnimal implements Animal {
      * @return LocalDate
      */
     private LocalDate generateRandomDate() {
-        Long epoch = (long) (random.nextDouble() * (LocalDate.now().toEpochDay()));
+        long epoch = (long) (random.nextDouble() * (LocalDate.now().toEpochDay()));
         return LocalDate.ofEpochDay(epoch);
+    }
+
+    /**
+     * Метод <b>getAge</b>
+     * @return возраст животного в годах
+     */
+    public int getAge() {
+        return Period.between(birthDate, LocalDate.now()).getYears();
     }
 
     public String getAnimalType()

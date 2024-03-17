@@ -3,6 +3,7 @@ package ru.mtsbank.fintech.animal_repository;
 import ru.mts.animals.AbstractAnimal;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 
@@ -27,5 +28,5 @@ public interface AnimalRepository {
      *
      * @return  Map<String,Integer> ключ: тип животного, значение: количество дубликатов
      */
-    Map<String,Integer> findDuplicate();
+    Map<String, List<AbstractAnimal>> findDuplicate();
 }

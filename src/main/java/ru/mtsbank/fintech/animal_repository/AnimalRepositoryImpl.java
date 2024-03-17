@@ -5,9 +5,10 @@ import ru.mts.animals.AbstractAnimal;
 import ru.mts.animals_creators.CreateAnimalServiceImpl;
 
 import javax.annotation.PostConstruct;
+import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.Period;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class AnimalRepositoryImpl implements AnimalRepository {
@@ -43,43 +44,47 @@ public class AnimalRepositoryImpl implements AnimalRepository {
 
     /**
      * <b>findLeapYearNames</b> выполняет поиск животных рожденных в високосный год, по массиву животных
-     *
      * @return Map<String, LocalDate> ключ: тип + имя животного, значение: дата рождения
      */
     @Override
     public Map<String, LocalDate> findLeapYearNames() {
         Map<String, LocalDate> leapYearBirthAnimal = new HashMap<>();
+
         for (Map.Entry<String, List<AbstractAnimal>> entry : animalMap.entrySet()) {
-            for (AbstractAnimal animal : entry.getValue()) {
-                if (animal.getBirthDate().isLeapYear()) {
-                    leapYearBirthAnimal.put(animal.getAnimalType() + " " + animal.getName(), animal.getBirthDate());
-                }
-            }
+            leapYearBirthAnimal.putAll(entry.getValue().stream().distinct()
+                    .filter(value -> value.getBirthDate().isLeapYear())
+                    .collect(Collectors.toMap(AbstractAnimal::getName, AbstractAnimal::getBirthDate,(existingValue, newValue) -> newValue)));
         }
         return leapYearBirthAnimal;
     }
 
     /**
      * <b>findOlderAnimal</b>
-     *
+     * возвращает Map животных, старше заданного возраста или самое взрослое животное
      * @param age искомый возраст
      * @return Map<AbstractAnimal, Integer> - ключ: животное, значение: возраст
      */
     @Override
     public Map<AbstractAnimal, Integer> findOlderAnimal(int age) {
         if (age < 0) throw new IllegalArgumentException();
-        Map<AbstractAnimal, Integer> olderAnimal = new HashMap<>();
-        LocalDate currentDate = LocalDate.now();
+        Map<AbstractAnimal, Integer> olderAnimals = new HashMap<>();
 
+        List<AbstractAnimal> animalList = new ArrayList<>();
         for (Map.Entry<String, List<AbstractAnimal>> entry : animalMap.entrySet()) {
-            for (AbstractAnimal animal : entry.getValue()) {
-                int olderYears = Period.between(animal.getBirthDate(), currentDate).getYears();
-                if (olderYears > age) {
-                    olderAnimal.put(animal, olderYears);
-                }
-            }
+            animalList.addAll(entry.getValue());
         }
-        return olderAnimal;
+
+        olderAnimals.putAll(animalList.stream().distinct()
+                .filter(value -> value.getAge() > age)
+                .collect(Collectors.toMap(value -> value, AbstractAnimal::getAge)));
+
+        if (olderAnimals.isEmpty()) {
+
+            Optional<AbstractAnimal> optionalOlderAnimal = animalList.stream().max(Comparator.comparing(AbstractAnimal::getAge));
+            AbstractAnimal olderAnimal = optionalOlderAnimal.orElseThrow(() -> new IllegalArgumentException("ss"));
+            olderAnimals.put(olderAnimal, olderAnimal.getAge());
+        }
+        return olderAnimals;
     }
 
     /**
@@ -88,20 +93,54 @@ public class AnimalRepositoryImpl implements AnimalRepository {
      * @return Map<String, Integer> ключ: тип животного, значение: количество дубликатов
      */
     @Override
-    public Map<String, Integer> findDuplicate() {
-        Map<String, Integer> duplicates = new HashMap<>();
-        Set<AbstractAnimal> uniqueElements = new HashSet<>();
-
-        for (Map.Entry<String, List<AbstractAnimal>> entry : animalMap.entrySet()) {
-            for (AbstractAnimal animal : entry.getValue()) {
-                if (!uniqueElements.add(animal)) {
-                    int currentValue = duplicates.getOrDefault(animal.getAnimalType(), 0);
-                    duplicates.put(animal.getAnimalType(), currentValue + 1);
-                }
-            }
-        }
-        return duplicates;
+    public Map<String, List<AbstractAnimal>> findDuplicate() {
+        return animalMap.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream()
+                        .filter(animal -> entry.getValue().indexOf(animal) != entry.getValue().lastIndexOf(animal))
+                        .collect(Collectors.toList())));
     }
 
+    /**
+     * <b>findAverageAge</b>
+     *
+     * @return double средний возраст животных в переданном списке
+     */
+    public double findAverageAge(List<AbstractAnimal> animalList) {
+        return animalList.stream().mapToLong(AbstractAnimal::getAge).average().orElse(0);
+    }
 
+    /**
+     * <b>findOldAndExpensive</b>
+     *
+     * @return List<AbstractAnimal> старше olds и с ценой выше средней
+     */
+    public List<AbstractAnimal> findOldAndExpensive(int olds, List<AbstractAnimal> animalList) {
+        if (olds < 0) throw new IllegalArgumentException();
+
+        double averagePrice = animalList.stream()
+                .mapToDouble(buf -> buf.getCost().doubleValue())
+                .average()
+                .orElse(0.0);
+
+        List<AbstractAnimal> animalList1 = animalList.stream()
+                .filter(animal -> animal.getAge() > olds && animal.getCost().doubleValue() > averagePrice)
+                .sorted(Comparator.comparing(AbstractAnimal::getAge).reversed())
+                .collect(Collectors.toList());
+
+        return animalList1;
+    }
+
+    /**
+     * <b>findMinConstAnimals</b>
+     *
+     * @return List<AbstractAnimal> с limit самыми дешевыми животными отсортированный в обратном алфавитном порядке по именам
+     */
+    public List<String> findMinConstAnimals(List<AbstractAnimal> animalList,int limit) {
+        return animalList.stream()
+                .sorted(Comparator.comparing(AbstractAnimal::getCost))
+                .limit(limit)
+                .sorted(Comparator.comparing(AbstractAnimal::getName).reversed())
+                .map(AbstractAnimal::getName)
+                .collect(Collectors.toList());
+    }
 }
