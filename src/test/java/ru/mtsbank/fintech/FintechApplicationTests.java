@@ -203,7 +203,7 @@ class FintechApplicationTests {
     /**
      * <b>findMinConstAnimalsTest</b>
      * - Тестирование метода поиска животных с самой низкой ценой
-     * Ожидаемый результат: 3 самых дешевых животных
+     * Ожидаемый результат: 3 самых дешевых животных в обратном алфавитном порядке
      */
     @Test
     void findMinConstAnimalsTest() {
