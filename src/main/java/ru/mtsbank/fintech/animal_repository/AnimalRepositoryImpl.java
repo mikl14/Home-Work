@@ -125,12 +125,12 @@ public class AnimalRepositoryImpl implements AnimalRepository {
                 .average()
                 .orElse(0.0);
 
-        List<AbstractAnimal> animalList1 = animalList.stream()
+        List<AbstractAnimal> result = animalList.stream()
                 .filter(animal -> animal.getAge() > olds && animal.getCost().doubleValue() > averagePrice)
                 .sorted(Comparator.comparing(AbstractAnimal::getAge).reversed())
                 .collect(Collectors.toList());
 
-        return animalList1;
+        return result;
     }
 
     /**

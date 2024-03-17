@@ -34,6 +34,8 @@ public class ScheduledTasks {
         try {
             log.info("FindOlder animal {}", animalRepository.findOlderAnimal(10).toString());
             log.info("FindMinConstAnimals {}", animalRepository.findMinConstAnimals(animalRepository.getAnimalArray().get("CAT"), 3));
+            log.info("FindOldAndExpensive {}", animalRepository.findOldAndExpensive(5,animalRepository.getAnimalArray().get("CAT")));
+
         } catch (Exception e) {
             System.out.println("Exception! : " + e);
         }
