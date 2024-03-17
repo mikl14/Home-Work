@@ -24,10 +24,19 @@ public class ScheduledTasks {
      */
     @Scheduled(fixedRate = 1000 * 60) // 1 минута
     public void animalScheduledLog() {
-        log.info("FindOlder animal {}", animalRepository.findOlderAnimal(10).toString());
-
         log.info("FindLeapYearNames animal {}", animalRepository.findLeapYearNames());
 
         log.info("FindDuplicate animal {}", animalRepository.findDuplicate());
+
+        log.info("FindAverageAge {}", animalRepository.findAverageAge(animalRepository.getAnimalArray().get("CAT")));
+
+        log.info("FindAverageAge {}", animalRepository.findOldAndExpensive(5, animalRepository.getAnimalArray().get("CAT")));
+        try {
+            log.info("FindOlder animal {}", animalRepository.findOlderAnimal(10).toString());
+            log.info("FindAverageAge {}", animalRepository.findMinConstAnimals(animalRepository.getAnimalArray().get("CAT"), 3));
+        } catch (Exception e) {
+            System.out.println("Exception! : " + e);
+        }
+
     }
 }

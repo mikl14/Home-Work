@@ -14,6 +14,8 @@ import ru.mts.animals.Bear;
 import ru.mts.animals.Fish;
 import ru.mts.animals.Wolf;
 import ru.mtsbank.fintech.animal_repository.AnimalRepositoryImpl;
+import ru.mtsbank.fintech.exceptions.IllegalListSizeException;
+import ru.mtsbank.fintech.exceptions.IllegalValueException;
 import ru.mtsbank.fintech.starter_tests.test_config.TestsConfiguration;
 
 import java.math.BigDecimal;
@@ -52,7 +54,7 @@ class FintechApplicationTests {
      */
     @Test
     void findOlderAnimalExceptionTest() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> animalRepository.findOlderAnimal(-12));
+        Assertions.assertThrows(IllegalValueException.class, () -> animalRepository.findOlderAnimal(-12));
     }
 
     /**
@@ -195,7 +197,7 @@ class FintechApplicationTests {
      */
     @Test
     void findOldAndExpensiveExceptionTest() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> animalRepository.findOldAndExpensive(-12, Mockito.anyList()));
+        Assertions.assertThrows(IllegalValueException.class, () -> animalRepository.findOldAndExpensive(-12, Mockito.anyList()));
     }
 
     /**
@@ -207,8 +209,11 @@ class FintechApplicationTests {
     void findMinConstAnimalsTest() {
         List<AbstractAnimal> animalList = new ArrayList<>(animalRepository.getAnimalArray().get("CAT")); //передаваемый список составленный из кошек из animalRepository
         List<String> expectedAnimalList = List.of("V", "Cloud", "Akira"); //Akira - 125,Cloud - 300, V - 256
-
-        Assertions.assertEquals(expectedAnimalList, animalRepository.findMinConstAnimals(animalList, 3));
+        try {
+            Assertions.assertEquals(expectedAnimalList, animalRepository.findMinConstAnimals(animalList, 3));
+        } catch (IllegalListSizeException e) { // если вернулось исключение, то fail
+            Assertions.fail();
+        }
     }
 
     /**
@@ -220,6 +225,17 @@ class FintechApplicationTests {
     @ValueSource(ints = {2, 3, 4, 5, 10})
     void findMinConstAnimalsSizeTest(int limit) {
         List<AbstractAnimal> animalList = new ArrayList<>(animalRepository.getAnimalArray().get("CAT")); //передаваемый список составленный из кошек из animalRepository
-        Assertions.assertEquals(Math.min(limit, animalList.size()), animalRepository.findMinConstAnimals(animalList, limit).size()); // если limits больше чем длина списка должен вернуться список длинной равной изначальному
+        try {
+            Assertions.assertEquals(limit, animalRepository.findMinConstAnimals(animalList, limit).size()); // если limit меньше или равен длине списка должен вернуться список длинной limits
+        } catch (
+                IllegalListSizeException e) { // если было возвращено исключение IllegalListSizeException, то должно вернуться limit должен быть больше длинны списка иначе fail()
+            if (animalList.size() < limit) {
+                Assertions.assertTrue(true);
+            } else {
+                Assertions.fail();
+            }
+        }
+
     }
+
 }
