@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 import ru.mtsbank.fintech.animal_repository.AnimalRepositoryImpl;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class ScheduledTasks {
@@ -29,12 +31,13 @@ public class ScheduledTasks {
         log.info("FindAverageAge {}", animalRepository.findAverageAge(animalRepository.getAnimalArray().get("CAT")));
 
         try {
-            log.info("FindOlder animal {}", animalRepository.findOlderAnimal(10).toString());
-            log.info("FindMinConstAnimals {}", animalRepository.findMinConstAnimals(animalRepository.getAnimalArray().get("CAT"), 3));
+            int limit = animalRepository.getAnimalArray().values().stream().map(List::size).min(Integer::compare).orElse(0); //т.к. нельзя предугадать сколько будет сгенерировано животных во избежание ошибок, за выдаваемый результат равен мин кол-ву животных одного вида.
+            log.info("FindOlder animal {}", animalRepository.findOlderAnimal(100));
+            log.info("FindMinConstAnimals {}", animalRepository.findMinConstAnimals(animalRepository.getAnimalArray().get("CAT"),limit ));
             log.info("FindOldAndExpensive {}", animalRepository.findOldAndExpensive(5, animalRepository.getAnimalArray().get("CAT")));
 
         } catch (Exception e) {
-            log.info("Exception! : " + e);
+            log.error("Exception! : " + e.getMessage(),e);
         }
 
     }
