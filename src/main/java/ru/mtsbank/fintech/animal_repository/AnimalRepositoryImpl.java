@@ -109,6 +109,7 @@ public class AnimalRepositoryImpl implements AnimalRepository {
      * @return double средний возраст животных в переданном списке
      */
     public double findAverageAge(List<AbstractAnimal> animalList) {
+        if (animalList.isEmpty()) throw new IllegalValueException("animalList is empty!");
         return animalList.stream().mapToLong(AbstractAnimal::getAge).average().orElse(0);
     }
 
@@ -117,8 +118,9 @@ public class AnimalRepositoryImpl implements AnimalRepository {
      *
      * @return List<AbstractAnimal> старше olds и с ценой выше средней
      */
-    public List<AbstractAnimal> findOldAndExpensive(int olds, List<AbstractAnimal> animalList) {
+    public List<AbstractAnimal> findOldAndExpensive(int olds, List<AbstractAnimal> animalList) throws IllegalListSizeException {
         if (olds < 0) throw new IllegalValueException("Incorrect olds!");
+        if (animalList.isEmpty()) throw new IllegalListSizeException("animalList is empty!");
 
         double averagePrice = animalList.stream()
                 .mapToDouble(buf -> buf.getCost().doubleValue())
@@ -139,7 +141,7 @@ public class AnimalRepositoryImpl implements AnimalRepository {
      * @return List<AbstractAnimal> с limit самыми дешевыми животными отсортированный в обратном алфавитном порядке по именам
      */
     public List<String> findMinConstAnimals(List<AbstractAnimal> animalList, int limit) throws IllegalListSizeException {
-        if (animalList.size() < limit) throw new IllegalListSizeException("Incorrect list size!");
+        if (animalList.isEmpty() || animalList.size() < limit) throw new IllegalListSizeException("Incorrect list size!");
         return animalList.stream()
                 .sorted(Comparator.comparing(AbstractAnimal::getCost))
                 .limit(limit)

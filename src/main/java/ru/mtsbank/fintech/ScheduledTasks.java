@@ -4,9 +4,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import ru.mts.animals.AbstractAnimal;
 import ru.mtsbank.fintech.animal_repository.AnimalRepositoryImpl;
 
 import java.text.SimpleDateFormat;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,13 +30,14 @@ public class ScheduledTasks {
     public void animalScheduledLog() {
         log.info("FindLeapYearNames animal {}", animalRepository.findLeapYearNames());
         log.info("FindDuplicate animal {}", animalRepository.findDuplicate());
-        log.info("FindAverageAge {}", animalRepository.findAverageAge(animalRepository.getAnimalArray().get("CAT")));
-
         try {
-            int limit = animalRepository.getAnimalArray().values().stream().map(List::size).min(Integer::compare).orElse(0); //т.к. нельзя предугадать сколько будет сгенерировано животных во избежание ошибок, за выдаваемый результат равен мин кол-ву животных одного вида.
-            log.info("FindOlder animal {}", animalRepository.findOlderAnimal(100));
-            log.info("FindMinConstAnimals {}", animalRepository.findMinConstAnimals(animalRepository.getAnimalArray().get("CAT"),limit ));
-            log.info("FindOldAndExpensive {}", animalRepository.findOldAndExpensive(5, animalRepository.getAnimalArray().get("CAT")));
+
+            List<AbstractAnimal> animalList = animalRepository.getAnimalArray().values().stream().max(Comparator.comparingInt(List::size)).orElse(List.of());
+            //т.к. нельзя предугадать сколько будет сгенерировано животных, для передачи в методы взят самый длинный список из map животных.
+            log.info("FindAverageAge {}", animalRepository.findAverageAge(animalList));
+            log.info("FindOlder animal {}", animalRepository.findOlderAnimal(5));
+            log.info("FindMinConstAnimals {}", animalRepository.findMinConstAnimals(animalList,animalList.size()));
+            log.info("FindOldAndExpensive {}", animalRepository.findOldAndExpensive(5, animalList));
 
         } catch (Exception e) {
             log.error("Exception! : " + e.getMessage(),e);

@@ -170,6 +170,16 @@ class FintechApplicationTests {
     }
 
     /**
+     * <b>findAverageAgeExceptionTest</b>
+     * - Тестирование исключения метода поиска среднего возраста животных
+     * Ожидаемый результат: исключение IllegalValueException так как передан пустой список
+     */
+    @Test
+    void findAverageAgeExceptionTest() {
+        Assertions.assertThrows(IllegalValueException.class, () -> animalRepository.findAverageAge(Mockito.anyList()));
+    }
+
+    /**
      * <b>findOldAndExpensiveTest</b>
      * - Тестирование метода поиска животных старше 5 лет и с ценой выше среднего
      * Ожидаемый результат: список животных с животными старше переданного возраста и ценой выше средней
@@ -184,17 +194,31 @@ class FintechApplicationTests {
                 new Bear("Animatronic", "GoldenFreddy", "Very Bad", LocalDate.now().minusYears(6), BigDecimal.valueOf(600), "Fredy's Pizza", 120)
         );
         //ожидаемый результат
-        Assertions.assertEquals(expectedAnimalList, animalRepository.findOldAndExpensive(5, animalList));
+        try {
+            Assertions.assertEquals(expectedAnimalList, animalRepository.findOldAndExpensive(5, animalList));
+        } catch (Exception e) {
+            Assertions.fail();
+        }
     }
 
     /**
-     * <b>findOldAndExpensiveExceptionTest</b>
-     * - Тестирование метода поиска животных старше 5 лет и с ценой выше среднего
-     * Ожидаемый результат: IllegalArgumentException так как передан отрицательный возраст
+     * <b>findOldAndExpensiveAgeExceptionTest</b>
+     * - Тестирование метода поиска животных старше age лет и с ценой выше среднего
+     * Ожидаемый результат: IllegalValueException так как передан отрицательный возраст
      */
     @Test
-    void findOldAndExpensiveExceptionTest() {
+    void findOldAndExpensiveAgeExceptionTest() {
         Assertions.assertThrows(IllegalValueException.class, () -> animalRepository.findOldAndExpensive(-12, Mockito.anyList()));
+    }
+
+    /**
+     * <b>findOldAndExpensiveEmptyListExceptionTest</b>
+     * - Тестирование метода поиска животных старше age лет и с ценой выше среднего
+     * Ожидаемый результат: IllegalListSizeException так как передан пустой список
+     */
+    @Test
+    void findOldAndExpensiveEmptyListExceptionTest() {
+        Assertions.assertThrows(IllegalListSizeException.class, () -> animalRepository.findOldAndExpensive(2, Mockito.anyList()));
     }
 
     /**
