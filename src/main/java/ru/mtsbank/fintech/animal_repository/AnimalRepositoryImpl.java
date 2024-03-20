@@ -69,7 +69,7 @@ public class AnimalRepositoryImpl implements AnimalRepository {
      */
     @Override
     public Map<AbstractAnimal, Integer> findOlderAnimal(int age) {
-        if (age < 0) throw new IllegalValueException();
+        if (age < 0) throw new IllegalValueException("Incorrect Value !");
         Map<AbstractAnimal, Integer> olderAnimals = new HashMap<>();
 
         List<AbstractAnimal> animalList = new ArrayList<>();
@@ -84,7 +84,7 @@ public class AnimalRepositoryImpl implements AnimalRepository {
         if (olderAnimals.isEmpty()) {
 
             Optional<AbstractAnimal> optionalOlderAnimal = animalList.stream().max(Comparator.comparing(AbstractAnimal::getAge));
-            AbstractAnimal olderAnimal = optionalOlderAnimal.orElseThrow(IllegalValueException::new);
+            AbstractAnimal olderAnimal = optionalOlderAnimal.orElseThrow(() -> new IllegalValueException("Incorrect Value !"));
             olderAnimals.put(olderAnimal, olderAnimal.getAge());
         }
         return olderAnimals;
@@ -118,7 +118,7 @@ public class AnimalRepositoryImpl implements AnimalRepository {
      * @return List<AbstractAnimal> старше olds и с ценой выше средней
      */
     public List<AbstractAnimal> findOldAndExpensive(int olds, List<AbstractAnimal> animalList) {
-        if (olds < 0) throw new IllegalValueException();
+        if (olds < 0) throw new IllegalValueException("Incorrect Value !");
 
         double averagePrice = animalList.stream()
                 .mapToDouble(buf -> buf.getCost().doubleValue())
@@ -139,7 +139,7 @@ public class AnimalRepositoryImpl implements AnimalRepository {
      * @return List<AbstractAnimal> с limit самыми дешевыми животными отсортированный в обратном алфавитном порядке по именам
      */
     public List<String> findMinConstAnimals(List<AbstractAnimal> animalList, int limit) throws IllegalListSizeException {
-        if (animalList.size() < limit) throw new IllegalListSizeException();
+        if (animalList.size() < limit) throw new IllegalListSizeException("Incorrect list size !");
         return animalList.stream()
                 .sorted(Comparator.comparing(AbstractAnimal::getCost))
                 .limit(limit)

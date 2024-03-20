@@ -219,23 +219,29 @@ class FintechApplicationTests {
     /**
      * <b>findMinConstAnimalsSizeTest</b>
      * - Тестирование метода поиска животных с самой низкой ценой
-     * Ожидаемый результат: размер возвращаемого списка всегда равен заданному limit или исключение если limit больше длинны списка
+     * Ожидаемый результат: размер возвращаемого списка всегда равен заданному limit
      */
     @ParameterizedTest
-    @ValueSource(ints = {2, 3, 4, 5, 10})
+    @ValueSource(ints = {1, 2, 3, 4})
     void findMinConstAnimalsSizeTest(int limit) {
         List<AbstractAnimal> animalList = new ArrayList<>(animalRepository.getAnimalArray().get("CAT")); //передаваемый список составленный из кошек из animalRepository
         try {
             Assertions.assertEquals(limit, animalRepository.findMinConstAnimals(animalList, limit).size()); // если limit меньше или равен длине списка должен вернуться список длинной limits
-        } catch (
-                IllegalListSizeException e) { // если было возвращено исключение IllegalListSizeException, то должно вернуться limit должен быть больше длинны списка иначе fail()
-            if (animalList.size() < limit) {
-                Assertions.assertTrue(true);
-            } else {
-                Assertions.fail();
-            }
+        } catch (Exception e) {
+            Assertions.fail(); //любое исключение вызовет fail
         }
+    }
 
+    /**
+     * <b>findMinConstAnimalsSizeExceptionTest</b>
+     * - Тестирование метода поиска животных с самой низкой ценой
+     * Ожидаемый результат: исключение IllegalListSizeException т.к. limit больше длинны списка
+     */
+    @ParameterizedTest
+    @ValueSource(ints = {5, 6, 7, 8, 9, 10})
+    void findMinConstAnimalsSizeExceptionTest(int limit) {
+        List<AbstractAnimal> animalList = new ArrayList<>(animalRepository.getAnimalArray().get("CAT")); //передаваемый список составленный из кошек из animalRepository
+        Assertions.assertThrows(IllegalListSizeException.class, () -> animalRepository.findMinConstAnimals(animalList, limit)); // если limit больше длинны списка, то ожидается исключение
     }
 
 }
