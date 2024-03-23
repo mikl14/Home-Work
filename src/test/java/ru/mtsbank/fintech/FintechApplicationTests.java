@@ -9,11 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
-import ru.mts.animals.AbstractAnimal;
-import ru.mts.animals.Bear;
-import ru.mts.animals.Fish;
-import ru.mts.animals.Wolf;
+import ru.mts.animals.*;
 import ru.mtsbank.fintech.animal_repository.AnimalRepositoryImpl;
+import ru.mtsbank.fintech.exceptions.IllegalListSizeException;
+import ru.mtsbank.fintech.exceptions.IllegalValueException;
 import ru.mtsbank.fintech.starter_tests.test_config.TestsConfiguration;
 
 import java.math.BigDecimal;
@@ -52,7 +51,7 @@ class FintechApplicationTests {
      */
     @Test
     void findOlderAnimalExceptionTest() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> animalRepository.findOlderAnimal(-12));
+        Assertions.assertThrows(IllegalValueException.class, () -> animalRepository.findOlderAnimal(-12));
     }
 
     /**
@@ -171,6 +170,16 @@ class FintechApplicationTests {
     }
 
     /**
+     * <b>findAverageAgeExceptionTest</b>
+     * - Тестирование исключения метода поиска среднего возраста животных
+     * Ожидаемый результат: исключение IllegalValueException так как передан пустой список
+     */
+    @Test
+    void findAverageAgeExceptionTest() {
+        Assertions.assertThrows(IllegalValueException.class, () -> animalRepository.findAverageAge(Mockito.anyList()));
+    }
+
+    /**
      * <b>findOldAndExpensiveTest</b>
      * - Тестирование метода поиска животных старше 5 лет и с ценой выше среднего
      * Ожидаемый результат: список животных с животными старше переданного возраста и ценой выше средней
@@ -185,30 +194,53 @@ class FintechApplicationTests {
                 new Bear("Animatronic", "GoldenFreddy", "Very Bad", LocalDate.now().minusYears(6), BigDecimal.valueOf(600), "Fredy's Pizza", 120)
         );
         //ожидаемый результат
-        Assertions.assertEquals(expectedAnimalList, animalRepository.findOldAndExpensive(5, animalList));
+        try {
+            Assertions.assertEquals(expectedAnimalList, animalRepository.findOldAndExpensive(5, animalList));
+        } catch (Exception e) {
+            Assertions.fail();
+        }
     }
 
     /**
-     * <b>findOldAndExpensiveExceptionTest</b>
-     * - Тестирование метода поиска животных старше 5 лет и с ценой выше среднего
-     * Ожидаемый результат: IllegalArgumentException так как передан отрицательный возраст
+     * <b>findOldAndExpensiveAgeExceptionTest</b>
+     * - Тестирование метода поиска животных старше age лет и с ценой выше среднего
+     * Ожидаемый результат: IllegalValueException так как передан отрицательный возраст
      */
     @Test
-    void findOldAndExpensiveExceptionTest() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> animalRepository.findOldAndExpensive(-12, Mockito.anyList()));
+    void findOldAndExpensiveAgeExceptionTest() {
+        Assertions.assertThrows(IllegalValueException.class, () -> animalRepository.findOldAndExpensive(-12, Mockito.anyList()));
+    }
+
+    /**
+     * <b>findOldAndExpensiveEmptyListExceptionTest</b>
+     * - Тестирование метода поиска животных старше age лет и с ценой выше среднего
+     * Ожидаемый результат: IllegalListSizeException так как передан пустой список
+     */
+    @Test
+    void findOldAndExpensiveEmptyListExceptionTest() {
+        Assertions.assertThrows(IllegalListSizeException.class, () -> animalRepository.findOldAndExpensive(2, Mockito.anyList()));
     }
 
     /**
      * <b>findMinConstAnimalsTest</b>
      * - Тестирование метода поиска животных с самой низкой ценой
-     * Ожидаемый результат: 3 самых дешевых животных
+     * Ожидаемый результат: 3 самых дешевых животных в обратном алфавитном порядке
      */
     @Test
     void findMinConstAnimalsTest() {
-        List<AbstractAnimal> animalList = new ArrayList<>(animalRepository.getAnimalArray().get("CAT")); //передаваемый список составленный из кошек из animalRepository
+        List<AbstractAnimal> animalList = List.of(
+                new Cat("Persian", "Kitty", "Evil", LocalDate.now().minusYears(10), BigDecimal.valueOf(330), "meat", 12),
+                new Cat("CyberCat", "V", "101010", LocalDate.now().minusYears(2), BigDecimal.valueOf(256), "electric", 12),
+                new Cat("Tibet", "Cloud", "Evil", LocalDate.now().minusYears(4), BigDecimal.valueOf(300), "meat", 12),
+                new Cat("Stray", "Akira", "Good", LocalDate.now().minusYears(6), BigDecimal.valueOf(125), "meat", 12));
+
         List<String> expectedAnimalList = List.of("V", "Cloud", "Akira"); //Akira - 125,Cloud - 300, V - 256
 
-        Assertions.assertEquals(expectedAnimalList, animalRepository.findMinConstAnimals(animalList, 3));
+        try {
+            Assertions.assertEquals(expectedAnimalList, animalRepository.findMinConstAnimals(animalList, 3));
+        } catch (IllegalListSizeException e) { // если вернулось исключение, то fail
+            Assertions.fail();
+        }
     }
 
     /**
@@ -217,9 +249,35 @@ class FintechApplicationTests {
      * Ожидаемый результат: размер возвращаемого списка всегда равен заданному limit
      */
     @ParameterizedTest
-    @ValueSource(ints = {2, 3, 4, 5, 10})
+    @ValueSource(ints = {1, 2, 3, 4})
     void findMinConstAnimalsSizeTest(int limit) {
-        List<AbstractAnimal> animalList = new ArrayList<>(animalRepository.getAnimalArray().get("CAT")); //передаваемый список составленный из кошек из animalRepository
-        Assertions.assertEquals(Math.min(limit, animalList.size()), animalRepository.findMinConstAnimals(animalList, limit).size()); // если limits больше чем длина списка должен вернуться список длинной равной изначальному
+        List<AbstractAnimal> animalList = List.of(
+                new Cat("Persian", "Kitty", "Evil", LocalDate.now().minusYears(10), BigDecimal.valueOf(330), "meat", 12),
+                new Cat("CyberCat", "V", "101010", LocalDate.now().minusYears(2), BigDecimal.valueOf(256), "electric", 12),
+                new Cat("Tibet", "Cloud", "Evil", LocalDate.now().minusYears(4), BigDecimal.valueOf(300), "meat", 12),
+                new Cat("Stray", "Akira", "Good", LocalDate.now().minusYears(6), BigDecimal.valueOf(125), "meat", 12));
+        try {
+            Assertions.assertEquals(limit, animalRepository.findMinConstAnimals(animalList, limit).size()); // если limit меньше или равен длине списка должен вернуться список длинной limits
+        } catch (Exception e) {
+            Assertions.fail(); //любое исключение вызовет fail
+        }
     }
+
+    /**
+     * <b>findMinConstAnimalsSizeExceptionTest</b>
+     * - Тестирование метода поиска животных с самой низкой ценой
+     * Ожидаемый результат: исключение IllegalListSizeException т.к. limit больше длинны списка
+     */
+    @ParameterizedTest
+    @ValueSource(ints = {5, 6, 7, 8, 9, 10})
+    void findMinConstAnimalsSizeExceptionTest(int limit) {
+        List<AbstractAnimal> animalList = List.of(
+                new Cat("Persian", "Kitty", "Evil", LocalDate.now().minusYears(10), BigDecimal.valueOf(330), "meat", 12),
+                new Cat("CyberCat", "V", "101010", LocalDate.now().minusYears(2), BigDecimal.valueOf(256), "electric", 12),
+                new Cat("Tibet", "Cloud", "Evil", LocalDate.now().minusYears(4), BigDecimal.valueOf(300), "meat", 12),
+                new Cat("Stray", "Akira", "Good", LocalDate.now().minusYears(6), BigDecimal.valueOf(125), "meat", 12));
+
+        Assertions.assertThrows(IllegalListSizeException.class, () -> animalRepository.findMinConstAnimals(animalList, limit)); // если limit больше длинны списка, то ожидается исключение
+    }
+
 }

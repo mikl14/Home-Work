@@ -3,9 +3,10 @@ package ru.mtsbank.fintech.animal_repository;
 import org.springframework.stereotype.Service;
 import ru.mts.animals.AbstractAnimal;
 import ru.mts.animals_creators.CreateAnimalServiceImpl;
+import ru.mtsbank.fintech.exceptions.IllegalListSizeException;
+import ru.mtsbank.fintech.exceptions.IllegalValueException;
 
 import javax.annotation.PostConstruct;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -44,6 +45,7 @@ public class AnimalRepositoryImpl implements AnimalRepository {
 
     /**
      * <b>findLeapYearNames</b> выполняет поиск животных рожденных в високосный год, по массиву животных
+     *
      * @return Map<String, LocalDate> ключ: тип + имя животного, значение: дата рождения
      */
     @Override
@@ -53,7 +55,7 @@ public class AnimalRepositoryImpl implements AnimalRepository {
         for (Map.Entry<String, List<AbstractAnimal>> entry : animalMap.entrySet()) {
             leapYearBirthAnimal.putAll(entry.getValue().stream().distinct()
                     .filter(value -> value.getBirthDate().isLeapYear())
-                    .collect(Collectors.toMap(AbstractAnimal::getName, AbstractAnimal::getBirthDate,(existingValue, newValue) -> newValue)));
+                    .collect(Collectors.toMap(AbstractAnimal::getName, AbstractAnimal::getBirthDate, (existingValue, newValue) -> newValue)));
         }
         return leapYearBirthAnimal;
     }
@@ -61,12 +63,13 @@ public class AnimalRepositoryImpl implements AnimalRepository {
     /**
      * <b>findOlderAnimal</b>
      * возвращает Map животных, старше заданного возраста или самое взрослое животное
+     *
      * @param age искомый возраст
      * @return Map<AbstractAnimal, Integer> - ключ: животное, значение: возраст
      */
     @Override
     public Map<AbstractAnimal, Integer> findOlderAnimal(int age) {
-        if (age < 0) throw new IllegalArgumentException();
+        if (age < 0) throw new IllegalValueException("Incorrect Age!");
         Map<AbstractAnimal, Integer> olderAnimals = new HashMap<>();
 
         List<AbstractAnimal> animalList = new ArrayList<>();
@@ -81,7 +84,7 @@ public class AnimalRepositoryImpl implements AnimalRepository {
         if (olderAnimals.isEmpty()) {
 
             Optional<AbstractAnimal> optionalOlderAnimal = animalList.stream().max(Comparator.comparing(AbstractAnimal::getAge));
-            AbstractAnimal olderAnimal = optionalOlderAnimal.orElseThrow(() -> new IllegalArgumentException("ss"));
+            AbstractAnimal olderAnimal = optionalOlderAnimal.orElseThrow(() -> new IllegalValueException("Can't find the oldest animal!"));
             olderAnimals.put(olderAnimal, olderAnimal.getAge());
         }
         return olderAnimals;
@@ -106,6 +109,7 @@ public class AnimalRepositoryImpl implements AnimalRepository {
      * @return double средний возраст животных в переданном списке
      */
     public double findAverageAge(List<AbstractAnimal> animalList) {
+        if (animalList.isEmpty()) throw new IllegalValueException("animalList is empty!");
         return animalList.stream().mapToLong(AbstractAnimal::getAge).average().orElse(0);
     }
 
@@ -114,20 +118,21 @@ public class AnimalRepositoryImpl implements AnimalRepository {
      *
      * @return List<AbstractAnimal> старше olds и с ценой выше средней
      */
-    public List<AbstractAnimal> findOldAndExpensive(int olds, List<AbstractAnimal> animalList) {
-        if (olds < 0) throw new IllegalArgumentException();
+    public List<AbstractAnimal> findOldAndExpensive(int olds, List<AbstractAnimal> animalList) throws IllegalListSizeException {
+        if (olds < 0) throw new IllegalValueException("Incorrect olds!");
+        if (animalList.isEmpty()) throw new IllegalListSizeException("animalList is empty!");
 
         double averagePrice = animalList.stream()
                 .mapToDouble(buf -> buf.getCost().doubleValue())
                 .average()
                 .orElse(0.0);
 
-        List<AbstractAnimal> animalList1 = animalList.stream()
+        List<AbstractAnimal> result = animalList.stream()
                 .filter(animal -> animal.getAge() > olds && animal.getCost().doubleValue() > averagePrice)
                 .sorted(Comparator.comparing(AbstractAnimal::getAge).reversed())
                 .collect(Collectors.toList());
 
-        return animalList1;
+        return result;
     }
 
     /**
@@ -135,7 +140,8 @@ public class AnimalRepositoryImpl implements AnimalRepository {
      *
      * @return List<AbstractAnimal> с limit самыми дешевыми животными отсортированный в обратном алфавитном порядке по именам
      */
-    public List<String> findMinConstAnimals(List<AbstractAnimal> animalList,int limit) {
+    public List<String> findMinConstAnimals(List<AbstractAnimal> animalList, int limit) throws IllegalListSizeException {
+        if (animalList.isEmpty() || animalList.size() < limit) throw new IllegalListSizeException("Incorrect list size!");
         return animalList.stream()
                 .sorted(Comparator.comparing(AbstractAnimal::getCost))
                 .limit(limit)
