@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import ru.mts.animals.AbstractAnimal;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class CreateAnimalServiceImpl implements CreateAnimalService {
@@ -55,10 +56,10 @@ public class CreateAnimalServiceImpl implements CreateAnimalService {
      * @param numberAnimals количество уникальных животных которых необходимо создать
      * @return Массив животных длинной numberAnimals
      */
-    public Map<String, List<AbstractAnimal>> getAnimals(int numberAnimals) {
+    public ConcurrentHashMap<String, List<AbstractAnimal>> getAnimals(int numberAnimals) {
 
         if (numberAnimals < 0) throw new IllegalArgumentException();
-        Map<String, List<AbstractAnimal>> animalMap = new HashMap<>();
+        ConcurrentHashMap<String, List<AbstractAnimal>> animalMap = new ConcurrentHashMap<>();
         for (int i = 0; i < numberAnimals; i++) {
             AbstractAnimal animal = animalFactory.getAnimal();
             if(!animalMap.containsKey(animal.getAnimalType())) {
@@ -76,10 +77,10 @@ public class CreateAnimalServiceImpl implements CreateAnimalService {
      * @return Массив животных длинной 10
      */
     @Override
-    public Map<String, List<AbstractAnimal>> getAnimals() {
+    public ConcurrentHashMap<String, List<AbstractAnimal>> getAnimals() {
 
         int i = 0;
-        Map<String, List<AbstractAnimal>> animalMap = new HashMap<>();
+        ConcurrentHashMap<String, List<AbstractAnimal>> animalMap = new ConcurrentHashMap<>();
         do {
             AbstractAnimal animal = animalFactory.getAnimal();
             if(!animalMap.containsKey(animal.getAnimalType())) {
