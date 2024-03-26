@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @TestConfiguration
 
@@ -23,8 +24,8 @@ public class TestsConfiguration {
     CreateAnimalServiceImpl createAnimalServiceImpl(AnimalFactory animalFactory) {
         return new CreateAnimalServiceImpl(animalFactory) {
             @Override
-            public Map<String, List<AbstractAnimal>> getAnimals() {
-                return new HashMap<String, List<AbstractAnimal>>() {{
+            public ConcurrentHashMap<String, List<AbstractAnimal>> getAnimals() {
+                return new ConcurrentHashMap<String, List<AbstractAnimal>>() {{
                     put("FISH", List.of(
                             new Fish("Gold Fish", "Goldie", "neutral", LocalDate.now().minusYears(5), BigDecimal.valueOf(100), "corns", 12),
                             new Fish("Guppy", "Tiny", "Evil", LocalDate.now().minusYears(7), BigDecimal.valueOf(200), "corns", 12),
