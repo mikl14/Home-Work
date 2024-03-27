@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 public class AnimalRepositoryImpl implements AnimalRepository {
 
     private ConcurrentHashMap<String, List<AbstractAnimal>> animalMap;
-
     private CreateAnimalServiceImpl createAnimalService;
 
     /**
@@ -37,7 +36,7 @@ public class AnimalRepositoryImpl implements AnimalRepository {
      */
     @PostConstruct
     public void init() {
-        animalMap = createAnimalService.getAnimals();
+        animalMap = (ConcurrentHashMap<String, List<AbstractAnimal>>) createAnimalService.getAnimals();
     }
 
     public Map<String, List<AbstractAnimal>> getAnimalArray() {

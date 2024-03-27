@@ -25,18 +25,18 @@ public class ScheduledTasks {
         this.animalRepository = animalRepository;
     }
 
-    ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
-
-    Runnable findDuplicateTask = () -> {
-        log.info("FindDuplicate animal {}", animalRepository.findDuplicate());
-    };
-
-    Runnable findLeapYearNamesTask = () -> {
-        log.info("FindLeapYearNames animal {}", animalRepository.findLeapYearNames());
-    };
-
     @PostConstruct
     public void init() {
+        ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
+
+        Runnable findDuplicateTask = () -> {
+            log.info("FindDuplicate animal {}", animalRepository.findDuplicate());
+        };
+
+        Runnable findLeapYearNamesTask = () -> {
+            log.info("FindLeapYearNames animal {}", animalRepository.findLeapYearNames());
+        };
+
         executor.scheduleAtFixedRate(findDuplicateTask, 0, 10, TimeUnit.SECONDS);
         executor.scheduleAtFixedRate(findLeapYearNamesTask, 0, 20, TimeUnit.SECONDS);
     }

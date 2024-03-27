@@ -3,8 +3,11 @@ package ru.mts.animals_creators;
 import org.springframework.stereotype.Component;
 import ru.mts.animals.AbstractAnimal;
 
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Component
 public class CreateAnimalServiceImpl implements CreateAnimalService {
@@ -56,14 +59,14 @@ public class CreateAnimalServiceImpl implements CreateAnimalService {
      * @param numberAnimals количество уникальных животных которых необходимо создать
      * @return Массив животных длинной numberAnimals
      */
-    public ConcurrentHashMap<String, List<AbstractAnimal>> getAnimals(int numberAnimals) {
+    public Map<String, List<AbstractAnimal>> getAnimals(int numberAnimals) {
 
         if (numberAnimals < 0) throw new IllegalArgumentException();
         ConcurrentHashMap<String, List<AbstractAnimal>> animalMap = new ConcurrentHashMap<>();
         for (int i = 0; i < numberAnimals; i++) {
             AbstractAnimal animal = animalFactory.getAnimal();
             if(!animalMap.containsKey(animal.getAnimalType())) {
-                animalMap.put(animal.getAnimalType(),new ArrayList<>());
+                animalMap.put(animal.getAnimalType(),new CopyOnWriteArrayList<>());
             }
             animalMap.get(animal.getAnimalType()).add(animal);
         }
@@ -77,14 +80,14 @@ public class CreateAnimalServiceImpl implements CreateAnimalService {
      * @return Массив животных длинной 10
      */
     @Override
-    public ConcurrentHashMap<String, List<AbstractAnimal>> getAnimals() {
+    public Map<String, List<AbstractAnimal>> getAnimals() {
 
         int i = 0;
         ConcurrentHashMap<String, List<AbstractAnimal>> animalMap = new ConcurrentHashMap<>();
         do {
             AbstractAnimal animal = animalFactory.getAnimal();
             if(!animalMap.containsKey(animal.getAnimalType())) {
-                animalMap.put(animal.getAnimalType(),new ArrayList<>());
+                animalMap.put(animal.getAnimalType(),new CopyOnWriteArrayList<>());
             }
             animalMap.get(animal.getAnimalType()).add(animal);
             i++;
