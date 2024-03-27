@@ -9,13 +9,12 @@ import ru.mtsbank.fintech.exceptions.IllegalValueException;
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Service
 public class AnimalRepositoryImpl implements AnimalRepository {
 
-    private ConcurrentHashMap<String, List<AbstractAnimal>> animalMap;
+    private Map<String, List<AbstractAnimal>> animalMap;
     private CreateAnimalServiceImpl createAnimalService;
 
     /**
@@ -36,7 +35,7 @@ public class AnimalRepositoryImpl implements AnimalRepository {
      */
     @PostConstruct
     public void init() {
-        animalMap = (ConcurrentHashMap<String, List<AbstractAnimal>>) createAnimalService.getAnimals();
+        animalMap = createAnimalService.getAnimals();
     }
 
     public Map<String, List<AbstractAnimal>> getAnimalArray() {
