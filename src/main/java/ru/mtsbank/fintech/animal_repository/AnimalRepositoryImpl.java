@@ -9,6 +9,7 @@ import ru.mtsbank.fintech.exceptions.IllegalValueException;
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,12 +50,12 @@ public class AnimalRepositoryImpl implements AnimalRepository {
      */
     @Override
     public Map<String, LocalDate> findLeapYearNames() {
-        Map<String, LocalDate> leapYearBirthAnimal = new HashMap<>();
+        Map<String, LocalDate> leapYearBirthAnimal = new ConcurrentHashMap<>();
 
         for (Map.Entry<String, List<AbstractAnimal>> entry : animalMap.entrySet()) {
             leapYearBirthAnimal.putAll(entry.getValue().stream().distinct()
                     .filter(value -> value.getBirthDate().isLeapYear())
-                    .collect(Collectors.toMap(AbstractAnimal::getName, AbstractAnimal::getBirthDate, (existingValue, newValue) -> newValue)));
+                    .collect(Collectors.toConcurrentMap(AbstractAnimal::getName, AbstractAnimal::getBirthDate, (existingValue, newValue) -> newValue)));
         }
         return leapYearBirthAnimal;
     }
@@ -69,7 +70,7 @@ public class AnimalRepositoryImpl implements AnimalRepository {
     @Override
     public Map<AbstractAnimal, Integer> findOlderAnimal(int age) {
         if (age < 0) throw new IllegalValueException("Incorrect Age!");
-        Map<AbstractAnimal, Integer> olderAnimals = new HashMap<>();
+        Map<AbstractAnimal, Integer> olderAnimals = new ConcurrentHashMap<>();
 
         List<AbstractAnimal> animalList = new ArrayList<>();
         for (Map.Entry<String, List<AbstractAnimal>> entry : animalMap.entrySet()) {
@@ -78,7 +79,7 @@ public class AnimalRepositoryImpl implements AnimalRepository {
 
         olderAnimals.putAll(animalList.stream().distinct()
                 .filter(value -> value.getAge() > age)
-                .collect(Collectors.toMap(value -> value, AbstractAnimal::getAge)));
+                .collect(Collectors.toConcurrentMap(value -> value, AbstractAnimal::getAge)));
 
         if (olderAnimals.isEmpty()) {
 
@@ -97,9 +98,9 @@ public class AnimalRepositoryImpl implements AnimalRepository {
     @Override
     public Map<String, List<AbstractAnimal>> findDuplicate() {
         return animalMap.entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream()
+                .collect(Collectors.toConcurrentMap(Map.Entry::getKey, entry -> entry.getValue().stream()
                         .filter(animal -> entry.getValue().indexOf(animal) != entry.getValue().lastIndexOf(animal))
-                        .collect(Collectors.toList())));
+                        .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::synchronizedList))));
     }
 
     /**
@@ -129,7 +130,7 @@ public class AnimalRepositoryImpl implements AnimalRepository {
         List<AbstractAnimal> result = animalList.stream()
                 .filter(animal -> animal.getAge() > olds && animal.getCost().doubleValue() > averagePrice)
                 .sorted(Comparator.comparing(AbstractAnimal::getAge).reversed())
-                .collect(Collectors.toList());
+                .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::synchronizedList));
 
         return result;
     }
@@ -140,12 +141,13 @@ public class AnimalRepositoryImpl implements AnimalRepository {
      * @return List<AbstractAnimal> с limit самыми дешевыми животными отсортированный в обратном алфавитном порядке по именам
      */
     public List<String> findMinConstAnimals(List<AbstractAnimal> animalList, int limit) throws IllegalListSizeException {
-        if (animalList.isEmpty() || animalList.size() < limit) throw new IllegalListSizeException("Incorrect list size!");
+        if (animalList.isEmpty() || animalList.size() < limit)
+            throw new IllegalListSizeException("Incorrect list size!");
         return animalList.stream()
                 .sorted(Comparator.comparing(AbstractAnimal::getCost))
                 .limit(limit)
                 .sorted(Comparator.comparing(AbstractAnimal::getName).reversed())
                 .map(AbstractAnimal::getName)
-                .collect(Collectors.toList());
+                .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::synchronizedList));
     }
 }

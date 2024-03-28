@@ -24,7 +24,7 @@ public class TestsConfiguration {
     CreateAnimalServiceImpl createAnimalServiceImpl(AnimalFactory animalFactory) {
         return new CreateAnimalServiceImpl(animalFactory) {
             @Override
-            public ConcurrentHashMap<String, List<AbstractAnimal>> getAnimals() {
+            public Map<String, List<AbstractAnimal>> getAnimals() {
                 return new ConcurrentHashMap<String, List<AbstractAnimal>>() {{
                     put("FISH", List.of(
                             new Fish("Gold Fish", "Goldie", "neutral", LocalDate.now().minusYears(5), BigDecimal.valueOf(100), "corns", 12),
