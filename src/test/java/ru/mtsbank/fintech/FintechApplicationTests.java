@@ -280,4 +280,21 @@ class FintechApplicationTests {
         Assertions.assertThrows(IllegalListSizeException.class, () -> animalRepository.findMinConstAnimals(animalList, limit)); // если limit больше длинны списка, то ожидается исключение
     }
 
+    /**
+     * <b>readFromJSONExceptionTest</b>
+     * - Тестирование метода чтения из JSON
+     * Ожидаемый результат: исключение IllegalStateException т.к. имя файла не существует
+     */
+
+    @Test
+    void readFromJSONExceptionTest() {
+        Assertions.assertThrows(IllegalStateException.class, () -> animalRepository.readFromJSON("noFile!"));
+    }
+
+    @Test
+    void readWriteTest() {
+        Map<String, LocalDate> animaMap = animalRepository.findLeapYearNames();
+        Assertions.assertEquals(animalRepository.readFromJSON("findLeapYearNames"), animaMap.toString());
+    }
+
 }

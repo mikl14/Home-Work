@@ -14,7 +14,7 @@ public abstract class Predator extends AbstractAnimal {
      * @param livingEnvironment ареал обитания
      */
     public Predator(String name, String character, String livingEnvironment) {
-        super(name,character);
+        super(name, character);
         this.livingEnvironment = livingEnvironment;
         this.weight = random.nextInt(150 - 80) + 80;
     }
@@ -36,6 +36,10 @@ public abstract class Predator extends AbstractAnimal {
         this.weight = weight;
     }
 
+    public Predator() {
+
+    }
+
     public String getLivingEnvironment() {
         return livingEnvironment;
     }
@@ -46,13 +50,6 @@ public abstract class Predator extends AbstractAnimal {
 
     @Override
     public String toString() {
-        return "my name: " + name +
-                " my birth date: " + getFormatDate("dd-MM-yyyy") + '\'' +
-                " livingEnvironment='" + livingEnvironment + '\'' +
-                ", Weight=" + weight +
-                ", breed='" + breed + '\'' +
-                ", character='" + character + '\'' +
-                ", cost=" + cost +
-                '}';
+        return name + " " + cost + " " + birthDate + " " + getSecretInfomation();
     }
 }

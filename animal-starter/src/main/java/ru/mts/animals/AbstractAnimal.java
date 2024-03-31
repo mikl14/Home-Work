@@ -2,21 +2,27 @@ package ru.mts.animals;
 
 import org.springframework.stereotype.Component;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 
 @Component
-public abstract class AbstractAnimal implements Animal {
+public abstract class AbstractAnimal implements Animal, Externalizable {
     protected Random random = new Random();
     protected LocalDate birthDate;
     protected String breed, name, character;
     protected BigDecimal cost;
+    protected String secretInformation;
+
 
     /**
      * Конструктор AbstractAnimal
@@ -35,6 +41,7 @@ public abstract class AbstractAnimal implements Animal {
         this.birthDate = birthDate;
         this.character = character;
         this.cost = cost.setScale(2, RoundingMode.HALF_UP);
+        this.secretInformation = InitSecretInformation();
     }
 
     /**
@@ -49,6 +56,11 @@ public abstract class AbstractAnimal implements Animal {
         this.birthDate = generateRandomDate();
         this.character = character;
         this.cost = (BigDecimal.valueOf(random.nextDouble() * 1000)).setScale(2, RoundingMode.HALF_UP);
+        this.secretInformation = InitSecretInformation();
+    }
+
+    public AbstractAnimal() {
+
     }
 
     @Override
@@ -122,15 +134,59 @@ public abstract class AbstractAnimal implements Animal {
     }
 
     /**
+     * Метод <b>InitSecretInformation</b>
+     * инициализирует поле secretInformation
+     *
+     * @return Возвращает случайную строку из файла с секретными данными
+     */
+
+    private String InitSecretInformation() {
+        try {
+            List<String> lines = Files.readAllLines(Paths.get("src/main/resources/secretStore/secretInformation.txt"));
+            if (!lines.isEmpty()) {
+                Random random = new Random();
+                int randomIndex = random.nextInt(lines.size());
+                String randomLine = lines.get(randomIndex);
+                return randomLine;
+            } else {
+                throw new IllegalArgumentException("Файл секретной информации пуст !");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public String getSecretInfomation() {
+        return secretInformation;
+    }
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeUTF(name);
+        out.writeUTF(String.valueOf(cost));
+        out.writeUTF(String.valueOf(birthDate));
+        out.writeUTF(Base64.getEncoder().encodeToString(secretInformation.getBytes()));
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        this.name = in.readUTF();
+        this.cost = BigDecimal.valueOf(Double.parseDouble(in.readUTF()));
+        this.birthDate = LocalDate.parse(in.readUTF());
+        this.secretInformation = new String(Base64.getDecoder().decode(in.readUTF()));
+    }
+
+    /**
      * Метод <b>getAge</b>
+     *
      * @return возраст животного в годах
      */
     public int getAge() {
         return Period.between(birthDate, LocalDate.now()).getYears();
     }
 
-    public String getAnimalType()
-    {
+    public String getAnimalType() {
         return this.getClass().getSimpleName().toUpperCase(Locale.ROOT);
     }
 }

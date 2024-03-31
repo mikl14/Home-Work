@@ -30,11 +30,13 @@ public class ScheduledTasks {
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
 
         Runnable findDuplicateTask = () -> {
-            log.info("FindDuplicate animal {}", animalRepository.findDuplicate());
+            animalRepository.findDuplicate(); //вызываем метод
+            log.info("FindDuplicate animal {}", animalRepository.readFromJSON("findDuplicate")); //выводим данные
         };
 
         Runnable findLeapYearNamesTask = () -> {
-            log.info("FindLeapYearNames animal {}", animalRepository.findLeapYearNames());
+            animalRepository.findLeapYearNames();//вызываем метод
+            log.info("FindLeapYearNames animal {}", animalRepository.readFromJSON("findLeapYearNames"));//выводим данные
         };
 
         executor.scheduleAtFixedRate(findDuplicateTask, 0, 10, TimeUnit.SECONDS);
@@ -47,14 +49,20 @@ public class ScheduledTasks {
      */
     @Scheduled(fixedRate = 1000 * 60) // 1 минута
     public void animalScheduledLog() {
+
         try {
             List<AbstractAnimal> animalList = animalRepository.getAnimalArray().values().stream().max(Comparator.comparingInt(List::size)).orElse(List.of());
             //т.к. нельзя предугадать сколько будет сгенерировано животных, для передачи в методы взят самый длинный список из map животных.
-            log.info("FindAverageAge {}", animalRepository.findAverageAge(animalList));
-            log.info("FindOlder animal {}", animalRepository.findOlderAnimal(5));
-            log.info("FindMinConstAnimals {}", animalRepository.findMinConstAnimals(animalList, animalList.size()));
-            log.info("FindOldAndExpensive {}", animalRepository.findOldAndExpensive(5, animalList));
 
+            animalRepository.findAverageAge(animalList); //вызываем все методы чтобы они произвели записи в соответствующие файлы
+            animalRepository.findOlderAnimal(5);
+            animalRepository.findMinConstAnimals(animalList, animalList.size());
+            animalRepository.findOldAndExpensive(5, animalList);
+
+            log.info("FindAverageAge {}", animalRepository.readFromJSON("findAverageAge")); //выводим данные из файлов
+            log.info("FindOlder animal {}", animalRepository.readFromJSON("findOlderAnimal"));
+            log.info("FindMinConstAnimals {}", animalRepository.readFromJSON("findMinConstAnimals"));
+            log.info("FindOldAndExpensive {}", animalRepository.readFromJSON("findOldAndExpensive"));
         } catch (Exception e) {
             log.error("Exception! : " + e.getMessage(), e);
         }

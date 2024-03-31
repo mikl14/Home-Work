@@ -1,5 +1,6 @@
 package ru.mtsbank.fintech.starter_tests.test_config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
@@ -10,7 +11,6 @@ import ru.mtsbank.fintech.animal_repository.AnimalRepositoryImpl;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -53,8 +53,10 @@ public class TestsConfiguration {
 
     @Scope("singleton")
     @Bean
-    AnimalRepositoryImpl animalRepository(CreateAnimalServiceImpl createAnimalServiceImpl) {
-        return new AnimalRepositoryImpl(createAnimalServiceImpl);
+    AnimalRepositoryImpl animalRepository(CreateAnimalServiceImpl createAnimalServiceImpl, ObjectMapper objectMapper) {
+        AnimalRepositoryImpl animalRepository = new AnimalRepositoryImpl(createAnimalServiceImpl, objectMapper);
+        animalRepository.setPathToFiles("src/test/resources/results/");
+        return animalRepository;
     }
 
 }

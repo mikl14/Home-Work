@@ -9,12 +9,16 @@ public class Wolf extends Predator {
         super(name, character, livingEnvironment);
     }
 
+    public Wolf() {
+        super();
+    }
+
     public Wolf(String breed, String name, String character, LocalDate birthDate, BigDecimal cost, String livingEnvironment, int weight) {
         super(breed, name, character, birthDate, cost, livingEnvironment, weight);
     }
 
     @Override
     public String toString() {
-        return "i'm Big Bad Wolf! " + super.toString();
+        return this.getClass().getSimpleName() + " " + super.toString();
     }
 }

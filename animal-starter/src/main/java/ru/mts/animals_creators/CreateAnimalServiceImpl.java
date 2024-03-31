@@ -3,6 +3,11 @@ package ru.mts.animals_creators;
 import org.springframework.stereotype.Component;
 import ru.mts.animals.AbstractAnimal;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -36,7 +41,21 @@ public class CreateAnimalServiceImpl implements CreateAnimalService {
      * @return AbstractAnimal
      */
     public AbstractAnimal getRandomAnimal() {
-        return animalFactory.getAnimal();
+
+        AbstractAnimal animal = animalFactory.getAnimal();
+
+        Path path = Paths.get("src/main/resources/allAnimals.txt");
+
+        try {
+            if (!Files.exists(path)) {
+                Files.createFile(path);
+            }
+            int rowNumber = Files.readAllLines(path).size() + 1;
+            Files.write(path, (rowNumber + " " + animal.getClass().getSimpleName() + " " + animal.getName() + " " + animal.getCost() + " " + animal.getBirthDate() + '\n').getBytes(), StandardOpenOption.APPEND);
+        } catch (IOException e) {
+            System.err.println("Ошибка поиска файла!: " + e.toString());
+        }
+        return animal;
     }
 
     /**
@@ -64,9 +83,9 @@ public class CreateAnimalServiceImpl implements CreateAnimalService {
         if (numberAnimals < 0) throw new IllegalArgumentException();
         ConcurrentHashMap<String, List<AbstractAnimal>> animalMap = new ConcurrentHashMap<>();
         for (int i = 0; i < numberAnimals; i++) {
-            AbstractAnimal animal = animalFactory.getAnimal();
-            if(!animalMap.containsKey(animal.getAnimalType())) {
-                animalMap.put(animal.getAnimalType(),new CopyOnWriteArrayList<>());
+            AbstractAnimal animal = getRandomAnimal();
+            if (!animalMap.containsKey(animal.getAnimalType())) {
+                animalMap.put(animal.getAnimalType(), new CopyOnWriteArrayList<>());
             }
             animalMap.get(animal.getAnimalType()).add(animal);
         }
@@ -85,9 +104,9 @@ public class CreateAnimalServiceImpl implements CreateAnimalService {
         int i = 0;
         ConcurrentHashMap<String, List<AbstractAnimal>> animalMap = new ConcurrentHashMap<>();
         do {
-            AbstractAnimal animal = animalFactory.getAnimal();
-            if(!animalMap.containsKey(animal.getAnimalType())) {
-                animalMap.put(animal.getAnimalType(),new CopyOnWriteArrayList<>());
+            AbstractAnimal animal = getRandomAnimal();
+            if (!animalMap.containsKey(animal.getAnimalType())) {
+                animalMap.put(animal.getAnimalType(), new CopyOnWriteArrayList<>());
             }
             animalMap.get(animal.getAnimalType()).add(animal);
             i++;

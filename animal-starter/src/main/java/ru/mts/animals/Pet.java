@@ -16,7 +16,7 @@ public abstract class Pet extends AbstractAnimal {
      * @see AbstractAnimal
      */
     public Pet(String name, String character, String essentialFood) {
-        super(name,character);
+        super(name, character);
         this.essentialFood = essentialFood;
         this.lifeSpan = random.nextInt(12 - 9) + 9;
     }
@@ -38,6 +38,10 @@ public abstract class Pet extends AbstractAnimal {
         this.lifeSpan = lifeSpan;
     }
 
+    public Pet() {
+
+    }
+
     public String getEssentialFood() {
         return essentialFood;
     }
@@ -48,12 +52,6 @@ public abstract class Pet extends AbstractAnimal {
 
     @Override
     public String toString() {
-        return "my name: " + name
-                + " my birth date: " + getFormatDate("dd-MM-yyyy") + '\''
-                + " , essentialFood='" + essentialFood + '\'' + ", " +
-                "lifeSpan=" + lifeSpan + ", breed='" + breed + '\''
-                + ", character='" + character + '\''
-                + ", cost=" + cost +
-                '}';
+        return name + " " + cost + " " + birthDate + " " + getSecretInfomation();
     }
 }

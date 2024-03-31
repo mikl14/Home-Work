@@ -2,6 +2,8 @@ package ru.mtsbank.fintech.starter_tests;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -9,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
-import ru.mts.animals.Bear;
 import ru.mts.animals.Fish;
 import ru.mts.animals_creators.AnimalFactory;
 import ru.mts.animals_creators.CreateAnimalServiceImpl;
@@ -57,10 +58,11 @@ public class AnimalStarterTests {
      * Проверяет соответствие типа запрашиваемого животного
      * и возвращенного getAnimal()
      */
-    @Test
-    void getAnimalTypeTest() {
-        createAnimalServiceImpl.setAnimalType(AnimalFactory.AnimalType.BEAR);
-        Assertions.assertEquals(Bear.class, createAnimalServiceImpl.getAnimal().getClass());
+    @ParameterizedTest
+    @EnumSource(AnimalFactory.AnimalType.class)
+    void getAnimalTypeTest(AnimalFactory.AnimalType animalType) {
+        createAnimalServiceImpl.setAnimalType(animalType);
+        Assertions.assertEquals(animalType.toString(), createAnimalServiceImpl.getAnimal().getClass().getSimpleName().toUpperCase());
     }
 
     /**
