@@ -9,8 +9,8 @@ public class Fish extends Pet {
         super(name, character, essentialFood);
     }
 
-    public Fish(String breed, String name, String character, LocalDate birthDate, BigDecimal cost, String essentialFood, int lifeSpan) {
-        super(breed, name, character, birthDate, cost, essentialFood, lifeSpan);
+    public Fish(String breed, String name, String character, LocalDate birthDate, BigDecimal cost, String essentialFood, int lifeSpan,String secretInformation) {
+        super(breed, name, character, birthDate, cost, essentialFood, lifeSpan,secretInformation);
     }
 
     public Fish() {

@@ -9,8 +9,8 @@ public class Cat extends Pet {
         super(name, character, essentialFood);
     }
 
-    public Cat(String breed, String name, String character, LocalDate birthDate, BigDecimal cost, String essentialFood, int lifeSpan) {
-        super(breed, name, character, birthDate, cost, essentialFood, lifeSpan);
+    public Cat(String breed, String name, String character, LocalDate birthDate, BigDecimal cost, String essentialFood, int lifeSpan, String secretInformation) {
+        super(breed, name, character, birthDate, cost, essentialFood, lifeSpan, secretInformation);
     }
 
     public Cat() {

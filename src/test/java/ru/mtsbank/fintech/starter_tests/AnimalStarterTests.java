@@ -72,7 +72,7 @@ public class AnimalStarterTests {
      */
     @Test
     void getAnimalExceptionTest() {
-        Fish nemo = new Fish("Abis", "Pan", "Evil", LocalDate.of(2012, 12, 1), BigDecimal.valueOf(123), "meat", 12);
+        Fish nemo = new Fish("Abis", "Pan", "Evil", LocalDate.of(2012, 12, 1), BigDecimal.valueOf(123), "meat", 12,"secretInfo");
         Mockito.when(animalFactory.getAnimal(AnimalFactory.AnimalType.CAT)).thenReturn(nemo); // Делаем через mockito возвращение рыбы при запросе
         mockedCreateAnimalServiceImpl.setAnimalType(AnimalFactory.AnimalType.CAT);// выбираем тип кошка
         Assertions.assertThrows(IllegalStateException.class, () -> mockedCreateAnimalServiceImpl.getAnimal()); // ожидаем исключение потому что фабрика вернет рыбу при запросе кошки

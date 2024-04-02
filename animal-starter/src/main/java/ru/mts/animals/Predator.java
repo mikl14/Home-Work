@@ -13,6 +13,7 @@ public abstract class Predator extends AbstractAnimal {
      * @param character         характер животного
      * @param livingEnvironment ареал обитания
      */
+
     public Predator(String name, String character, String livingEnvironment) {
         super(name, character);
         this.livingEnvironment = livingEnvironment;
@@ -29,7 +30,14 @@ public abstract class Predator extends AbstractAnimal {
      * @param cost              цена животного
      * @param livingEnvironment ареал обитания
      * @param weight            вес
+     * @param secretInformation секретная информация которая известна животному
      */
+    public Predator(String breed, String name, String character, LocalDate birthDate, BigDecimal cost, String livingEnvironment, int weight, String secretInformation) {
+        super(breed, name, birthDate, character, cost, secretInformation);
+        this.livingEnvironment = livingEnvironment;
+        this.weight = weight;
+    }
+
     public Predator(String breed, String name, String character, LocalDate birthDate, BigDecimal cost, String livingEnvironment, int weight) {
         super(breed, name, birthDate, character, cost);
         this.livingEnvironment = livingEnvironment;
@@ -37,7 +45,7 @@ public abstract class Predator extends AbstractAnimal {
     }
 
     public Predator() {
-
+        super();
     }
 
     public String getLivingEnvironment() {
@@ -50,6 +58,7 @@ public abstract class Predator extends AbstractAnimal {
 
     @Override
     public String toString() {
-        return name + " " + cost + " " + birthDate + " " + getSecretInfomation();
+        return name + " " + cost + " " + birthDate;
     }
+
 }

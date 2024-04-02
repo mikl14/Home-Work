@@ -1,14 +1,17 @@
 package ru.mtsbank.fintech.animal_repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import ru.mts.animals.AbstractAnimal;
 import ru.mts.animals_creators.CreateAnimalServiceImpl;
+import ru.mts.exceptions.FileAccessException;
 import ru.mtsbank.fintech.exceptions.IllegalListSizeException;
 import ru.mtsbank.fintech.exceptions.IllegalValueException;
 
 import javax.annotation.PostConstruct;
-import java.io.*;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,8 +23,6 @@ public class AnimalRepositoryImpl implements AnimalRepository {
     private Map<String, List<AbstractAnimal>> animalMap;
     private CreateAnimalServiceImpl createAnimalService;
     private ObjectMapper objectMapper;
-
-    private String pathToFiles = "src/main/resources/results/";
 
     /**
      * <b>AnimalRepositoryImpl</b>
@@ -45,10 +46,6 @@ public class AnimalRepositoryImpl implements AnimalRepository {
         animalMap = createAnimalService.getAnimals();
     }
 
-    public void setPathToFiles(String path) {
-        pathToFiles = path;
-    }
-
     public Map<String, List<AbstractAnimal>> getAnimalArray() {
         return animalMap;
     }
@@ -67,7 +64,7 @@ public class AnimalRepositoryImpl implements AnimalRepository {
                     .filter(value -> value.getBirthDate().isLeapYear())
                     .collect(Collectors.toConcurrentMap(AbstractAnimal::getName, AbstractAnimal::getBirthDate, (existingValue, newValue) -> newValue)));
         }
-        saveOnJSON(leapYearBirthAnimal, "findLeapYearNames");
+        writeToFile(leapYearBirthAnimal, FileConstants.findLeapYearNamesFileName);
         return leapYearBirthAnimal;
     }
 
@@ -98,7 +95,7 @@ public class AnimalRepositoryImpl implements AnimalRepository {
             AbstractAnimal olderAnimal = optionalOlderAnimal.orElseThrow(() -> new IllegalValueException("Can't find the oldest animal!"));
             olderAnimals.put(olderAnimal, olderAnimal.getAge());
         }
-        saveOnJSON(olderAnimals, "findOlderAnimal");
+        writeToFile(olderAnimals, FileConstants.findOlderAnimalFileName);
         return olderAnimals;
     }
 
@@ -115,7 +112,7 @@ public class AnimalRepositoryImpl implements AnimalRepository {
                         .filter(animal -> entry.getValue().indexOf(animal) != entry.getValue().lastIndexOf(animal))
                         .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::synchronizedList))));
 
-        saveOnJSON(result, "findDuplicate");
+        writeToFile(result, FileConstants.findDuplicateFileName);
         return result;
     }
 
@@ -128,7 +125,7 @@ public class AnimalRepositoryImpl implements AnimalRepository {
         if (animalList.isEmpty()) throw new IllegalValueException("animalList is empty!");
 
         double result = animalList.stream().mapToLong(AbstractAnimal::getAge).average().orElse(0);
-        saveOnJSON(result, "findAverageAge");
+        writeToFile(result, FileConstants.findAverageAgeFileName);
         return result;
     }
 
@@ -151,7 +148,7 @@ public class AnimalRepositoryImpl implements AnimalRepository {
                 .sorted(Comparator.comparing(AbstractAnimal::getAge).reversed())
                 .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::synchronizedList));
 
-        saveOnJSON(result, "findOldAndExpensive");
+        writeToFile(result, FileConstants.findOldAndExpensiveFileName);
         return result;
     }
 
@@ -171,37 +168,39 @@ public class AnimalRepositoryImpl implements AnimalRepository {
                 .map(AbstractAnimal::getName)
                 .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::synchronizedList));
 
-        saveOnJSON(result, "findMinConstAnimals");
+        writeToFile(result, FileConstants.findMinConstAnimalsFileName);
         return result;
     }
 
     /**
-     * <b>saveOnJSON</b>
-     * принимает объект для записи в Json файл и имя метода (по тз совпадает с именем файла)
+     * <b>writeToFile</b>
+     * принимает объект для записи в файл и имя файла
      * записывает объект в заданный файл
      */
 
-    public void saveOnJSON(Object obj, String methodName) {
 
-        try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(pathToFiles + methodName + ".json"))) {
-            objectOutputStream.writeObject(obj);
+    public void writeToFile(Object obj, String fileName) {
+        try {
+            Resource resource = new ClassPathResource("results/" + fileName);
+            objectMapper.writeValue(resource.getFile(), obj);
         } catch (IOException e) {
-            throw new IllegalStateException("Ошибка записи JSON файла! : " + pathToFiles + methodName + ".json");
+            throw new FileAccessException("Ошибка создания или доступа к файлу для записи результата!" + e);
         }
     }
 
     /**
-     * <b>readFromJSON</b>
-     * возвращает String значение прочитанное из JSON файла
-     * принимает на входи имя метода(имя файла)
+     * <b>readFromFile</b>
+     * принимает имя файла для чтения и тип возвращаемого значения
      */
-    public String readFromJSON(String methodName) {
-        try (ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(pathToFiles + methodName + ".json"))) {
-            return objectInputStream.readObject().toString();
-        } catch (IOException | ClassNotFoundException e) {
-            throw new IllegalStateException("Ошибка чтения JSON файла ! : " + pathToFiles + methodName + ".json" + " " + e);
+    public <T> T readFromFile(String fileName, Class<T> type) {
+        try {
+            Resource resource = new ClassPathResource("results/" + fileName);
+            return objectMapper.readValue(resource.getFile(), type);
+        } catch (IOException e) {
+            throw new FileAccessException("Ошибка доступа к файлу для чтения результата!" + e);
         }
     }
+
 }
 
 

@@ -13,8 +13,8 @@ public class Wolf extends Predator {
         super();
     }
 
-    public Wolf(String breed, String name, String character, LocalDate birthDate, BigDecimal cost, String livingEnvironment, int weight) {
-        super(breed, name, character, birthDate, cost, livingEnvironment, weight);
+    public Wolf(String breed, String name, String character, LocalDate birthDate, BigDecimal cost, String livingEnvironment, int weight, String secretInformation) {
+        super(breed, name, character, birthDate, cost, livingEnvironment, weight, secretInformation);
     }
 
     @Override

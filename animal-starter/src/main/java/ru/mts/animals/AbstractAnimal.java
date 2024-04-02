@@ -1,40 +1,83 @@
 package ru.mts.animals;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
+import ru.mts.exceptions.FileAccessException;
 
-import java.io.Externalizable;
 import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Component
-public abstract class AbstractAnimal implements Animal, Externalizable {
+public abstract class AbstractAnimal implements Animal, Serializable {
     protected Random random = new Random();
     protected LocalDate birthDate;
     protected String breed, name, character;
     protected BigDecimal cost;
+    @JsonDeserialize(using = Base64Deserializer.class)
+    @JsonSerialize(using = Base64Serializer.class)
     protected String secretInformation;
 
+    public static class Base64Serializer extends JsonSerializer<String> {
+        @Override
+        public void serialize(String value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+            byte[] encodedBytes = Base64.getEncoder().encode(value.getBytes());
+            gen.writeString(new String(encodedBytes));
+        }
+    }
+
+    public static class Base64Deserializer extends JsonDeserializer<String> {
+        @Override
+        public String deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
+            String base64String = jsonParser.getCodec().readValue(jsonParser, String.class);
+            byte[] decodedBytes = Base64.getDecoder().decode(base64String);
+            return new String(decodedBytes);
+        }
+    }
 
     /**
      * Конструктор AbstractAnimal
      *
-     * @param breed     порода животного
-     * @param name      имя животного
-     * @param birthDate дата рождения
-     * @param character характер животного
-     * @param cost      цена животного
-     *                  <p>
-     *                  cost округляется до 2х знаков после запятой, для округления использован метод Math.round() т.к в т.з предполагается что в параметре cost храниться сразу округленная цена для магазинов
+     * @param breed             порода животного
+     * @param name              имя животного
+     * @param birthDate         дата рождения
+     * @param character         характер животного
+     * @param cost              цена животного
+     * @param secretInformation секретная информация которая известна животному
+     *
+     *                          <p>
+     *                          cost округляется до 2х знаков после запятой, для округления использован метод Math.round() т.к в т.з предполагается что в параметре cost храниться сразу округленная цена для магазинов
      */
+
+
+    public AbstractAnimal(String breed, String name, LocalDate birthDate, String character, BigDecimal cost, String secretInformation) {
+        this.breed = breed;
+        this.name = name;
+        this.birthDate = birthDate;
+        this.character = character;
+        this.cost = cost.setScale(2, RoundingMode.HALF_UP);
+        this.secretInformation = secretInformation;
+    }
+
+
     public AbstractAnimal(String breed, String name, LocalDate birthDate, String character, BigDecimal cost) {
         this.breed = breed;
         this.name = name;
@@ -50,8 +93,9 @@ public abstract class AbstractAnimal implements Animal, Externalizable {
      * @param character характер животного
      * @see #generateRandomDate()
      */
+
     public AbstractAnimal(String name, String character) {
-        this.breed = "Порода №" + (random.nextInt(1000));
+        this.breed = "Number " + (random.nextInt(1000));
         this.name = name;
         this.birthDate = generateRandomDate();
         this.character = character;
@@ -60,32 +104,68 @@ public abstract class AbstractAnimal implements Animal, Externalizable {
     }
 
     public AbstractAnimal() {
-
     }
 
-    @Override
+    @JsonProperty("breed")
     public String getBreed() {
         return breed;
     }
 
-    @Override
+    @JsonProperty("breed")
+    public void setBreed(String breed) {
+        this.breed = breed;
+    }
+
+    @JsonProperty("name")
     public String getName() {
         return name;
     }
 
-    @Override
+    @JsonProperty("name")
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @JsonProperty("cost")
     public BigDecimal getCost() {
         return cost;
     }
 
-    @Override
+    @JsonProperty("cost")
+    public void setCost(BigDecimal cost) {
+        this.cost = cost;
+    }
+
+    @JsonProperty("character")
     public String getCharacter() {
         return character;
     }
 
-    @Override
+    @JsonProperty("character")
+    public void setCharacter(String character) {
+        this.character = character;
+    }
+
+    @JsonProperty("birthDate")
     public LocalDate getBirthDate() {
         return birthDate;
+    }
+
+    @JsonProperty("birthDate")
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    @JsonProperty("secretInformation")
+    @JsonDeserialize(using = Base64Deserializer.class)
+    @JsonSerialize(using = Base64Serializer.class)
+    public String getSecretInfomation() {
+        return secretInformation;
+    }
+
+    @JsonProperty("secretInformation")
+    public void setSecretInformation(String secretInformation) {
+        this.secretInformation = secretInformation;
     }
 
     /**
@@ -97,6 +177,25 @@ public abstract class AbstractAnimal implements Animal, Externalizable {
     public String getFormatDate(String format) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
         return formatter.format(birthDate);
+    }
+
+    /**
+     * Метод <b>getAge</b>
+     *
+     * @return возраст животного в годах
+     */
+    @JsonIgnore
+    public int getAge() {
+        return Period.between(birthDate, LocalDate.now()).getYears();
+    }
+    /**
+     * Метод <b>getAnimalType</b>
+     *
+     * @return тип животного
+     */
+    @JsonIgnore
+    public String getAnimalType() {
+        return this.getClass().getSimpleName().toUpperCase(Locale.ROOT);
     }
 
     /**
@@ -141,52 +240,13 @@ public abstract class AbstractAnimal implements Animal, Externalizable {
      */
 
     private String InitSecretInformation() {
+        Resource resource = new ClassPathResource("secretStore/secretInformation.txt");
         try {
-            List<String> lines = Files.readAllLines(Paths.get("src/main/resources/secretStore/secretInformation.txt"));
-            if (!lines.isEmpty()) {
-                Random random = new Random();
-                int randomIndex = random.nextInt(lines.size());
-                String randomLine = lines.get(randomIndex);
-                return randomLine;
-            } else {
-                throw new IllegalArgumentException("Файл секретной информации пуст !");
-            }
+            Path path = resource.getFile().toPath();
+            List<String> rows = Files.readAllLines(path);
+            return rows.get(random.nextInt(rows.size()));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new FileAccessException("Ошибка на этапе доступа к файлу с секретной информацией!");
         }
-
-    }
-
-    public String getSecretInfomation() {
-        return secretInformation;
-    }
-
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeUTF(name);
-        out.writeUTF(String.valueOf(cost));
-        out.writeUTF(String.valueOf(birthDate));
-        out.writeUTF(Base64.getEncoder().encodeToString(secretInformation.getBytes()));
-    }
-
-    @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        this.name = in.readUTF();
-        this.cost = BigDecimal.valueOf(Double.parseDouble(in.readUTF()));
-        this.birthDate = LocalDate.parse(in.readUTF());
-        this.secretInformation = new String(Base64.getDecoder().decode(in.readUTF()));
-    }
-
-    /**
-     * Метод <b>getAge</b>
-     *
-     * @return возраст животного в годах
-     */
-    public int getAge() {
-        return Period.between(birthDate, LocalDate.now()).getYears();
-    }
-
-    public String getAnimalType() {
-        return this.getClass().getSimpleName().toUpperCase(Locale.ROOT);
     }
 }
