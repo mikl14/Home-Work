@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 import ru.mts.exceptions.FileAccessException;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.file.Files;
@@ -27,7 +26,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Component
-public abstract class AbstractAnimal implements Animal, Serializable {
+public abstract class AbstractAnimal implements Animal {
     protected Random random = new Random();
     protected LocalDate birthDate;
     protected String breed, name, character;
@@ -188,6 +187,7 @@ public abstract class AbstractAnimal implements Animal, Serializable {
     public int getAge() {
         return Period.between(birthDate, LocalDate.now()).getYears();
     }
+
     /**
      * Метод <b>getAnimalType</b>
      *
@@ -246,7 +246,7 @@ public abstract class AbstractAnimal implements Animal, Serializable {
             List<String> rows = Files.readAllLines(path);
             return rows.get(random.nextInt(rows.size()));
         } catch (IOException e) {
-            throw new FileAccessException("Ошибка на этапе доступа к файлу с секретной информацией!");
+            throw new FileAccessException("Ошибка на этапе доступа к файлу с секретной информацией!" + e);
         }
     }
 }

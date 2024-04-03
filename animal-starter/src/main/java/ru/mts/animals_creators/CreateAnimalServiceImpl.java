@@ -1,13 +1,12 @@
 package ru.mts.animals_creators;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import ru.mts.animals.AbstractAnimal;
 import ru.mts.exceptions.FileAccessException;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -45,16 +44,19 @@ public class CreateAnimalServiceImpl implements CreateAnimalService {
     public AbstractAnimal getRandomAnimal() {
 
         AbstractAnimal animal = animalFactory.getAnimal();
-        Resource resource = new ClassPathResource("allAnimals.txt");
+
         try {
-            Path path = resource.getFile().toPath();
+            Resource resource = new ClassPathResource("results");
+            File fileToWrite = new File(resource.getFile().getAbsolutePath() + "/allAnimals.txt");
+
+            Path path = fileToWrite.toPath();
             if (!Files.exists(path)) {
                 Files.createFile(path);
             }
             int rowNumber = Files.readAllLines(path).size() + 1;
             Files.write(path, (rowNumber + " " + animal.getClass().getSimpleName() + " " + animal.getName() + " " + animal.getCost() + " " + animal.getBirthDate() + '\n').getBytes(), StandardOpenOption.APPEND);
         } catch (IOException e) {
-            throw new FileAccessException("Ошибка доступа к файлу со всеми животными!");
+            throw new FileAccessException("Ошибка доступа к файлу со всеми животными!" + e);
         }
         return animal;
     }

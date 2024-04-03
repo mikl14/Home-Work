@@ -11,6 +11,7 @@ import ru.mtsbank.fintech.exceptions.IllegalListSizeException;
 import ru.mtsbank.fintech.exceptions.IllegalValueException;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
@@ -181,8 +182,9 @@ public class AnimalRepositoryImpl implements AnimalRepository {
 
     public void writeToFile(Object obj, String fileName) {
         try {
-            Resource resource = new ClassPathResource("results/" + fileName);
-            objectMapper.writeValue(resource.getFile(), obj);
+            Resource resource = new ClassPathResource("results");
+            File fileToWrite = new File(resource.getFile().getAbsolutePath() + "/" + fileName);
+            objectMapper.writeValue(fileToWrite, obj);
         } catch (IOException e) {
             throw new FileAccessException("Ошибка создания или доступа к файлу для записи результата!" + e);
         }
