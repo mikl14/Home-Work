@@ -39,13 +39,13 @@ public class AnimalFactory {
 
         switch (type) {
             case CAT:
-                return new Cat(properties.getCatNames()[random.nextInt(properties.getCatNames().length)], "Кошачий", "Кошачий корм");
+                return new Cat(properties.getCatNames()[random.nextInt(properties.getCatNames().length)], "Kittens", "CatFood");
             case FISH:
-                return new Fish(properties.getFishNames()[random.nextInt(properties.getFishNames().length)], "Молчунья", "Рыбий корм");
+                return new Fish(properties.getFishNames()[random.nextInt(properties.getFishNames().length)], "Small", "FishFood");
             case WOLF:
-                return new Wolf(properties.getWolfNames()[random.nextInt(properties.getWolfNames().length)], "Серый", "Лес");
+                return new Wolf(properties.getWolfNames()[random.nextInt(properties.getWolfNames().length)], "Grey", "Forest");
             case BEAR:
-                return new Bear(properties.getBearNames()[random.nextInt(properties.getBearNames().length)], "Горящий", "Тайга");
+                return new Bear(properties.getBearNames()[random.nextInt(properties.getBearNames().length)], "Hot", "Taiga");
             default:
                 throw new IllegalArgumentException();
         }

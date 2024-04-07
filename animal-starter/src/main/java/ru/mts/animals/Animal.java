@@ -41,5 +41,11 @@ public interface Animal {
     String getCharacter();
 
     LocalDate getBirthDate();
+    /**
+     * getSecretInfomation - Возвращает значение засекреченного поля
+     *
+     * @see AbstractAnimal#getCharacter()
+     */
+    String getSecretInfomation();
 
 }

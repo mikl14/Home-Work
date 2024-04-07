@@ -21,7 +21,7 @@ public class AbstractAnimalTest {
      */
     @BeforeEach
     void setUpAnimal() {
-        animal = new Cat("Abis", "Pan", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12);
+        animal = new Cat("Abis", "Pan", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12,"secretInfo");
     }
 
     /**
@@ -33,16 +33,16 @@ public class AbstractAnimalTest {
      */
     @Test
     void equalsFalseTest() {
-        boolean res = animal.equals(new Cat("Abi", "Pan", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12));
+        boolean res = animal.equals(new Cat("Abi", "Pan", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12,"secretInfo"));
         Assertions.assertFalse(res);
 
-        res = animal.equals(new Cat("Abis", "Peter", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12));
+        res = animal.equals(new Cat("Abis", "Peter", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12,"secretInfo"));
         Assertions.assertFalse(res);
 
-        res = animal.equals(new Cat("Abis", "Pan", "Evil", LocalDate.of(2021, 12, 1), BigDecimal.valueOf(123), "meat", 12));
+        res = animal.equals(new Cat("Abis", "Pan", "Evil", LocalDate.of(2021, 12, 1), BigDecimal.valueOf(123), "meat", 12,"secretInfo"));
         Assertions.assertFalse(res);
 
-        res = animal.equals(new Fish("Abis", "Pan", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12));
+        res = animal.equals(new Fish("Abis", "Pan", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12,"secretInfo"));
         Assertions.assertFalse(res);
     }
 
@@ -54,10 +54,10 @@ public class AbstractAnimalTest {
      */
     @Test
     void equalsTrueTest() {
-        boolean res = animal.equals(new Cat("Abis", "Pan", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12));
+        boolean res = animal.equals(new Cat("Abis", "Pan", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12,"secretInfo"));
         Assertions.assertTrue(res);
 
-        res = animal.equals(new Cat("Abis", "Pan", "Good", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12));
+        res = animal.equals(new Cat("Abis", "Pan", "Good", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12,"secretInfo"));
         Assertions.assertTrue(res);
     }
 

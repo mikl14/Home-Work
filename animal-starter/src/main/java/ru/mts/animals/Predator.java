@@ -13,8 +13,9 @@ public abstract class Predator extends AbstractAnimal {
      * @param character         характер животного
      * @param livingEnvironment ареал обитания
      */
+
     public Predator(String name, String character, String livingEnvironment) {
-        super(name,character);
+        super(name, character);
         this.livingEnvironment = livingEnvironment;
         this.weight = random.nextInt(150 - 80) + 80;
     }
@@ -29,11 +30,22 @@ public abstract class Predator extends AbstractAnimal {
      * @param cost              цена животного
      * @param livingEnvironment ареал обитания
      * @param weight            вес
+     * @param secretInformation секретная информация которая известна животному
      */
+    public Predator(String breed, String name, String character, LocalDate birthDate, BigDecimal cost, String livingEnvironment, int weight, String secretInformation) {
+        super(breed, name, birthDate, character, cost, secretInformation);
+        this.livingEnvironment = livingEnvironment;
+        this.weight = weight;
+    }
+
     public Predator(String breed, String name, String character, LocalDate birthDate, BigDecimal cost, String livingEnvironment, int weight) {
         super(breed, name, birthDate, character, cost);
         this.livingEnvironment = livingEnvironment;
         this.weight = weight;
+    }
+
+    public Predator() {
+        super();
     }
 
     public String getLivingEnvironment() {
@@ -46,13 +58,7 @@ public abstract class Predator extends AbstractAnimal {
 
     @Override
     public String toString() {
-        return "my name: " + name +
-                " my birth date: " + getFormatDate("dd-MM-yyyy") + '\'' +
-                " livingEnvironment='" + livingEnvironment + '\'' +
-                ", Weight=" + weight +
-                ", breed='" + breed + '\'' +
-                ", character='" + character + '\'' +
-                ", cost=" + cost +
-                '}';
+        return name + " " + cost + " " + birthDate;
     }
+
 }
