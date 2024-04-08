@@ -46,7 +46,14 @@ public class CreateAnimalServiceImpl implements CreateAnimalService {
         AbstractAnimal animal = animalFactory.getAnimal();
 
         try {
-            Resource resource = new ClassPathResource("results");
+            Resource resource = new ClassPathResource("results");       // получаем ресурс results
+            Path resourceFolderPath;
+            if (!resource.exists()) {
+                Resource resourceInResFolder = new ClassPathResource("application.yaml"); // не нашел иного способа получить путь до папки resources
+                resourceFolderPath = Path.of(Path.of(resourceInResFolder.getFile().getAbsolutePath()).getParent() + "/results");  // объявляем новый путь
+                Files.createDirectory(resourceFolderPath.toAbsolutePath()); // создаем директорию
+            }
+
             File fileToWrite = new File(resource.getFile().getAbsolutePath() + "/allAnimals.txt");
 
             Path path = fileToWrite.toPath();

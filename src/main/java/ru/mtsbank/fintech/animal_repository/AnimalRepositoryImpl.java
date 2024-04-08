@@ -13,6 +13,8 @@ import ru.mtsbank.fintech.exceptions.IllegalValueException;
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -182,8 +184,15 @@ public class AnimalRepositoryImpl implements AnimalRepository {
 
     public void writeToFile(Object obj, String fileName) {
         try {
-            Resource resource = new ClassPathResource("results");
-            File fileToWrite = new File(resource.getFile().getAbsolutePath() + "/" + fileName);
+            Resource resource = new ClassPathResource("results");       // получаем ресурс results
+            Path resourceFolderPath;
+            if (!resource.exists()) {
+                Resource resourceInResFolder = new ClassPathResource("application.yaml"); // не нашел иного способа получить путь до папки resources
+                resourceFolderPath = Path.of(Path.of(resourceInResFolder.getFile().getAbsolutePath()).getParent() + "/results");  // объявляем новый путь
+                Files.createDirectory(resourceFolderPath.toAbsolutePath()); // создаем директорию
+            }
+            resourceFolderPath = resource.getFile().toPath();
+            File fileToWrite = new File(resourceFolderPath.toAbsolutePath() + "/" + fileName);
             objectMapper.writeValue(fileToWrite, obj);
         } catch (IOException e) {
             throw new FileAccessException("Ошибка создания или доступа к файлу для записи результата!" + e);
