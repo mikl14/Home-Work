@@ -8,7 +8,6 @@ import ru.mts.animals.AbstractAnimal;
 import ru.mtsbank.fintech.animal_repository.AnimalRepositoryImpl;
 import ru.mtsbank.fintech.animal_repository.FileConstants;
 import ru.mtsbank.fintech.database_objects.DatabaseConnection;
-import ru.mtsbank.fintech.database_objects.TableRecord;
 
 import javax.annotation.PostConstruct;
 import java.text.SimpleDateFormat;
@@ -81,22 +80,10 @@ public class ScheduledTasks {
     @Scheduled(fixedRate = 1000 * 20) // 20 секунд
     public void databaseScheduledLog() {
         try {
-            List<TableRecord> recordsList = DatabaseConnection.getCreatures();  // получаем список всех объектов из таблицы creatures
-            for (TableRecord record : recordsList) {
-                log.info("Base Record of type:" + record.getClass().getSimpleName() + " " + record.toString());
-            }
-            recordsList = DatabaseConnection.getHabitats(); // получаем список всех объектов из таблицы habitats
-            for (TableRecord record : recordsList) {
-                log.info("Base Record of type:" + record.getClass().getSimpleName() + " " + record.toString());
-            }
-            recordsList = DatabaseConnection.getProviders();  // получаем список всех объектов из таблицы providers
-            for (TableRecord record : recordsList) {
-                log.info("Base Record of type:" + record.getClass().getSimpleName() + " " + record.toString());
-            }
-            recordsList = DatabaseConnection.getAnimalTypes();  // получаем список всех объектов из таблицы animal_type
-            for (TableRecord record : recordsList) {
-                log.info("Base Record of type:" + record.getClass().getSimpleName() + " " + record.toString());
-            }
+            log.info("Base Record of Creatures: " + DatabaseConnection.getCreatures().toString());
+            log.info("Base Record of Habitats: " + DatabaseConnection.getHabitats().toString());
+            log.info("Base Record of Provides: " + DatabaseConnection.getProviders().toString());
+            log.info("Base Record of AnimalTypes: " + DatabaseConnection.getAnimalTypes().toString());
         } catch (Exception e) {
             log.error("Exception! : " + e.getMessage(), e);
         }

@@ -21,7 +21,7 @@ public class AnimalType implements TableRecord {
     }
 
     public void setType(String type) {
-        this.type = type;
+        this.type = type.trim();
     }
 
     public boolean isWild() {

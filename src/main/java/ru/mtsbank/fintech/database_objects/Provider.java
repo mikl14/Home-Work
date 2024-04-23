@@ -28,7 +28,7 @@ public class Provider implements TableRecord {
     }
 
     public void setPhone(String phone) {
-        this.phone = phone;
+        this.phone = phone.trim();
     }
 
     @Override
