@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 import ru.mts.animals.AbstractAnimal;
 import ru.mtsbank.fintech.animal_repository.AnimalRepositoryImpl;
 import ru.mtsbank.fintech.animal_repository.FileConstants;
+import ru.mtsbank.fintech.database_objects.DatabaseConnection;
+import ru.mtsbank.fintech.database_objects.TableRecord;
 
 import javax.annotation.PostConstruct;
 import java.text.SimpleDateFormat;
@@ -50,7 +52,6 @@ public class ScheduledTasks {
      * Выводит все методы animalRepository 1 раз в минуту
      */
 
-
     @Scheduled(fixedRate = 1000 * 60) // 1 минута
     public void animalScheduledLog() {
 
@@ -68,6 +69,34 @@ public class ScheduledTasks {
             log.info("FindOlder animal {}", animalRepository.readFromFile(FileConstants.findOlderAnimalFileName, Map.class));
             log.info("FindMinConstAnimals {}", animalRepository.readFromFile(FileConstants.findMinConstAnimalsFileName, List.class));
             log.info("FindOldAndExpensive {}", animalRepository.readFromFile(FileConstants.findOldAndExpensiveFileName, List.class));
+        } catch (Exception e) {
+            log.error("Exception! : " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * <b>databaseScheduledLog</b>
+     * Выводит все записи из таблиц в базе раз в 20 секунд
+     */
+    @Scheduled(fixedRate = 1000 * 20) // 20 секунд
+    public void databaseScheduledLog() {
+        try {
+            List<TableRecord> recordsList = DatabaseConnection.getCreatures();  // получаем список всех объектов из таблицы creatures
+            for (TableRecord record : recordsList) {
+                log.info("Base Record of type:" + record.getClass().getSimpleName() + " " + record.toString());
+            }
+            recordsList = DatabaseConnection.getHabitats(); // получаем список всех объектов из таблицы habitats
+            for (TableRecord record : recordsList) {
+                log.info("Base Record of type:" + record.getClass().getSimpleName() + " " + record.toString());
+            }
+            recordsList = DatabaseConnection.getProviders();  // получаем список всех объектов из таблицы providers
+            for (TableRecord record : recordsList) {
+                log.info("Base Record of type:" + record.getClass().getSimpleName() + " " + record.toString());
+            }
+            recordsList = DatabaseConnection.getAnimalTypes();  // получаем список всех объектов из таблицы animal_type
+            for (TableRecord record : recordsList) {
+                log.info("Base Record of type:" + record.getClass().getSimpleName() + " " + record.toString());
+            }
         } catch (Exception e) {
             log.error("Exception! : " + e.getMessage(), e);
         }
