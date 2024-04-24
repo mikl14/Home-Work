@@ -5,7 +5,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class Provider implements TableRecord {
     private int idProvider;
-    private String name, phone;
+    private String name, phone,animalType;
+
+    public String getAnimalType() {
+        return animalType;
+    }
+
+    public void setAnimalType(String animal_type) {
+        this.animalType = animal_type.trim();
+    }
 
     public int getIdProvider() {
         return idProvider;
@@ -37,6 +45,7 @@ public class Provider implements TableRecord {
                 "idProvider=" + idProvider +
                 ", name='" + name + '\'' +
                 ", phone='" + phone + '\'' +
+                ", animalType='" + animalType + '\'' +
                 '}';
     }
 }

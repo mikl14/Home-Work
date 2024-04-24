@@ -7,18 +7,26 @@ import java.math.BigDecimal;
 @Component
 public class Creature implements TableRecord {
     private BigDecimal id;
-    private String name;
-    private int typeId, age;
+    private String name,type,area;
+    private int age;
 
-    public Creature(BigDecimal id, String name, int typeId, int age) {
+    public Creature(BigDecimal id, String name, String type, int age) {
         this.id = id;
         this.name = name;
-        this.typeId = typeId;
+        this.type = type;
         this.age = age;
     }
 
     public Creature() {
 
+    }
+
+    public String getArea() {
+        return area;
+    }
+
+    public void setArea(String area) {
+        this.area = area;
     }
 
     public BigDecimal getId() {
@@ -37,12 +45,12 @@ public class Creature implements TableRecord {
         this.name = name;
     }
 
-    public int getTypeId() {
-        return typeId;
+    public String getType() {
+        return type;
     }
 
-    public void setTypeId(int typeId) {
-        this.typeId = typeId;
+    public void setType(String type) {
+        this.type = type.trim();
     }
 
     public int getAge() {
@@ -58,8 +66,9 @@ public class Creature implements TableRecord {
         return "{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", typeId=" + typeId +
+                ", type=" + type +
                 ", age=" + age +
+                ", area=" + area +
                 '}';
     }
 }

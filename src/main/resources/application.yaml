@@ -4,3 +4,9 @@ animal-starter:
     fishNames: nemo,goldie
     wolfNames: rex,buddy
     bearNames: fluffy,thumper
+
+Psql-connect:
+  base-data:
+    user: postgres
+    password: schef2002
+    database: animalbase

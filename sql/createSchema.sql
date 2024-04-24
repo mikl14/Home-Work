@@ -17,7 +17,7 @@ CREATE TABLE animals.provider (id_provider INT PRIMARY KEY,name TEXT,phone CHAR(
 
 CREATE TABLE animals.animals_provider (id_animal_type INT,id_provider INT,
 CONSTRAINT animal_type FOREIGN KEY (id_animal_type)  REFERENCES animals.animal_type (id_type),
-CONSTRAINT provide_id FOREIGN KEY (id_provider)  REFERENCES animals.provider (id_provider)
+CONSTRAINT provide_id FOREIGN KEY (id_provider)  REFERENCES animals.provider (id_provider));
 
 ALTER TABLE animals.animals_habitats ADD PRIMARY KEY (id_animal_type, id_area);
 
@@ -50,4 +50,3 @@ INSERT INTO animals.animals_provider (id_animal_type,id_provider) VALUES(1,1);
 INSERT INTO animals.animals_provider (id_animal_type,id_provider) VALUES(2,2);
 INSERT INTO animals.animals_provider (id_animal_type,id_provider) VALUES(3,3);
 INSERT INTO animals.animals_provider (id_animal_type,id_provider) VALUES(4,4);
-);
