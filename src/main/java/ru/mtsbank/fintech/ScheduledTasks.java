@@ -5,10 +5,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import ru.mtsbank.fintech.animal_repository.AnimalRepositoryImpl;
+import ru.mtsbank.fintech.animal_repository.FileConstants;
 import ru.mtsbank.fintech.database.DatabaseConnection;
 
 import javax.annotation.PostConstruct;
 import java.text.SimpleDateFormat;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 @Component
 public class ScheduledTasks {
@@ -25,7 +30,7 @@ public class ScheduledTasks {
 
     @PostConstruct
     public void init() {
-     /*   ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
+        ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
 
         Runnable findDuplicateTask = () -> {
             animalRepository.findDuplicate(); //вызываем метод
@@ -37,8 +42,8 @@ public class ScheduledTasks {
             log.info("FindLeapYearNames animal {}", animalRepository.readFromFile(FileConstants.findLeapYearNamesFileName, Map.class));//выводим данные
         };
 
-        executor.scheduleAtFixedRate(findDuplicateTask, 0, 10, TimeUnit.SECONDS);
-        executor.scheduleAtFixedRate(findLeapYearNamesTask, 0, 20, TimeUnit.SECONDS);*/
+        executor.scheduleAtFixedRate(findDuplicateTask, 0, 1, TimeUnit.MINUTES);
+        executor.scheduleAtFixedRate(findLeapYearNamesTask, 0, 2, TimeUnit.MINUTES);
     }
 
     /**

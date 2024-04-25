@@ -1,5 +1,7 @@
 package ru.mtsbank.fintech.database;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.mtsbank.fintech.database_objects.Creature;
 import ru.mtsbank.fintech.database_objects.Provider;
@@ -17,6 +19,7 @@ public class DatabaseConnection {
     private String DB_USER;
     private String DB_PASSWORD;
     private static Connection connection;
+    private static final Logger log = LoggerFactory.getLogger(DatabaseConnection.class);
 
     public DatabaseConnection(DatabaseConfiguration dt) {
         DB_URL = dt.getDataBaseURL();
@@ -24,8 +27,20 @@ public class DatabaseConnection {
         DB_PASSWORD = dt.getPassword();
     }
 
+    /**
+     * <b>DatabaseConnection</b>
+     * устанавливает соединение с базой
+     *
+     * @throws SQLException
+     */
+
     public void DatabaseConnection() throws SQLException {
-        connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+        try {
+            connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+        } catch (SQLException e) {
+            log.error("Ошибка на этапе подключения к базе! " + e);
+            throw new SQLException();
+        }
     }
 
     /**
@@ -78,7 +93,7 @@ public class DatabaseConnection {
                 "SELECT animals.provider.id_provider,name,phone,type as animal_type " +
                         "FROM animals.provider " +
                         "JOIN animals.animals_provider ON provider.id_provider = animals_provider.id_provider " +
-                        "JOIN animals.animal_type ON id_animal_type = animals.animal_type.id_type;");
+                        "JOIN animals.animal_type ON id_animal_type = animals.animal_type.id_type");
 
         List<TableRecord> records = new ArrayList<>();
         while (resultSet.next()) {
