@@ -53,9 +53,8 @@ public class ScheduledTasks {
     @Scheduled(fixedRate = 1000 * 20) // 20 секунд
     public void databaseScheduledLog() {
         try {
-            databaseConnection.DatabaseConnection();
-            log.info("Base Record of Creatures: " + DatabaseConnection.getCreatures().toString());
-            log.info("Base Record of Provides: " + DatabaseConnection.getProviders().toString());
+            log.info("Base Record of Creatures: " + databaseConnection.getCreatures().toString());
+            log.info("Base Record of Provides: " + databaseConnection.getProviders().toString());
         } catch (Exception e) {
             log.error("Exception! : " + e.getMessage(), e);
         }

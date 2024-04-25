@@ -7,6 +7,7 @@ import ru.mtsbank.fintech.database_objects.Creature;
 import ru.mtsbank.fintech.database_objects.Provider;
 import ru.mtsbank.fintech.database_objects.TableRecord;
 
+import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
@@ -27,6 +28,11 @@ public class DatabaseConnection {
         DB_PASSWORD = dt.getPassword();
     }
 
+    @PostConstruct
+    public void init() {
+        DatabaseConnection();
+    }
+
     /**
      * <b>DatabaseConnection</b>
      * устанавливает соединение с базой
@@ -34,12 +40,11 @@ public class DatabaseConnection {
      * @throws SQLException
      */
 
-    public void DatabaseConnection() throws SQLException {
+    private void DatabaseConnection() {
         try {
             connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
         } catch (SQLException e) {
             log.error("Ошибка на этапе подключения к базе! " + e);
-            throw new SQLException();
         }
     }
 
@@ -51,7 +56,7 @@ public class DatabaseConnection {
      * @return ResultSet
      * @throws SQLException
      */
-    private static ResultSet getTableRecord(String query) throws SQLException {
+    private ResultSet getTableRecord(String query) throws SQLException {
         Statement statement = connection.createStatement();
         return statement.executeQuery(query);
     }
@@ -62,7 +67,7 @@ public class DatabaseConnection {
      * @return список всех объектов полученных из таблицы animals.creature
      * @throws SQLException
      */
-    public static List<TableRecord> getCreatures() throws SQLException {
+    public List<TableRecord> getCreatures() throws SQLException {
         ResultSet resultSet = getTableRecord(
                 "SELECT id_creature,name,type,age,area FROM animals.creature " +
                         "JOIN animals.animal_type ON type_id = id_type " +
@@ -88,7 +93,7 @@ public class DatabaseConnection {
      * @return список всех объектов полученных из таблицы animals.provider
      * @throws SQLException
      */
-    public static List<TableRecord> getProviders() throws SQLException {
+    public List<TableRecord> getProviders() throws SQLException {
         ResultSet resultSet = getTableRecord(
                 "SELECT animals.provider.id_provider,name,phone,type as animal_type " +
                         "FROM animals.provider " +
