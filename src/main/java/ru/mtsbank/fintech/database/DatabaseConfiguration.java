@@ -1,28 +1,18 @@
 package ru.mtsbank.fintech.database;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.Scope;
 
 @Configuration
-@PropertySource("classpath:application.yaml")
+@EnableConfigurationProperties(DatabaseProperties.class)
 public class DatabaseConfiguration {
-    @Value("jdbc:postgresql://localhost:5432/" + "${Psql-connect.base-data.database}")
-    private String dataBaseURL;
-    @Value("${Psql-connect.base-data.password}")
-    private String password;
-    @Value("${Psql-connect.base-data.user}")
-    private String user;
 
-    public String getDataBaseURL() {
-        return dataBaseURL;
+    @Scope("singleton")
+    @Bean
+    public DatabaseConnection databaseConnect(DatabaseProperties properties) {
+        return new DatabaseConnection(properties);
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public String getUser() {
-        return user;
-    }
 }

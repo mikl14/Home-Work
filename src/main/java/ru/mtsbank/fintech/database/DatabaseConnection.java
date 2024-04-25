@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.mtsbank.fintech.database_objects.Creature;
 import ru.mtsbank.fintech.database_objects.Provider;
-import ru.mtsbank.fintech.database_objects.TableRecord;
 
 import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
@@ -22,7 +21,7 @@ public class DatabaseConnection {
     private static Connection connection;
     private static final Logger log = LoggerFactory.getLogger(DatabaseConnection.class);
 
-    public DatabaseConnection(DatabaseConfiguration dt) {
+    public DatabaseConnection(DatabaseProperties dt) {
         DB_URL = dt.getDataBaseURL();
         DB_USER = dt.getUser();
         DB_PASSWORD = dt.getPassword();
@@ -67,13 +66,13 @@ public class DatabaseConnection {
      * @return список всех объектов полученных из таблицы animals.creature
      * @throws SQLException
      */
-    public List<TableRecord> getCreatures() throws SQLException {
+    public List<Creature> getCreatures() throws SQLException {
         ResultSet resultSet = getTableRecord(
                 "SELECT id_creature,name,type,age,area FROM animals.creature " +
                         "JOIN animals.animal_type ON type_id = id_type " +
                         "JOIN animals.animals_habitats ON type_id = animals.animals_habitats.id_animal_type " +
                         "JOIN animals.habitats ON animals.animals_habitats.id_area = animals.habitats.id_area");
-        List<TableRecord> records = new ArrayList<>();
+        List<Creature> records = new ArrayList<>();
         while (resultSet.next()) {
             Creature creature = new Creature();
             creature.setId(BigDecimal.valueOf(resultSet.getInt("id_creature")));
@@ -93,14 +92,14 @@ public class DatabaseConnection {
      * @return список всех объектов полученных из таблицы animals.provider
      * @throws SQLException
      */
-    public List<TableRecord> getProviders() throws SQLException {
+    public List<Provider> getProviders() throws SQLException {
         ResultSet resultSet = getTableRecord(
                 "SELECT animals.provider.id_provider,name,phone,type as animal_type " +
                         "FROM animals.provider " +
                         "JOIN animals.animals_provider ON provider.id_provider = animals_provider.id_provider " +
                         "JOIN animals.animal_type ON id_animal_type = animals.animal_type.id_type");
 
-        List<TableRecord> records = new ArrayList<>();
+        List<Provider> records = new ArrayList<>();
         while (resultSet.next()) {
             Provider provider = new Provider();
             provider.setIdProvider(resultSet.getInt("id_provider"));

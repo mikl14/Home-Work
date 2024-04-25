@@ -5,8 +5,8 @@ animal-starter:
     wolfNames: rex,buddy
     bearNames: fluffy,thumper
 
-Psql-connect:
+psql-connect:
   base-data:
     user: postgres
     password: schef2002
-    database: animalbase
+    dataBaseURL: jdbc:postgresql://localhost:5432/animalbase

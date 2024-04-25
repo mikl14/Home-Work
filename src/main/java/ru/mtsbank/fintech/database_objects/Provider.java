@@ -3,7 +3,7 @@ package ru.mtsbank.fintech.database_objects;
 import org.springframework.stereotype.Component;
 
 @Component
-public class Provider implements TableRecord {
+public class Provider{
     private int idProvider;
     private String name, phone,animalType;
 

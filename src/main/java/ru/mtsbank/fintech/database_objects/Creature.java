@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 
 @Component
-public class Creature implements TableRecord {
+public class Creature {
     private BigDecimal id;
     private String name,type,area;
     private int age;
