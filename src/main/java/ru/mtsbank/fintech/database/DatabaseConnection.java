@@ -21,10 +21,10 @@ public class DatabaseConnection {
     private static Connection connection;
     private static final Logger log = LoggerFactory.getLogger(DatabaseConnection.class);
 
-    public DatabaseConnection(DatabaseProperties dt) {
-        DB_URL = dt.getDataBaseURL();
-        DB_USER = dt.getUser();
-        DB_PASSWORD = dt.getPassword();
+    public DatabaseConnection(DatabaseProperties properties) {
+        DB_URL = properties.getDataBaseURL();
+        DB_USER = properties.getUser();
+        DB_PASSWORD = properties.getPassword();
     }
 
     @PostConstruct
@@ -111,5 +111,4 @@ public class DatabaseConnection {
         resultSet.close();
         return records;
     }
-
 }
