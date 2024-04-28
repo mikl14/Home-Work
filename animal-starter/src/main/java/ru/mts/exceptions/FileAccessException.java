@@ -1,7 +1,5 @@
 package ru.mts.exceptions;
 
-import java.io.IOException;
-
 public class FileAccessException extends RuntimeException {
     public FileAccessException()
     {
