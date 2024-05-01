@@ -11,6 +11,7 @@ import org.springframework.test.context.ActiveProfiles;
 import ru.mts.animals.Bear;
 import ru.mts.animals.Cat;
 import ru.mts.animals.Fish;
+import ru.mts.animals.Wolf;
 import ru.mts.exceptions.FileAccessException;
 import ru.mtsbank.fintech.animal_repository.AnimalRepositoryImpl;
 import ru.mtsbank.fintech.entity.Animal;
@@ -44,7 +45,7 @@ class FintechApplicationTests {
      */
     @Test
     void animalRepositoryArrayTest() {
-        Assertions.assertNotEquals(animalRepository.getAnimalArray().size(), 0);
+        Assertions.assertNotEquals(animalRepository.getAllAnimals().size(), 0);
     }
 
     /**
@@ -81,7 +82,7 @@ class FintechApplicationTests {
     void findOlderAnimalTest(Integer olds) {
         Map<Animal, Integer> olderYearsAnimalsResult = animalRepository.findOlderAnimal(olds);
 
-        Animal theOlderAnimal = animalRepository.getAnimalArray().values().stream()
+        Animal theOlderAnimal = animalRepository.getAllAnimals().values().stream()
                 .flatMap(List::stream)
                 .max(Comparator.comparingInt(Animal::getAge)).orElse(null); //находим самое старое животное
 
@@ -103,7 +104,7 @@ class FintechApplicationTests {
      */
     @Test
     void findOlderAnimalContainsValuesTest() {
-        Animal theYoungestAnimal = animalRepository.getAnimalArray().values().stream()
+        Animal theYoungestAnimal = animalRepository.getAllAnimals().values().stream()
                 .flatMap(List::stream)
                 .min(Comparator.comparingInt(Animal::getAge)).orElse(null); //находим самое молодое животное
 
@@ -112,7 +113,7 @@ class FintechApplicationTests {
         assert theYoungestAnimal != null;
         Map<Animal, Integer> olderYearsAnimalsResult = animalRepository.findOlderAnimal(theYoungestAnimal.getAge() - 1); //передаем возраст молодого животного - 1, чтобы получить всех
 
-        Map<String, List<Animal>> allAnimalMap = animalRepository.getAnimalArray();
+        Map<String, List<Animal>> allAnimalMap = animalRepository.getAllAnimals();
 
         for (Map.Entry<String, List<Animal>> entry : allAnimalMap.entrySet()) {
             actualOlderYearsAnimalsList.addAll(entry.getValue().stream().distinct().collect(Collectors.toList()));
@@ -127,7 +128,7 @@ class FintechApplicationTests {
      */
     @Test
     void findOlderAnimalOlderAnimalSizeTest() {
-        Animal theOlderAnimal = animalRepository.getAnimalArray().values().stream()
+        Animal theOlderAnimal = animalRepository.getAllAnimals().values().stream()
                 .flatMap(List::stream)
                 .max(Comparator.comparingInt(Animal::getAge)).orElse(null); //находим самое старое животное
 
@@ -145,20 +146,20 @@ class FintechApplicationTests {
      */
     @Test
     void findDuplicateTest() {
-      /*  Map<String, List<Animal>> duplicateArrayResult = animalRepository.findDuplicate();
+        Map<String, List<Animal>> duplicateArrayResult = animalRepository.findDuplicate();
 
         List<Animal> expectedList = List.of(
-                new Animal("Dingo", "Red", "Evil", LocalDate.now().minusYears(8), BigDecimal.valueOf(123), "desert", 70, "secretInfo"),
-                new Animal("Dingo", "Red", "Evil", LocalDate.now().minusYears(8), BigDecimal.valueOf(123), "desert", 70, "secretInfo"),
-                new Animal("White", "Beluga", "Hungry", LocalDate.now().minusYears(3), BigDecimal.valueOf(123), "Arctic", 120, "secretInfo"),
-                new Animal("White", "Beluga", "Hungry", LocalDate.now().minusYears(3), BigDecimal.valueOf(123), "Arctic", 120, "secretInfo"));
+                new Animal(new Wolf("Dingo", "Red", "Evil", LocalDate.now().minusYears(8), BigDecimal.valueOf(123), "desert", 70, "secretInfo")),
+                new Animal(new Wolf("Dingo", "Red", "Evil", LocalDate.now().minusYears(8), BigDecimal.valueOf(123), "desert", 70, "secretInfo")),
+                new Animal(new Bear("White", "Beluga", "Hungry", LocalDate.now().minusYears(3), BigDecimal.valueOf(123), "Arctic", 120, "secretInfo")),
+                new Animal(new Bear("White", "Beluga", "Hungry", LocalDate.now().minusYears(3), BigDecimal.valueOf(123), "Arctic", 120, "secretInfo")));
 
         List<Animal> actualList = new ArrayList<Animal>();
         for (Map.Entry<String, List<Animal>> entry : duplicateArrayResult.entrySet()) {
             actualList.addAll(entry.getValue());
         }
         Assertions.assertEquals(expectedList, actualList); // Ожидается обнаружение обнаружение 2х дубликатов волка с именем Red и 2х медведей с именем Beluga
- */
+
     }
 
     /**
@@ -168,7 +169,7 @@ class FintechApplicationTests {
      */
     @Test
     void findAverageAgeTest() {
-        List<Animal> animalList = animalRepository.getAnimalArray().get("CAT"); //Берем список кошек
+        List<Animal> animalList = animalRepository.getAllAnimals().get("CAT"); //Берем список кошек
         double expectedAvg = 5.5; // В списке кошек 4 кошки возрастом 10,4,2,6 лет
         Assertions.assertEquals(expectedAvg, animalRepository.findAverageAge(animalList));
     }
@@ -190,8 +191,8 @@ class FintechApplicationTests {
      */
     @Test
     void findOldAndExpensiveTest() {
-        List<Animal> animalList = new ArrayList<>(animalRepository.getAnimalArray().get("FISH"));
-        animalList.addAll(animalRepository.getAnimalArray().get("BEAR")); //передаваемый список составленный из рыб и медведей из animalRepository
+        List<Animal> animalList = new ArrayList<>(animalRepository.getAllAnimals().get("FISH"));
+        animalList.addAll(animalRepository.getAllAnimals().get("BEAR")); //передаваемый список составленный из рыб и медведей из animalRepository
 
         List<Animal> expectedAnimalList = List.of(
                 new Animal(new Fish("Shark", "Blue Dragon", "Good", LocalDate.now().minusYears(11), BigDecimal.valueOf(550), "meat", 12, "secretInfo")),

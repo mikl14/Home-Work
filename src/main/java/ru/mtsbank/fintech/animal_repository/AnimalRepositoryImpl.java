@@ -119,7 +119,6 @@ public class AnimalRepositoryImpl implements AnimalRepository {
                         .filter(animal -> entry.getValue().indexOf(animal) != entry.getValue().lastIndexOf(animal))
                         .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::synchronizedList))));
 
-        writeToFile(result, FileConstants.findDuplicateFileName);
         return result;
     }
 

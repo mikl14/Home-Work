@@ -113,14 +113,12 @@ public class Animal {
         var animalObj = ((Animal) obj);
 
         return Objects.equals(name, animalObj.name)
-                && Objects.equals(birthDate, animalObj.birthDate)
-                && Objects.equals(cost, animalObj.cost)
-                && Objects.equals(character, animalObj.character);
+                && Objects.equals(birthDate, animalObj.birthDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, birthDate, cost, character);
+        return Objects.hash(name, birthDate);
     }
 
     @Override
