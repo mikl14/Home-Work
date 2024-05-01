@@ -10,8 +10,7 @@ public class Breed {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @OneToMany(mappedBy = "breed",targetEntity = Animal.class)
- //   @JoinColumn(name = "id")
+    @OneToMany(mappedBy = "breed", targetEntity = Animal.class)
     private List<Animal> animalList = new ArrayList<>();
 
     public Breed(List<Animal> animalList) {

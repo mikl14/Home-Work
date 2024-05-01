@@ -1,6 +1,13 @@
 package ru.mtsbank.fintech.entity;
 
+import ru.mts.animals.AbstractAnimal;
+
 import javax.persistence.*;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.ArrayList;
+import java.util.Objects;
 
 @Table(name = "animal")
 @Entity
@@ -9,23 +16,33 @@ public class Animal {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @ManyToOne(targetEntity = Breed.class)
-    @JoinColumn(name="breed")
+    @JoinColumn(name = "breed")
     private Breed breed;
-    @ManyToOne(targetEntity = AnimalType.class)
-    @JoinColumn(name="type")
+    @ManyToOne(targetEntity = AnimalType.class, cascade = CascadeType.ALL)
+    @JoinColumn(name = "type")
     private AnimalType animalType;
 
-    @ManyToOne(targetEntity = Creature.class)
-    @JoinColumn(name="creature")
-    private Creature creature;
+    protected LocalDate birthDate;
+    protected String name, character;
+
+    protected BigDecimal cost;
+
 
     public Animal(Breed breed, AnimalType animalType, Creature creature) {
         this.breed = breed;
         this.animalType = animalType;
-        this.creature = creature;
     }
 
     public Animal() {
+    }
+
+    public Animal(AbstractAnimal abstractAnimal) {
+        name = abstractAnimal.getName();
+        character = abstractAnimal.getCharacter();
+        birthDate = abstractAnimal.getBirthDate();
+        breed = new Breed(new ArrayList<>());
+        animalType = new AnimalType(abstractAnimal.getAnimalType(), abstractAnimal.isWild());
+        cost = abstractAnimal.getCost();
     }
 
     public int getId() {
@@ -34,6 +51,14 @@ public class Animal {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public BigDecimal getCost() {
+        return cost;
+    }
+
+    public void setCost(BigDecimal cost) {
+        this.cost = cost;
     }
 
     public Breed getBreed() {
@@ -52,12 +77,50 @@ public class Animal {
         this.animalType = animalType;
     }
 
-    public Creature getCreature() {
-        return creature;
+    public LocalDate getBirthDate() {
+        return birthDate;
     }
 
-    public void setCreature(Creature creature) {
-        this.creature = creature;
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getCharacter() {
+        return character;
+    }
+
+    public void setCharacter(String character) {
+        this.character = character;
+    }
+
+    public int getAge() {
+        return Period.between(birthDate, LocalDate.now()).getYears();
+    }
+
+    @Override
+    public boolean equals(Object obj) { // будут равны если равны имена, даты рождения и порода
+
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        var animalObj = ((Animal) obj);
+
+        return Objects.equals(name, animalObj.name)
+                && Objects.equals(birthDate, animalObj.birthDate)
+                && Objects.equals(cost, animalObj.cost)
+                && Objects.equals(character, animalObj.character);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, birthDate, cost, character);
     }
 
     @Override
@@ -66,7 +129,10 @@ public class Animal {
                 "id=" + id +
                 ", breed=" + breed +
                 ", animalType=" + animalType +
-                ", creature=" + creature +
+                ", birthDate=" + birthDate +
+                ", name='" + name + '\'' +
+                ", character='" + character + '\'' +
+                ", cost='" + cost + '\'' +
                 '}';
     }
 }

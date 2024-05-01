@@ -1,31 +1,24 @@
 package ru.mtsbank.fintech;
 
-import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import ru.mtsbank.fintech.database.DatabaseConnection;
+import ru.mtsbank.fintech.animal_repository.AnimalRepositoryImpl;
 import ru.mtsbank.fintech.entity.Animal;
-import ru.mtsbank.fintech.entity.AnimalType;
-import ru.mtsbank.fintech.entity.Breed;
-import ru.mtsbank.fintech.entity.Creature;
-import ru.mtsbank.fintech.util.HibernateUtil;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.hibernate.Session;
+import java.text.SimpleDateFormat;
+import java.util.Comparator;
+import java.util.List;
 
 @Component
 public class ScheduledTasks {
-    private DatabaseConnection databaseConnection;
+    private AnimalRepositoryImpl animalRepository;
     private static final Logger log = LoggerFactory.getLogger(ScheduledTasks.class);
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
-    public ScheduledTasks(DatabaseConnection databaseConnection) {
-        this.databaseConnection = databaseConnection;
-        createCreature("test",1,2);
+    public ScheduledTasks(AnimalRepositoryImpl animalRepository) {
+        this.animalRepository = animalRepository;
     }
 
     /**
@@ -33,70 +26,20 @@ public class ScheduledTasks {
      * Выводит все записи из таблиц в базе раз в 20 секунд
      */
     @Scheduled(fixedRate = 1000 * 20) // 20 секунд
-    public void databaseScheduledLog() {
+    public void ScheduledLog() {
 
         try {
-            log.info("Base Record of Animals: " + getAllCreatures());
-            //log.info("Base Record of Provides: " + databaseConnection.getProviders().toString());
+            List<Animal> animalList = animalRepository.getAllAnimals().values().stream().max(Comparator.comparingInt(List::size)).orElse(List.of());
+            //т.к. нельзя предугадать сколько будет сгенерировано животных, для передачи в методы взят самый длинный список из map животных.
+
+            log.info("FindDuplicate animal {}", animalRepository.findLeapYearNames());
+            log.info("FindLeapYearNames animal {}", animalRepository.findLeapYearNames());
+            log.info("FindAverageAge {}", animalRepository.findAverageAge(animalList));
+            log.info("FindOlder animal {}", animalRepository.findOlderAnimal(5));
+            log.info("FindMinConstAnimals {}", animalRepository.findMinConstAnimals(animalList, animalList.size()));
+            log.info("FindOldAndExpensive {}", animalRepository.findOldAndExpensive(5, animalList));
         } catch (Exception e) {
             log.error("Exception! : " + e.getMessage(), e);
         }
-    }
-
-    public void createCreature(String name, int id, int age) {
-        // Создание сессии Hibernate
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Transaction transaction = null;
-
-        try {
-            // Начало транзакции
-            transaction = session.beginTransaction();
-
-            for(int i = 0; i < 10;i++)
-            {
-                Breed breed = new Breed(new ArrayList<Animal>());
-                session.save(breed);
-                AnimalType animalType = new AnimalType("CAT "+i,false);
-                session.save(animalType);
-                Creature creature = new Creature("viktor "+i,1,12+i);
-                session.save(creature);
-                // Создание объекта Creature
-                Animal animal = new Animal(breed,animalType,creature);
-
-                // Сохранение объекта Creature в базе данных
-                session.save(animal);
-            }
-
-
-            // Завершение транзакции
-            transaction.commit();
-        } catch (Exception e) {
-            // Откат транзакции в случае ошибки
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            e.printStackTrace();
-        } finally {
-            // Закрытие сессии Hibernate
-            session.close();
-        }
-    }
-
-    public List<Animal> getAllCreatures() {
-        // Создание сессии Hibernate
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        List<Animal> animals = new ArrayList<>();
-
-        try {
-            // Получение всех объектов Creature из таблицы
-            animals = session.createQuery("FROM Animal", Animal.class).getResultList();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            // Закрытие сессии Hibernate
-            session.close();
-        }
-
-        return animals;
     }
 }

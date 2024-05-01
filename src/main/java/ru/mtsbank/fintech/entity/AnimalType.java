@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.Objects;
 
 @Entity
 public class AnimalType {
@@ -39,11 +40,22 @@ public class AnimalType {
     }
 
     @Override
+    public boolean equals(Object obj) { // будут равны если равны имена, даты рождения и порода
+
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        var animalObj = ((AnimalType) obj);
+
+        return Objects.equals(type, animalObj.type);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type);
+    }
+
+    @Override
     public String toString() {
-        return "AnimalType{" +
-                "idType=" + idType +
-                ", type='" + type + '\'' +
-                ", isWild=" + isWild +
-                '}';
+        return type;
     }
 }

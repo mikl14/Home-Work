@@ -30,6 +30,8 @@ public abstract class AbstractAnimal implements Animal {
     protected Random random = new Random();
     protected LocalDate birthDate;
     protected String breed, name, character;
+
+    protected boolean isWild;
     protected BigDecimal cost;
     @JsonDeserialize(using = Base64Deserializer.class)
     @JsonSerialize(using = Base64Serializer.class)
@@ -100,6 +102,17 @@ public abstract class AbstractAnimal implements Animal {
         this.character = character;
         this.cost = (BigDecimal.valueOf(random.nextDouble() * 1000)).setScale(2, RoundingMode.HALF_UP);
         this.secretInformation = InitSecretInformation();
+        switch (getAnimalType())
+        {
+            case "CAT":
+            case "FISH":
+                this.isWild = false;
+                break;
+            case "WOLF":
+            case "BEAR":
+                this.isWild = true;
+                break;
+        }
     }
 
     public AbstractAnimal() {
@@ -123,6 +136,14 @@ public abstract class AbstractAnimal implements Animal {
     @JsonProperty("name")
     public void setName(String name) {
         this.name = name;
+    }
+
+    public boolean isWild() {
+        return isWild;
+    }
+
+    public void setWild(boolean wild) {
+        isWild = wild;
     }
 
     @JsonProperty("cost")

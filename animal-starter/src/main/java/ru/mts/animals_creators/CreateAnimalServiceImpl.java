@@ -126,4 +126,24 @@ public class CreateAnimalServiceImpl implements CreateAnimalService {
         return animalMap;
 
     }
+
+    public List<AbstractAnimal> getAnimalsList(int numberAnimals) {
+
+        if (numberAnimals < 0) throw new IllegalArgumentException();
+        List<AbstractAnimal> animalList = new CopyOnWriteArrayList<>();
+        for (int i = 0; i < numberAnimals; i++) {
+            AbstractAnimal animal = getRandomAnimal();
+            animalList.add(animal);
+        }
+        return animalList;
+    }
+
+    public List<AbstractAnimal> getAnimalsList() {
+        List<AbstractAnimal> animalList = new CopyOnWriteArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            AbstractAnimal animal = getRandomAnimal();
+            animalList.add(animal);
+        }
+        return animalList;
+    }
 }
