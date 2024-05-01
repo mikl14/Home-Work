@@ -27,11 +27,9 @@ public class ScheduledTasks {
      */
     @Scheduled(fixedRate = 1000 * 20) // 20 секунд
     public void ScheduledLog() {
-
         try {
             List<Animal> animalList = animalRepository.getAllAnimals().values().stream().max(Comparator.comparingInt(List::size)).orElse(List.of());
             //т.к. нельзя предугадать сколько будет сгенерировано животных, для передачи в методы взят самый длинный список из map животных.
-
             log.info("FindDuplicate animal {}", animalRepository.findLeapYearNames());
             log.info("FindLeapYearNames animal {}", animalRepository.findLeapYearNames());
             log.info("FindAverageAge {}", animalRepository.findAverageAge(animalList));

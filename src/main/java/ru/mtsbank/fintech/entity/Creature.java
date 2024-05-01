@@ -1,7 +1,5 @@
 package ru.mtsbank.fintech.entity;
 
-import com.sun.istack.NotNull;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -22,10 +20,8 @@ public class Creature {
         this.typeId = typeId;
         this.age = age;
     }
-
     public Creature() {
     }
-
     @Override
     public String toString() {
         return "Creature{" +

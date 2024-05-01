@@ -102,8 +102,7 @@ public abstract class AbstractAnimal implements Animal {
         this.character = character;
         this.cost = (BigDecimal.valueOf(random.nextDouble() * 1000)).setScale(2, RoundingMode.HALF_UP);
         this.secretInformation = InitSecretInformation();
-        switch (getAnimalType())
-        {
+        switch (getAnimalType()) {
             case "CAT":
             case "FISH":
                 this.isWild = false;

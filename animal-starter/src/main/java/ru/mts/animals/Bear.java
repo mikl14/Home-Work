@@ -13,8 +13,8 @@ public class Bear extends Predator {
         super();
     }
 
-    public Bear(String breed, String name, String character, LocalDate birthDate, BigDecimal cost, String livingEnvironment, int weight,String secretInformation) {
-        super(breed, name, character, birthDate, cost, livingEnvironment, weight,secretInformation);
+    public Bear(String breed, String name, String character, LocalDate birthDate, BigDecimal cost, String livingEnvironment, int weight, String secretInformation) {
+        super(breed, name, character, birthDate, cost, livingEnvironment, weight, secretInformation);
     }
 
     @Override

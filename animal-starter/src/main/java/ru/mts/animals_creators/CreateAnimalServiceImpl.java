@@ -127,6 +127,13 @@ public class CreateAnimalServiceImpl implements CreateAnimalService {
 
     }
 
+    /**
+     * <b>getAnimalsList()</b>
+     *
+     * @param numberAnimals
+     * @return Список животных длинной numberAnimals
+     */
+
     public List<AbstractAnimal> getAnimalsList(int numberAnimals) {
 
         if (numberAnimals < 0) throw new IllegalArgumentException();
@@ -138,6 +145,11 @@ public class CreateAnimalServiceImpl implements CreateAnimalService {
         return animalList;
     }
 
+    /**
+     * <b>getAnimalsList()</b>
+     *
+     * @return Список животных длинной 10
+     */
     public List<AbstractAnimal> getAnimalsList() {
         List<AbstractAnimal> animalList = new CopyOnWriteArrayList<>();
         for (int i = 0; i < 10; i++) {

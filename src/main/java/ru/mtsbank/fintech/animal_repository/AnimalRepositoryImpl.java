@@ -70,7 +70,6 @@ public class AnimalRepositoryImpl implements AnimalRepository {
                     .filter(value -> value.getBirthDate().isLeapYear())
                     .collect(Collectors.toConcurrentMap(Animal::getName, Animal::getBirthDate, (existingValue, newValue) -> newValue)));
         }
-        writeToFile(leapYearBirthAnimal, FileConstants.findLeapYearNamesFileName);
         return leapYearBirthAnimal;
     }
 
@@ -102,7 +101,6 @@ public class AnimalRepositoryImpl implements AnimalRepository {
             Animal olderAnimal = optionalOlderAnimal.orElseThrow(() -> new IllegalValueException("Can't find the oldest animal!"));
             olderAnimals.put(olderAnimal, olderAnimal.getAge());
         }
-        writeToFile(olderAnimals, FileConstants.findOlderAnimalFileName);
         return olderAnimals;
     }
 
@@ -154,7 +152,6 @@ public class AnimalRepositoryImpl implements AnimalRepository {
                 .sorted(Comparator.comparing(Animal::getAge).reversed())
                 .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::synchronizedList));
 
-//        writeToFile(result, FileConstants.findOldAndExpensiveFileName);
         return result;
     }
 
@@ -174,7 +171,6 @@ public class AnimalRepositoryImpl implements AnimalRepository {
                 .map(Animal::getName)
                 .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::synchronizedList));
 
-        writeToFile(result, FileConstants.findMinConstAnimalsFileName);
         return result;
     }
 
@@ -215,14 +211,15 @@ public class AnimalRepositoryImpl implements AnimalRepository {
         }
     }
 
-
+    /**
+     * <b>saveAnimal</b>
+     * Записывает данные полученные из CreateAnimalService в базу
+     */
     private void saveAnimal(List<Animal> animalList) {
-        // Создание сессии Hibernate
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
 
         try {
-            // Начало транзакции
             transaction = session.beginTransaction();
 
             for (Animal animal : animalList) {
@@ -230,51 +227,41 @@ public class AnimalRepositoryImpl implements AnimalRepository {
                 session.save(animal.getBreed());
                 session.save(animal);
             }
-            // Завершение транзакции
             transaction.commit();
         } catch (Exception e) {
-            // Откат транзакции в случае ошибки
             if (transaction != null) {
                 transaction.rollback();
             }
             e.printStackTrace();
         } finally {
-            // Закрытие сессии Hibernate
             session.close();
         }
     }
 
+    /**
+     * <b>getAllAnimals</b>
+     * Считывает все объекты Animal из базы данных
+     */
     public Map<String, List<Animal>> getAllAnimals() {
-
         Map<String, List<Animal>> animalMap = new ConcurrentHashMap<>();
 
-        // Создание сессии Hibernate
         Session session = HibernateUtil.getSessionFactory().openSession();
         List<Animal> animals = new ArrayList<>();
-
         try {
-            // Получение всех объектов Creature из таблицы
-
             animals = session.createQuery("FROM Animal", Animal.class).getResultList();
-            for (Animal animal: animals)
-            {
-                if(!animalMap.containsKey(animal.getAnimalType().toString()))
-                {
-                    animalMap.put(animal.getAnimalType().toString(),new CopyOnWriteArrayList<>());
+            for (Animal animal : animals) {
+                if (!animalMap.containsKey(animal.getAnimalType().toString())) {
+                    animalMap.put(animal.getAnimalType().toString(), new CopyOnWriteArrayList<>());
                 }
                 animalMap.get(animal.getAnimalType().toString()).add(animal);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            // Закрытие сессии Hibernate
             session.close();
         }
-
         return animalMap;
     }
-
 }
 
 

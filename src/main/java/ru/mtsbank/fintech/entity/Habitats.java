@@ -7,6 +7,5 @@ import javax.persistence.Id;
 public class Habitats {
     @Id
     private int idArea;
-
     private String area;
 }

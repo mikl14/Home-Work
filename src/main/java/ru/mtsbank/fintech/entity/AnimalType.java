@@ -41,11 +41,9 @@ public class AnimalType {
 
     @Override
     public boolean equals(Object obj) { // будут равны если равны имена, даты рождения и порода
-
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         var animalObj = ((AnimalType) obj);
-
         return Objects.equals(type, animalObj.type);
     }
 
