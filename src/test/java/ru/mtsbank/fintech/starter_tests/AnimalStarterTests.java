@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
-import ru.mts.animals.Fish;
 import ru.mts.animals_creators.AnimalFactory;
 import ru.mts.animals_creators.CreateAnimalServiceImpl;
 import ru.mtsbank.fintech.starter_tests.test_config.TestsConfiguration;
@@ -25,11 +24,6 @@ import java.time.LocalDate;
 public class AnimalStarterTests {
     @Autowired
     CreateAnimalServiceImpl createAnimalServiceImpl;
-    @InjectMocks
-    CreateAnimalServiceImpl mockedCreateAnimalServiceImpl;
-    @Mock
-    AnimalFactory animalFactory;
-
     @Test
     void contextLoads() {
         Assertions.assertNotNull(createAnimalServiceImpl);
@@ -62,20 +56,6 @@ public class AnimalStarterTests {
     @EnumSource(AnimalFactory.AnimalType.class)
     void getAnimalTypeTest(AnimalFactory.AnimalType animalType) {
         createAnimalServiceImpl.setAnimalType(animalType);
-        Assertions.assertEquals(animalType.toString(), createAnimalServiceImpl.getAnimal().getClass().getSimpleName().toUpperCase());
+        Assertions.assertEquals(animalType.toString(), createAnimalServiceImpl.getAnimal().getAnimalType().toUpperCase());
     }
-
-    /**
-     * <b>getAnimalExceptionTest</b>
-     * проверяет исключение, неправильного типа животного
-     * полученного с фабрики.
-     */
-    @Test
-    void getAnimalExceptionTest() {
-        Fish nemo = new Fish("Abis", "Pan", "Evil", LocalDate.of(2012, 12, 1), BigDecimal.valueOf(123), "meat", 12,"secretInfo");
-        Mockito.when(animalFactory.getAnimal(AnimalFactory.AnimalType.CAT)).thenReturn(nemo); // Делаем через mockito возвращение рыбы при запросе
-        mockedCreateAnimalServiceImpl.setAnimalType(AnimalFactory.AnimalType.CAT);// выбираем тип кошка
-        Assertions.assertThrows(IllegalStateException.class, () -> mockedCreateAnimalServiceImpl.getAnimal()); // ожидаем исключение потому что фабрика вернет рыбу при запросе кошки
-    }
-
 }

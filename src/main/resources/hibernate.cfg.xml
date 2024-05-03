@@ -34,7 +34,6 @@
         <mapping class="ru.mtsbank.fintech.entity.AnimalsHabitats"/>
         <mapping class="ru.mtsbank.fintech.entity.AnimalsProvider"/>
         <mapping class="ru.mtsbank.fintech.entity.AnimalType"/>
-        <mapping class="ru.mtsbank.fintech.entity.Creature"/>
         <mapping class="ru.mtsbank.fintech.entity.Habitats"/>
         <mapping class="ru.mtsbank.fintech.entity.Provider"/>
         <mapping class="ru.mtsbank.fintech.entity.Animal"/>

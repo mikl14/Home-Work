@@ -76,7 +76,7 @@ public class CreateAnimalServiceImpl implements CreateAnimalService {
      */
     public AbstractAnimal getAnimal() {
         AbstractAnimal animal = animalFactory.getAnimal(animalType);
-        String type = animal.getClass().getSimpleName().toUpperCase(Locale.ROOT);
+        String type = animal.getAnimalType().toUpperCase(Locale.ROOT);
         if (animalType.toString().equals(type)) return animal;
         else throw new IllegalStateException();
 

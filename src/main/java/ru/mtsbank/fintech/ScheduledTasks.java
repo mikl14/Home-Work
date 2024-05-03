@@ -6,6 +6,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import ru.mtsbank.fintech.animal_repository.AnimalRepositoryImpl;
 import ru.mtsbank.fintech.entity.Animal;
+import ru.mtsbank.fintech.entity.AnimalType;
 
 import java.text.SimpleDateFormat;
 import java.util.Comparator;
@@ -30,7 +31,7 @@ public class ScheduledTasks {
         try {
             List<Animal> animalList = animalRepository.getAllAnimals().values().stream().max(Comparator.comparingInt(List::size)).orElse(List.of());
             //т.к. нельзя предугадать сколько будет сгенерировано животных, для передачи в методы взят самый длинный список из map животных.
-            log.info("FindDuplicate animal {}", animalRepository.findLeapYearNames());
+            log.info("FindDuplicate animal {}", animalRepository.findDuplicate());
             log.info("FindLeapYearNames animal {}", animalRepository.findLeapYearNames());
             log.info("FindAverageAge {}", animalRepository.findAverageAge(animalList));
             log.info("FindOlder animal {}", animalRepository.findOlderAnimal(5));

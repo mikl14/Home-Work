@@ -1,9 +1,8 @@
 package ru.mtsbank.fintech.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -11,16 +10,32 @@ public class AnimalType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idType;
-
     private String type;
     private boolean isWild;
 
-    public AnimalType(String type, boolean isWild) {
+    @OneToMany(targetEntity = Animal.class)
+    private List<Animal> animalList = new ArrayList<>();
+
+    public AnimalType(String type, boolean isWild,List<Animal> animalList) {
         this.type = type;
         this.isWild = isWild;
+        this.animalList = animalList;
     }
 
     public AnimalType() {
+    }
+
+    public List<Animal> getAnimalList() {
+        return animalList;
+    }
+
+    public void setAnimalList(List<Animal> animalList) {
+        this.animalList = animalList;
+    }
+
+    public boolean addToAnimalList(Animal animal)
+    {
+        return animalList.add(animal);
     }
 
     public String getType() {
@@ -40,7 +55,7 @@ public class AnimalType {
     }
 
     @Override
-    public boolean equals(Object obj) { // будут равны если равны имена, даты рождения и порода
+    public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         var animalObj = ((AnimalType) obj);
@@ -54,6 +69,6 @@ public class AnimalType {
 
     @Override
     public String toString() {
-        return type;
+        return type ;
     }
 }

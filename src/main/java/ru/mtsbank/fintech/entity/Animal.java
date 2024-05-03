@@ -24,24 +24,22 @@ public class Animal {
 
     protected LocalDate birthDate;
     protected String name, character;
-
     protected BigDecimal cost;
 
 
-    public Animal(Breed breed, AnimalType animalType, Creature creature) {
+    public Animal(Breed breed, AnimalType animalType) {
         this.breed = breed;
         this.animalType = animalType;
     }
 
     public Animal() {
     }
-
     public Animal(AbstractAnimal abstractAnimal) {
         name = abstractAnimal.getName();
         character = abstractAnimal.getCharacter();
         birthDate = abstractAnimal.getBirthDate();
         breed = new Breed(new ArrayList<>());
-        animalType = new AnimalType(abstractAnimal.getAnimalType(), abstractAnimal.isWild());
+        animalType = new AnimalType(abstractAnimal.getAnimalType(), abstractAnimal.isWild(),new ArrayList<>());
         cost = abstractAnimal.getCost();
     }
 

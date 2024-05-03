@@ -27,4 +27,11 @@ public class Breed {
     public void setAnimalList(List<Animal> animalList) {
         this.animalList = animalList;
     }
+
+    @Override
+    public String toString() {
+        return "Breed{" +
+                "id=" + id +
+                '}';
+    }
 }

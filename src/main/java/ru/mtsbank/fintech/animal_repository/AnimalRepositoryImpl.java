@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import ru.mts.animals_creators.CreateAnimalServiceImpl;
 import ru.mts.exceptions.FileAccessException;
 import ru.mtsbank.fintech.entity.Animal;
+import ru.mtsbank.fintech.entity.AnimalType;
 import ru.mtsbank.fintech.exceptions.IllegalListSizeException;
 import ru.mtsbank.fintech.exceptions.IllegalValueException;
 import ru.mtsbank.fintech.util.HibernateUtil;
@@ -52,7 +53,6 @@ public class AnimalRepositoryImpl implements AnimalRepository {
     public void init() {
         List<Animal> animalList = createAnimalService.getAnimalsList().stream().map(Animal::new).collect(Collectors.toList());
         saveAnimal(animalList);
-        getAllAnimals();
     }
 
     /**
@@ -222,8 +222,22 @@ public class AnimalRepositoryImpl implements AnimalRepository {
         try {
             transaction = session.beginTransaction();
 
+            Set<AnimalType> animalTypes = animalList.stream().map(Animal::getAnimalType).collect(Collectors.toSet());
+
+
+            for (AnimalType animalType : animalTypes) {
+                for (Animal animal : animalList) {
+                    if (animal.getAnimalType().equals(animalType))
+                    {
+                        animalType.addToAnimalList(animal);
+                        animal.setAnimalType(animalType);
+                    }
+                }
+            }
+
+            for (AnimalType animalType : animalTypes)  session.save(animalType);
+
             for (Animal animal : animalList) {
-                session.save(animal.getAnimalType());
                 session.save(animal.getBreed());
                 session.save(animal);
             }

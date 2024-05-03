@@ -6,7 +6,7 @@ import javax.persistence.Id;
 @Entity
 public class Provider {
     @Id
-    private int id_provider;
+    private int idProvider;
     private String name;
     private String phone;
 }

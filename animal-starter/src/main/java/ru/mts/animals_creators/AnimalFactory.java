@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import ru.mts.animals.*;
 import ru.mts.config.AnimalStarterProperties;
 
+import javax.swing.*;
 import java.util.Random;
 
 @Component
@@ -39,13 +40,13 @@ public class AnimalFactory {
 
         switch (type) {
             case CAT:
-                return new Cat(properties.getCatNames()[random.nextInt(properties.getCatNames().length)], "Kittens", "CatFood");
+                return new AbstractAnimal("CAT",properties.getCatNames()[random.nextInt(properties.getFishNames().length)], "Kitten");
             case FISH:
-                return new Fish(properties.getFishNames()[random.nextInt(properties.getFishNames().length)], "Small", "FishFood");
+                return new AbstractAnimal("FISH",properties.getFishNames()[random.nextInt(properties.getFishNames().length)], "Small");
             case WOLF:
-                return new Wolf(properties.getWolfNames()[random.nextInt(properties.getWolfNames().length)], "Grey", "Forest");
+                return new AbstractAnimal("WOLF",properties.getWolfNames()[random.nextInt(properties.getWolfNames().length)], "Grey");
             case BEAR:
-                return new Bear(properties.getBearNames()[random.nextInt(properties.getBearNames().length)], "Hot", "Taiga");
+                return new AbstractAnimal("BEAR",properties.getBearNames()[random.nextInt(properties.getBearNames().length)], "Hot");
             default:
                 throw new IllegalArgumentException();
         }
