@@ -146,10 +146,10 @@ class FintechApplicationTests {
         Map<String, List<Animal>> duplicateArrayResult = animalRepository.findDuplicate();
 
         List<Animal> expectedList = List.of(
-                new Animal(new AbstractAnimal("WOLF","Dingo", "Red",  LocalDate.now().minusYears(8),"Evil", BigDecimal.valueOf(200),  "secretInfo")),
-                new Animal(new AbstractAnimal("WOLF","Dingo", "Red",  LocalDate.now().minusYears(8),"Evil", BigDecimal.valueOf(200),  "secretInfo")),
-                new Animal(new AbstractAnimal("BEAR","White", "Beluga",  LocalDate.now().minusYears(3),"Hungry", BigDecimal.valueOf(500), "I'm not white")),
-                new Animal(new AbstractAnimal("BEAR","White", "Beluga",  LocalDate.now().minusYears(3),"Hungry", BigDecimal.valueOf(500), "I'm not white")));
+                new Animal(new AbstractAnimal("WOLF", "Dingo", "Red", LocalDate.now().minusYears(8), "Evil", BigDecimal.valueOf(200), "secretInfo")),
+                new Animal(new AbstractAnimal("WOLF", "Dingo", "Red", LocalDate.now().minusYears(8), "Evil", BigDecimal.valueOf(200), "secretInfo")),
+                new Animal(new AbstractAnimal("BEAR", "White", "Beluga", LocalDate.now().minusYears(3), "Hungry", BigDecimal.valueOf(500), "I'm not white")),
+                new Animal(new AbstractAnimal("BEAR", "White", "Beluga", LocalDate.now().minusYears(3), "Hungry", BigDecimal.valueOf(500), "I'm not white")));
 
         List<Animal> actualList = new ArrayList<Animal>();
         for (Map.Entry<String, List<Animal>> entry : duplicateArrayResult.entrySet()) {
@@ -192,8 +192,8 @@ class FintechApplicationTests {
         animalList.addAll(animalRepository.getAllAnimals().get("BEAR")); //передаваемый список составленный из рыб и медведей из animalRepository
 
         List<Animal> expectedAnimalList = List.of(
-                new Animal(new AbstractAnimal("FISH","Shark", "Blue Dragon", LocalDate.now().minusYears(11), "Good", BigDecimal.valueOf(550), "I work in MIB")),
-                new Animal(new AbstractAnimal("BEAR","Animatronic", "GoldenFreddy",  LocalDate.now().minusYears(6),"Very Bad", BigDecimal.valueOf(600), "Bite 87"))
+                new Animal(new AbstractAnimal("FISH", "Shark", "Blue Dragon", LocalDate.now().minusYears(11), "Good", BigDecimal.valueOf(550), "I work in MIB")),
+                new Animal(new AbstractAnimal("BEAR", "Animatronic", "GoldenFreddy", LocalDate.now().minusYears(6), "Very Bad", BigDecimal.valueOf(600), "Bite 87"))
         );
         //ожидаемый результат
         try {
@@ -231,10 +231,10 @@ class FintechApplicationTests {
     @Test
     void findMinConstAnimalsTest() {
         List<Animal> animalList = List.of(
-                new Animal(new AbstractAnimal("CAT","Persian", "Kitty",  LocalDate.now().minusYears(10),"Evil", BigDecimal.valueOf(330), "has no money")),
-                new Animal(new AbstractAnimal("CAT","CyberCat", "V",  LocalDate.now().minusYears(2),"101010", BigDecimal.valueOf(256),"small dog -- Broken Data")),
-                new Animal(new AbstractAnimal("CAT","Tibet", "Cloud", LocalDate.now().minusYears(4),  "Evil", BigDecimal.valueOf(300), "Honey!")),
-                new Animal(new AbstractAnimal("CAT","Stray", "Akira",  LocalDate.now().minusYears(6),"Good", BigDecimal.valueOf(125),  "Check out!")));
+                new Animal(new AbstractAnimal("CAT", "Persian", "Kitty", LocalDate.now().minusYears(10), "Evil", BigDecimal.valueOf(330), "has no money")),
+                new Animal(new AbstractAnimal("CAT", "CyberCat", "V", LocalDate.now().minusYears(2), "101010", BigDecimal.valueOf(256), "small dog -- Broken Data")),
+                new Animal(new AbstractAnimal("CAT", "Tibet", "Cloud", LocalDate.now().minusYears(4), "Evil", BigDecimal.valueOf(300), "Honey!")),
+                new Animal(new AbstractAnimal("CAT", "Stray", "Akira", LocalDate.now().minusYears(6), "Good", BigDecimal.valueOf(125), "Check out!")));
 
 
         List<String> expectedAnimalList = List.of("V", "Cloud", "Akira"); //Akira - 125,Cloud - 300, V - 256
@@ -255,10 +255,10 @@ class FintechApplicationTests {
     @ValueSource(ints = {1, 2, 3, 4})
     void findMinConstAnimalsSizeTest(int limit) {
         List<Animal> animalList = List.of(
-                new Animal(new AbstractAnimal("CAT","Persian", "Kitty",  LocalDate.now().minusYears(10),"Evil", BigDecimal.valueOf(330), "has no money")),
-                new Animal(new AbstractAnimal("CAT","CyberCat", "V",  LocalDate.now().minusYears(2),"101010", BigDecimal.valueOf(256),"small dog -- Broken Data")),
-                new Animal(new AbstractAnimal("CAT","Tibet", "Cloud", LocalDate.now().minusYears(4),  "Evil", BigDecimal.valueOf(300), "Honey!")),
-                new Animal(new AbstractAnimal("CAT","Stray", "Akira",  LocalDate.now().minusYears(6),"Good", BigDecimal.valueOf(125),  "Check out!")));
+                new Animal(new AbstractAnimal("CAT", "Persian", "Kitty", LocalDate.now().minusYears(10), "Evil", BigDecimal.valueOf(330), "has no money")),
+                new Animal(new AbstractAnimal("CAT", "CyberCat", "V", LocalDate.now().minusYears(2), "101010", BigDecimal.valueOf(256), "small dog -- Broken Data")),
+                new Animal(new AbstractAnimal("CAT", "Tibet", "Cloud", LocalDate.now().minusYears(4), "Evil", BigDecimal.valueOf(300), "Honey!")),
+                new Animal(new AbstractAnimal("CAT", "Stray", "Akira", LocalDate.now().minusYears(6), "Good", BigDecimal.valueOf(125), "Check out!")));
         try {
             Assertions.assertEquals(limit, animalRepository.findMinConstAnimals(animalList, limit).size()); // если limit меньше или равен длине списка должен вернуться список длинной limits
         } catch (Exception e) {
@@ -275,10 +275,10 @@ class FintechApplicationTests {
     @ValueSource(ints = {5, 6, 7, 8, 9, 10})
     void findMinConstAnimalsSizeExceptionTest(int limit) {
         List<Animal> animalList = List.of(
-                new Animal(new AbstractAnimal("CAT","Persian", "Kitty",  LocalDate.now().minusYears(10),"Evil", BigDecimal.valueOf(330), "has no money")),
-                new Animal(new AbstractAnimal("CAT","CyberCat", "V",  LocalDate.now().minusYears(2),"101010", BigDecimal.valueOf(256),"small dog -- Broken Data")),
-                new Animal(new AbstractAnimal("CAT","Tibet", "Cloud", LocalDate.now().minusYears(4),  "Evil", BigDecimal.valueOf(300), "Honey!")),
-                new Animal(new AbstractAnimal("CAT","Stray", "Akira",  LocalDate.now().minusYears(6),"Good", BigDecimal.valueOf(125),  "Check out!")));
+                new Animal(new AbstractAnimal("CAT", "Persian", "Kitty", LocalDate.now().minusYears(10), "Evil", BigDecimal.valueOf(330), "has no money")),
+                new Animal(new AbstractAnimal("CAT", "CyberCat", "V", LocalDate.now().minusYears(2), "101010", BigDecimal.valueOf(256), "small dog -- Broken Data")),
+                new Animal(new AbstractAnimal("CAT", "Tibet", "Cloud", LocalDate.now().minusYears(4), "Evil", BigDecimal.valueOf(300), "Honey!")),
+                new Animal(new AbstractAnimal("CAT", "Stray", "Akira", LocalDate.now().minusYears(6), "Good", BigDecimal.valueOf(125), "Check out!")));
 
         Assertions.assertThrows(IllegalListSizeException.class, () -> animalRepository.findMinConstAnimals(animalList, limit)); // если limit больше длинны списка, то ожидается исключение
     }

@@ -19,7 +19,7 @@ public class AbstractAnimalTest {
      */
     @BeforeEach
     void setUpAnimal() {
-        animal = new AbstractAnimal("FISH","Gold Fish", "Goldie", LocalDate.now().minusYears(5), "corns", BigDecimal.valueOf(100), "Look Behind You!");
+        animal = new AbstractAnimal("FISH", "Gold Fish", "Goldie", LocalDate.now().minusYears(5), "corns", BigDecimal.valueOf(100), "Look Behind You!");
     }
 
     /**
@@ -31,7 +31,7 @@ public class AbstractAnimalTest {
      */
     @Test
     void equalsFalseTest() {
-        boolean res = animal.equals(new AbstractAnimal("FISH","Gold Fish", "NOT Goldie", LocalDate.now().minusYears(5), "corns", BigDecimal.valueOf(100), "Look Behind You!"));
+        boolean res = animal.equals(new AbstractAnimal("FISH", "Gold Fish", "NOT Goldie", LocalDate.now().minusYears(5), "corns", BigDecimal.valueOf(100), "Look Behind You!"));
         Assertions.assertFalse(res);
     }
 
@@ -43,10 +43,10 @@ public class AbstractAnimalTest {
      */
     @Test
     void equalsTrueTest() {
-        boolean res = animal.equals(new AbstractAnimal("FISH","Gold Fish", "Goldie", LocalDate.now().minusYears(5), "corns", BigDecimal.valueOf(100), "Look Behind You!"));
+        boolean res = animal.equals(new AbstractAnimal("FISH", "Gold Fish", "Goldie", LocalDate.now().minusYears(5), "corns", BigDecimal.valueOf(100), "Look Behind You!"));
         Assertions.assertTrue(res);
 
-        res = animal.equals(new AbstractAnimal("FISH","Gold Fish", "Goldie", LocalDate.now().minusYears(5), "corns", BigDecimal.valueOf(100), "Look"));
+        res = animal.equals(new AbstractAnimal("FISH", "Gold Fish", "Goldie", LocalDate.now().minusYears(5), "corns", BigDecimal.valueOf(100), "Look"));
         Assertions.assertTrue(res);
     }
 

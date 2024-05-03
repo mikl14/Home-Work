@@ -34,12 +34,13 @@ public class Animal {
 
     public Animal() {
     }
+
     public Animal(AbstractAnimal abstractAnimal) {
         name = abstractAnimal.getName();
         character = abstractAnimal.getCharacter();
         birthDate = abstractAnimal.getBirthDate();
         breed = new Breed(new ArrayList<>());
-        animalType = new AnimalType(abstractAnimal.getAnimalType(), abstractAnimal.isWild(),new ArrayList<>());
+        animalType = new AnimalType(abstractAnimal.getAnimalType(), abstractAnimal.isWild(), new ArrayList<>());
         cost = abstractAnimal.getCost();
     }
 

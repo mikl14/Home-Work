@@ -4,9 +4,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
@@ -15,15 +12,13 @@ import ru.mts.animals_creators.AnimalFactory;
 import ru.mts.animals_creators.CreateAnimalServiceImpl;
 import ru.mtsbank.fintech.starter_tests.test_config.TestsConfiguration;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-
 @ActiveProfiles("test")
 @SpringBootTest
 @Import(TestsConfiguration.class)
 public class AnimalStarterTests {
     @Autowired
     CreateAnimalServiceImpl createAnimalServiceImpl;
+
     @Test
     void contextLoads() {
         Assertions.assertNotNull(createAnimalServiceImpl);

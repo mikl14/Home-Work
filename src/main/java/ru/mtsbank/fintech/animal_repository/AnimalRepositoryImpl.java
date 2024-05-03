@@ -216,10 +216,9 @@ public class AnimalRepositoryImpl implements AnimalRepository {
      * Записывает данные полученные из CreateAnimalService в базу
      */
     private void saveAnimal(List<Animal> animalList) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Transaction transaction = null;
 
-        try {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction transaction = null;
             transaction = session.beginTransaction();
 
             Set<AnimalType> animalTypes = animalList.stream().map(Animal::getAnimalType).collect(Collectors.toSet());
@@ -227,15 +226,14 @@ public class AnimalRepositoryImpl implements AnimalRepository {
 
             for (AnimalType animalType : animalTypes) {
                 for (Animal animal : animalList) {
-                    if (animal.getAnimalType().equals(animalType))
-                    {
+                    if (animal.getAnimalType().equals(animalType)) {
                         animalType.addToAnimalList(animal);
                         animal.setAnimalType(animalType);
                     }
                 }
             }
 
-            for (AnimalType animalType : animalTypes)  session.save(animalType);
+            for (AnimalType animalType : animalTypes) session.save(animalType);
 
             for (Animal animal : animalList) {
                 session.save(animal.getBreed());
@@ -243,12 +241,7 @@ public class AnimalRepositoryImpl implements AnimalRepository {
             }
             transaction.commit();
         } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
             e.printStackTrace();
-        } finally {
-            session.close();
         }
     }
 

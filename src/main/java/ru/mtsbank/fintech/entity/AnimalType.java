@@ -13,10 +13,10 @@ public class AnimalType {
     private String type;
     private boolean isWild;
 
-    @OneToMany(targetEntity = Animal.class)
+    @OneToMany(targetEntity = Animal.class,fetch = FetchType.EAGER)
     private List<Animal> animalList = new ArrayList<>();
 
-    public AnimalType(String type, boolean isWild,List<Animal> animalList) {
+    public AnimalType(String type, boolean isWild, List<Animal> animalList) {
         this.type = type;
         this.isWild = isWild;
         this.animalList = animalList;
@@ -33,8 +33,7 @@ public class AnimalType {
         this.animalList = animalList;
     }
 
-    public boolean addToAnimalList(Animal animal)
-    {
+    public boolean addToAnimalList(Animal animal) {
         return animalList.add(animal);
     }
 
@@ -69,6 +68,6 @@ public class AnimalType {
 
     @Override
     public String toString() {
-        return type ;
+        return type;
     }
 }
