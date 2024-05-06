@@ -1,6 +1,6 @@
 package ru.mtsbank.fintech.animal_repository;
 
-import ru.mts.animals.AbstractAnimal;
+import ru.mtsbank.fintech.entity.Animal;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -19,14 +19,14 @@ public interface AnimalRepository {
      * <b>findOlderAnimal</b>
      *
      * @param age искомый возраст
-     * @return Map<AbstractAnimal,Integer> - ключ: животное, значение: возраст
+     * @return Map<AbstractAnimal, Integer> - ключ: животное, значение: возраст
      */
-    Map<AbstractAnimal,Integer> findOlderAnimal(int age);
+    Map<Animal, Integer> findOlderAnimal(int age);
 
     /**
      * <b>findDuplicate</b>
      *
-     * @return  Map<String,Integer> ключ: тип животного, значение: количество дубликатов
+     * @return Map<String, Integer> ключ: тип животного, значение: количество дубликатов
      */
-    Map<String, List<AbstractAnimal>> findDuplicate();
+    Map<String, List<Animal>> findDuplicate();
 }

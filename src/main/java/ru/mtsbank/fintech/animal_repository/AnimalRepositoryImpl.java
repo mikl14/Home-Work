@@ -1,14 +1,18 @@
 package ru.mtsbank.fintech.animal_repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
-import ru.mts.animals.AbstractAnimal;
 import ru.mts.animals_creators.CreateAnimalServiceImpl;
 import ru.mts.exceptions.FileAccessException;
+import ru.mtsbank.fintech.entity.Animal;
+import ru.mtsbank.fintech.entity.AnimalType;
 import ru.mtsbank.fintech.exceptions.IllegalListSizeException;
 import ru.mtsbank.fintech.exceptions.IllegalValueException;
+import ru.mtsbank.fintech.util.HibernateUtil;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
@@ -18,12 +22,13 @@ import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 @Service
 public class AnimalRepositoryImpl implements AnimalRepository {
 
-    private Map<String, List<AbstractAnimal>> animalMap;
+
     private CreateAnimalServiceImpl createAnimalService;
     private ObjectMapper objectMapper;
 
@@ -46,11 +51,8 @@ public class AnimalRepositoryImpl implements AnimalRepository {
      */
     @PostConstruct
     public void init() {
-        animalMap = createAnimalService.getAnimals();
-    }
-
-    public Map<String, List<AbstractAnimal>> getAnimalArray() {
-        return animalMap;
+        List<Animal> animalList = createAnimalService.getAnimalsList().stream().map(Animal::new).collect(Collectors.toList());
+        saveAnimal(animalList);
     }
 
     /**
@@ -60,14 +62,14 @@ public class AnimalRepositoryImpl implements AnimalRepository {
      */
     @Override
     public Map<String, LocalDate> findLeapYearNames() {
+        Map<String, List<Animal>> animalMap = getAllAnimals();
         Map<String, LocalDate> leapYearBirthAnimal = new ConcurrentHashMap<>();
 
-        for (Map.Entry<String, List<AbstractAnimal>> entry : animalMap.entrySet()) {
+        for (Map.Entry<String, List<Animal>> entry : animalMap.entrySet()) {
             leapYearBirthAnimal.putAll(entry.getValue().stream().distinct()
                     .filter(value -> value.getBirthDate().isLeapYear())
-                    .collect(Collectors.toConcurrentMap(AbstractAnimal::getName, AbstractAnimal::getBirthDate, (existingValue, newValue) -> newValue)));
+                    .collect(Collectors.toConcurrentMap(Animal::getName, Animal::getBirthDate, (existingValue, newValue) -> newValue)));
         }
-        writeToFile(leapYearBirthAnimal, FileConstants.findLeapYearNamesFileName);
         return leapYearBirthAnimal;
     }
 
@@ -76,29 +78,29 @@ public class AnimalRepositoryImpl implements AnimalRepository {
      * возвращает Map животных, старше заданного возраста или самое взрослое животное
      *
      * @param age искомый возраст
-     * @return Map<AbstractAnimal, Integer> - ключ: животное, значение: возраст
+     * @return Map<Animal, Integer> - ключ: животное, значение: возраст
      */
     @Override
-    public Map<AbstractAnimal, Integer> findOlderAnimal(int age) {
+    public Map<Animal, Integer> findOlderAnimal(int age) {
         if (age < 0) throw new IllegalValueException("Incorrect Age!");
-        Map<AbstractAnimal, Integer> olderAnimals = new ConcurrentHashMap<>();
+        Map<Animal, Integer> olderAnimals = new ConcurrentHashMap<>();
+        Map<String, List<Animal>> animalMap = getAllAnimals();
 
-        List<AbstractAnimal> animalList = new ArrayList<>();
-        for (Map.Entry<String, List<AbstractAnimal>> entry : animalMap.entrySet()) {
+        List<Animal> animalList = new ArrayList<>();
+        for (Map.Entry<String, List<Animal>> entry : animalMap.entrySet()) {
             animalList.addAll(entry.getValue());
         }
 
         olderAnimals.putAll(animalList.stream().distinct()
                 .filter(value -> value.getAge() > age)
-                .collect(Collectors.toConcurrentMap(value -> value, AbstractAnimal::getAge)));
+                .collect(Collectors.toConcurrentMap(value -> value, Animal::getAge)));
 
         if (olderAnimals.isEmpty()) {
 
-            Optional<AbstractAnimal> optionalOlderAnimal = animalList.stream().max(Comparator.comparing(AbstractAnimal::getAge));
-            AbstractAnimal olderAnimal = optionalOlderAnimal.orElseThrow(() -> new IllegalValueException("Can't find the oldest animal!"));
+            Optional<Animal> optionalOlderAnimal = animalList.stream().max(Comparator.comparing(Animal::getAge));
+            Animal olderAnimal = optionalOlderAnimal.orElseThrow(() -> new IllegalValueException("Can't find the oldest animal!"));
             olderAnimals.put(olderAnimal, olderAnimal.getAge());
         }
-        writeToFile(olderAnimals, FileConstants.findOlderAnimalFileName);
         return olderAnimals;
     }
 
@@ -108,14 +110,13 @@ public class AnimalRepositoryImpl implements AnimalRepository {
      * @return Map<String, Integer> ключ: тип животного, значение: количество дубликатов
      */
     @Override
-    public Map<String, List<AbstractAnimal>> findDuplicate() {
-
-        Map<String, List<AbstractAnimal>> result = animalMap.entrySet().stream()
+    public Map<String, List<Animal>> findDuplicate() {
+        Map<String, List<Animal>> animalMap = getAllAnimals();
+        Map<String, List<Animal>> result = animalMap.entrySet().stream()
                 .collect(Collectors.toConcurrentMap(Map.Entry::getKey, entry -> entry.getValue().stream()
                         .filter(animal -> entry.getValue().indexOf(animal) != entry.getValue().lastIndexOf(animal))
                         .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::synchronizedList))));
 
-        writeToFile(result, FileConstants.findDuplicateFileName);
         return result;
     }
 
@@ -124,10 +125,10 @@ public class AnimalRepositoryImpl implements AnimalRepository {
      *
      * @return double средний возраст животных в переданном списке
      */
-    public double findAverageAge(List<AbstractAnimal> animalList) {
+    public double findAverageAge(List<Animal> animalList) {
         if (animalList.isEmpty()) throw new IllegalValueException("animalList is empty!");
 
-        double result = animalList.stream().mapToLong(AbstractAnimal::getAge).average().orElse(0);
+        double result = animalList.stream().mapToLong(Animal::getAge).average().orElse(0);
         writeToFile(result, FileConstants.findAverageAgeFileName);
         return result;
     }
@@ -137,7 +138,7 @@ public class AnimalRepositoryImpl implements AnimalRepository {
      *
      * @return List<AbstractAnimal> старше olds и с ценой выше средней
      */
-    public List<AbstractAnimal> findOldAndExpensive(int olds, List<AbstractAnimal> animalList) throws IllegalListSizeException {
+    public List<Animal> findOldAndExpensive(int olds, List<Animal> animalList) throws IllegalListSizeException {
         if (olds < 0) throw new IllegalValueException("Incorrect olds!");
         if (animalList.isEmpty()) throw new IllegalListSizeException("animalList is empty!");
 
@@ -146,12 +147,11 @@ public class AnimalRepositoryImpl implements AnimalRepository {
                 .average()
                 .orElse(0.0);
 
-        List<AbstractAnimal> result = animalList.stream()
+        List<Animal> result = animalList.stream()
                 .filter(animal -> animal.getAge() > olds && animal.getCost().doubleValue() > averagePrice)
-                .sorted(Comparator.comparing(AbstractAnimal::getAge).reversed())
+                .sorted(Comparator.comparing(Animal::getAge).reversed())
                 .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::synchronizedList));
 
-        writeToFile(result, FileConstants.findOldAndExpensiveFileName);
         return result;
     }
 
@@ -160,18 +160,17 @@ public class AnimalRepositoryImpl implements AnimalRepository {
      *
      * @return List<AbstractAnimal> с limit самыми дешевыми животными отсортированный в обратном алфавитном порядке по именам
      */
-    public List<String> findMinConstAnimals(List<AbstractAnimal> animalList, int limit) throws IllegalListSizeException {
+    public List<String> findMinConstAnimals(List<Animal> animalList, int limit) throws IllegalListSizeException {
         if (animalList.isEmpty() || animalList.size() < limit)
             throw new IllegalListSizeException("Incorrect list size!");
 
         List<String> result = animalList.stream()
-                .sorted(Comparator.comparing(AbstractAnimal::getCost))
+                .sorted(Comparator.comparing(Animal::getCost))
                 .limit(limit)
-                .sorted(Comparator.comparing(AbstractAnimal::getName).reversed())
-                .map(AbstractAnimal::getName)
+                .sorted(Comparator.comparing(Animal::getName).reversed())
+                .map(Animal::getName)
                 .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::synchronizedList));
 
-        writeToFile(result, FileConstants.findMinConstAnimalsFileName);
         return result;
     }
 
@@ -212,6 +211,64 @@ public class AnimalRepositoryImpl implements AnimalRepository {
         }
     }
 
+    /**
+     * <b>saveAnimal</b>
+     * Записывает данные полученные из CreateAnimalService в базу
+     */
+    private void saveAnimal(List<Animal> animalList) {
+
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction transaction = null;
+            transaction = session.beginTransaction();
+
+            Set<AnimalType> animalTypes = animalList.stream().map(Animal::getAnimalType).collect(Collectors.toSet());
+
+
+            for (AnimalType animalType : animalTypes) {
+                for (Animal animal : animalList) {
+                    if (animal.getAnimalType().equals(animalType)) {
+                        animalType.addToAnimalList(animal);
+                        animal.setAnimalType(animalType);
+                    }
+                }
+            }
+
+            for (AnimalType animalType : animalTypes) session.save(animalType);
+
+            for (Animal animal : animalList) {
+                session.save(animal.getBreed());
+                session.save(animal);
+            }
+            transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * <b>getAllAnimals</b>
+     * Считывает все объекты Animal из базы данных
+     */
+    public Map<String, List<Animal>> getAllAnimals() {
+        Map<String, List<Animal>> animalMap = new ConcurrentHashMap<>();
+
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        List<Animal> animals = new ArrayList<>();
+        try {
+            animals = session.createQuery("FROM Animal", Animal.class).getResultList();
+            for (Animal animal : animals) {
+                if (!animalMap.containsKey(animal.getAnimalType().toString())) {
+                    animalMap.put(animal.getAnimalType().toString(), new CopyOnWriteArrayList<>());
+                }
+                animalMap.get(animal.getAnimalType().toString()).add(animal);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return animalMap;
+    }
 }
 
 

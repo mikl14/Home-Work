@@ -8,9 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
-import ru.mts.animals.*;
+import ru.mts.animals.AbstractAnimal;
 import ru.mts.exceptions.FileAccessException;
 import ru.mtsbank.fintech.animal_repository.AnimalRepositoryImpl;
+import ru.mtsbank.fintech.entity.Animal;
 import ru.mtsbank.fintech.exceptions.IllegalListSizeException;
 import ru.mtsbank.fintech.exceptions.IllegalValueException;
 import ru.mtsbank.fintech.starter_tests.test_config.TestsConfiguration;
@@ -41,7 +42,7 @@ class FintechApplicationTests {
      */
     @Test
     void animalRepositoryArrayTest() {
-        Assertions.assertNotEquals(animalRepository.getAnimalArray().size(), 0);
+        Assertions.assertNotEquals(animalRepository.getAllAnimals().size(), 0);
     }
 
     /**
@@ -76,13 +77,13 @@ class FintechApplicationTests {
     @ParameterizedTest
     @ValueSource(ints = {7, 8, 9, 10, 11})
     void findOlderAnimalTest(Integer olds) {
-        Map<AbstractAnimal, Integer> olderYearsAnimalsResult = animalRepository.findOlderAnimal(olds);
+        Map<Animal, Integer> olderYearsAnimalsResult = animalRepository.findOlderAnimal(olds);
 
-        AbstractAnimal theOlderAnimal = animalRepository.getAnimalArray().values().stream()
+        Animal theOlderAnimal = animalRepository.getAllAnimals().values().stream()
                 .flatMap(List::stream)
-                .max(Comparator.comparingInt(AbstractAnimal::getAge)).orElse(null); //находим самое старое животное
+                .max(Comparator.comparingInt(Animal::getAge)).orElse(null); //находим самое старое животное
 
-        for (Map.Entry<AbstractAnimal, Integer> animal : olderYearsAnimalsResult.entrySet()) {
+        for (Map.Entry<Animal, Integer> animal : olderYearsAnimalsResult.entrySet()) {
 
             if (animal.getKey().equals(theOlderAnimal) && olds >= animal.getKey().getAge()) //если было возвращено самое старое животное и при этом заданный возраст больше или равен его возрасту
             {
@@ -100,18 +101,18 @@ class FintechApplicationTests {
      */
     @Test
     void findOlderAnimalContainsValuesTest() {
-        AbstractAnimal theYoungestAnimal = animalRepository.getAnimalArray().values().stream()
+        Animal theYoungestAnimal = animalRepository.getAllAnimals().values().stream()
                 .flatMap(List::stream)
-                .min(Comparator.comparingInt(AbstractAnimal::getAge)).orElse(null); //находим самое молодое животное
+                .min(Comparator.comparingInt(Animal::getAge)).orElse(null); //находим самое молодое животное
 
-        List<AbstractAnimal> actualOlderYearsAnimalsList = new ArrayList<>();
+        List<Animal> actualOlderYearsAnimalsList = new ArrayList<>();
 
         assert theYoungestAnimal != null;
-        Map<AbstractAnimal, Integer> olderYearsAnimalsResult = animalRepository.findOlderAnimal(theYoungestAnimal.getAge() - 1); //передаем возраст молодого животного - 1, чтобы получить всех
+        Map<Animal, Integer> olderYearsAnimalsResult = animalRepository.findOlderAnimal(theYoungestAnimal.getAge() - 1); //передаем возраст молодого животного - 1, чтобы получить всех
 
-        Map<String, List<AbstractAnimal>> allAnimalMap = animalRepository.getAnimalArray();
+        Map<String, List<Animal>> allAnimalMap = animalRepository.getAllAnimals();
 
-        for (Map.Entry<String, List<AbstractAnimal>> entry : allAnimalMap.entrySet()) {
+        for (Map.Entry<String, List<Animal>> entry : allAnimalMap.entrySet()) {
             actualOlderYearsAnimalsList.addAll(entry.getValue().stream().distinct().collect(Collectors.toList()));
         }
         Assertions.assertEquals(olderYearsAnimalsResult.size(), actualOlderYearsAnimalsList.size());
@@ -124,12 +125,12 @@ class FintechApplicationTests {
      */
     @Test
     void findOlderAnimalOlderAnimalSizeTest() {
-        AbstractAnimal theOlderAnimal = animalRepository.getAnimalArray().values().stream()
+        Animal theOlderAnimal = animalRepository.getAllAnimals().values().stream()
                 .flatMap(List::stream)
-                .max(Comparator.comparingInt(AbstractAnimal::getAge)).orElse(null); //находим самое старое животное
+                .max(Comparator.comparingInt(Animal::getAge)).orElse(null); //находим самое старое животное
 
         assert theOlderAnimal != null;
-        Map<AbstractAnimal, Integer> olderYearsAnimalsResult = animalRepository.findOlderAnimal(theOlderAnimal.getAge() + 1);
+        Map<Animal, Integer> olderYearsAnimalsResult = animalRepository.findOlderAnimal(theOlderAnimal.getAge() + 1);
 
         Assertions.assertEquals(olderYearsAnimalsResult.size(), 1);
     }
@@ -142,19 +143,20 @@ class FintechApplicationTests {
      */
     @Test
     void findDuplicateTest() {
-        Map<String, List<AbstractAnimal>> duplicateArrayResult = animalRepository.findDuplicate();
+        Map<String, List<Animal>> duplicateArrayResult = animalRepository.findDuplicate();
 
-        List<AbstractAnimal> expectedList = List.of(
-                new Wolf("Dingo", "Red", "Evil", LocalDate.now().minusYears(8), BigDecimal.valueOf(123), "desert", 70, "secretInfo"),
-                new Wolf("Dingo", "Red", "Evil", LocalDate.now().minusYears(8), BigDecimal.valueOf(123), "desert", 70, "secretInfo"),
-                new Bear("White", "Beluga", "Hungry", LocalDate.now().minusYears(3), BigDecimal.valueOf(123), "Arctic", 120, "secretInfo"),
-                new Bear("White", "Beluga", "Hungry", LocalDate.now().minusYears(3), BigDecimal.valueOf(123), "Arctic", 120, "secretInfo"));
+        List<Animal> expectedList = List.of(
+                new Animal(new AbstractAnimal("WOLF", "Dingo", "Red", LocalDate.now().minusYears(8), "Evil", BigDecimal.valueOf(200), "secretInfo")),
+                new Animal(new AbstractAnimal("WOLF", "Dingo", "Red", LocalDate.now().minusYears(8), "Evil", BigDecimal.valueOf(200), "secretInfo")),
+                new Animal(new AbstractAnimal("BEAR", "White", "Beluga", LocalDate.now().minusYears(3), "Hungry", BigDecimal.valueOf(500), "I'm not white")),
+                new Animal(new AbstractAnimal("BEAR", "White", "Beluga", LocalDate.now().minusYears(3), "Hungry", BigDecimal.valueOf(500), "I'm not white")));
 
-        List<AbstractAnimal> actualList = new ArrayList<AbstractAnimal>();
-        for (Map.Entry<String, List<AbstractAnimal>> entry : duplicateArrayResult.entrySet()) {
+        List<Animal> actualList = new ArrayList<Animal>();
+        for (Map.Entry<String, List<Animal>> entry : duplicateArrayResult.entrySet()) {
             actualList.addAll(entry.getValue());
         }
         Assertions.assertEquals(expectedList, actualList); // Ожидается обнаружение обнаружение 2х дубликатов волка с именем Red и 2х медведей с именем Beluga
+
     }
 
     /**
@@ -164,7 +166,7 @@ class FintechApplicationTests {
      */
     @Test
     void findAverageAgeTest() {
-        List<AbstractAnimal> animalList = animalRepository.getAnimalArray().get("CAT"); //Берем список кошек
+        List<Animal> animalList = animalRepository.getAllAnimals().get("CAT"); //Берем список кошек
         double expectedAvg = 5.5; // В списке кошек 4 кошки возрастом 10,4,2,6 лет
         Assertions.assertEquals(expectedAvg, animalRepository.findAverageAge(animalList));
     }
@@ -186,12 +188,12 @@ class FintechApplicationTests {
      */
     @Test
     void findOldAndExpensiveTest() {
-        List<AbstractAnimal> animalList = new ArrayList<>(animalRepository.getAnimalArray().get("FISH"));
-        animalList.addAll(animalRepository.getAnimalArray().get("BEAR")); //передаваемый список составленный из рыб и медведей из animalRepository
+        List<Animal> animalList = new ArrayList<>(animalRepository.getAllAnimals().get("FISH"));
+        animalList.addAll(animalRepository.getAllAnimals().get("BEAR")); //передаваемый список составленный из рыб и медведей из animalRepository
 
-        List<AbstractAnimal> expectedAnimalList = List.of(
-                new Fish("Shark", "Blue Dragon", "Good", LocalDate.now().minusYears(11), BigDecimal.valueOf(550), "meat", 12, "secretInfo"),
-                new Bear("Animatronic", "GoldenFreddy", "Very Bad", LocalDate.now().minusYears(6), BigDecimal.valueOf(600), "Fredy's Pizza", 120, "secretInfo")
+        List<Animal> expectedAnimalList = List.of(
+                new Animal(new AbstractAnimal("FISH", "Shark", "Blue Dragon", LocalDate.now().minusYears(11), "Good", BigDecimal.valueOf(550), "I work in MIB")),
+                new Animal(new AbstractAnimal("BEAR", "Animatronic", "GoldenFreddy", LocalDate.now().minusYears(6), "Very Bad", BigDecimal.valueOf(600), "Bite 87"))
         );
         //ожидаемый результат
         try {
@@ -228,11 +230,12 @@ class FintechApplicationTests {
      */
     @Test
     void findMinConstAnimalsTest() {
-        List<AbstractAnimal> animalList = List.of(
-                new Cat("Persian", "Kitty", "Evil", LocalDate.now().minusYears(10), BigDecimal.valueOf(330), "meat", 12, "secretInfo"),
-                new Cat("CyberCat", "V", "101010", LocalDate.now().minusYears(2), BigDecimal.valueOf(256), "electric", 12, "secretInfo"),
-                new Cat("Tibet", "Cloud", "Evil", LocalDate.now().minusYears(4), BigDecimal.valueOf(300), "meat", 12, "secretInfo"),
-                new Cat("Stray", "Akira", "Good", LocalDate.now().minusYears(6), BigDecimal.valueOf(125), "meat", 12, "secretInfo"));
+        List<Animal> animalList = List.of(
+                new Animal(new AbstractAnimal("CAT", "Persian", "Kitty", LocalDate.now().minusYears(10), "Evil", BigDecimal.valueOf(330), "has no money")),
+                new Animal(new AbstractAnimal("CAT", "CyberCat", "V", LocalDate.now().minusYears(2), "101010", BigDecimal.valueOf(256), "small dog -- Broken Data")),
+                new Animal(new AbstractAnimal("CAT", "Tibet", "Cloud", LocalDate.now().minusYears(4), "Evil", BigDecimal.valueOf(300), "Honey!")),
+                new Animal(new AbstractAnimal("CAT", "Stray", "Akira", LocalDate.now().minusYears(6), "Good", BigDecimal.valueOf(125), "Check out!")));
+
 
         List<String> expectedAnimalList = List.of("V", "Cloud", "Akira"); //Akira - 125,Cloud - 300, V - 256
 
@@ -251,11 +254,11 @@ class FintechApplicationTests {
     @ParameterizedTest
     @ValueSource(ints = {1, 2, 3, 4})
     void findMinConstAnimalsSizeTest(int limit) {
-        List<AbstractAnimal> animalList = List.of(
-                new Cat("Persian", "Kitty", "Evil", LocalDate.now().minusYears(10), BigDecimal.valueOf(330), "meat", 12, "secretInfo"),
-                new Cat("CyberCat", "V", "101010", LocalDate.now().minusYears(2), BigDecimal.valueOf(256), "electric", 12, "secretInfo"),
-                new Cat("Tibet", "Cloud", "Evil", LocalDate.now().minusYears(4), BigDecimal.valueOf(300), "meat", 12, "secretInfo"),
-                new Cat("Stray", "Akira", "Good", LocalDate.now().minusYears(6), BigDecimal.valueOf(125), "meat", 12, "secretInfo"));
+        List<Animal> animalList = List.of(
+                new Animal(new AbstractAnimal("CAT", "Persian", "Kitty", LocalDate.now().minusYears(10), "Evil", BigDecimal.valueOf(330), "has no money")),
+                new Animal(new AbstractAnimal("CAT", "CyberCat", "V", LocalDate.now().minusYears(2), "101010", BigDecimal.valueOf(256), "small dog -- Broken Data")),
+                new Animal(new AbstractAnimal("CAT", "Tibet", "Cloud", LocalDate.now().minusYears(4), "Evil", BigDecimal.valueOf(300), "Honey!")),
+                new Animal(new AbstractAnimal("CAT", "Stray", "Akira", LocalDate.now().minusYears(6), "Good", BigDecimal.valueOf(125), "Check out!")));
         try {
             Assertions.assertEquals(limit, animalRepository.findMinConstAnimals(animalList, limit).size()); // если limit меньше или равен длине списка должен вернуться список длинной limits
         } catch (Exception e) {
@@ -271,11 +274,11 @@ class FintechApplicationTests {
     @ParameterizedTest
     @ValueSource(ints = {5, 6, 7, 8, 9, 10})
     void findMinConstAnimalsSizeExceptionTest(int limit) {
-        List<AbstractAnimal> animalList = List.of(
-                new Cat("Persian", "Kitty", "Evil", LocalDate.now().minusYears(10), BigDecimal.valueOf(330), "meat", 12, "secretInfo"),
-                new Cat("CyberCat", "V", "101010", LocalDate.now().minusYears(2), BigDecimal.valueOf(256), "electric", 12, "secretInfo"),
-                new Cat("Tibet", "Cloud", "Evil", LocalDate.now().minusYears(4), BigDecimal.valueOf(300), "meat", 12, "secretInfo"),
-                new Cat("Stray", "Akira", "Good", LocalDate.now().minusYears(6), BigDecimal.valueOf(125), "meat", 12, "secretInfo"));
+        List<Animal> animalList = List.of(
+                new Animal(new AbstractAnimal("CAT", "Persian", "Kitty", LocalDate.now().minusYears(10), "Evil", BigDecimal.valueOf(330), "has no money")),
+                new Animal(new AbstractAnimal("CAT", "CyberCat", "V", LocalDate.now().minusYears(2), "101010", BigDecimal.valueOf(256), "small dog -- Broken Data")),
+                new Animal(new AbstractAnimal("CAT", "Tibet", "Cloud", LocalDate.now().minusYears(4), "Evil", BigDecimal.valueOf(300), "Honey!")),
+                new Animal(new AbstractAnimal("CAT", "Stray", "Akira", LocalDate.now().minusYears(6), "Good", BigDecimal.valueOf(125), "Check out!")));
 
         Assertions.assertThrows(IllegalListSizeException.class, () -> animalRepository.findMinConstAnimals(animalList, limit)); // если limit больше длинны списка, то ожидается исключение
     }

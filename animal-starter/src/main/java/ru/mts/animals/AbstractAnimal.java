@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
+import ru.mts.animals_creators.AnimalFactory;
 import ru.mts.exceptions.FileAccessException;
 
 import java.io.IOException;
@@ -26,10 +27,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Component
-public abstract class AbstractAnimal implements Animal {
+public class AbstractAnimal implements Animal {
     protected Random random = new Random();
     protected LocalDate birthDate;
     protected String breed, name, character;
+
+    protected String animalType;
+    protected boolean isWild;
     protected BigDecimal cost;
     @JsonDeserialize(using = Base64Deserializer.class)
     @JsonSerialize(using = Base64Serializer.class)
@@ -67,13 +71,24 @@ public abstract class AbstractAnimal implements Animal {
      */
 
 
-    public AbstractAnimal(String breed, String name, LocalDate birthDate, String character, BigDecimal cost, String secretInformation) {
+    public AbstractAnimal(String animalType,String breed, String name, LocalDate birthDate, String character, BigDecimal cost, String secretInformation) {
+        this.animalType = animalType;
         this.breed = breed;
         this.name = name;
         this.birthDate = birthDate;
         this.character = character;
         this.cost = cost.setScale(2, RoundingMode.HALF_UP);
         this.secretInformation = secretInformation;
+        switch (getAnimalType()) {
+            case "CAT":
+            case "FISH":
+                this.isWild = false;
+                break;
+            case "WOLF":
+            case "BEAR":
+                this.isWild = true;
+                break;
+        }
     }
 
 
@@ -93,13 +108,24 @@ public abstract class AbstractAnimal implements Animal {
      * @see #generateRandomDate()
      */
 
-    public AbstractAnimal(String name, String character) {
+    public AbstractAnimal(String animalType,String name, String character) {
+        this.animalType = animalType;
         this.breed = "Number " + (random.nextInt(1000));
         this.name = name;
         this.birthDate = generateRandomDate();
         this.character = character;
         this.cost = (BigDecimal.valueOf(random.nextDouble() * 1000)).setScale(2, RoundingMode.HALF_UP);
         this.secretInformation = InitSecretInformation();
+        switch (getAnimalType()) {
+            case "CAT":
+            case "FISH":
+                this.isWild = false;
+                break;
+            case "WOLF":
+            case "BEAR":
+                this.isWild = true;
+                break;
+        }
     }
 
     public AbstractAnimal() {
@@ -123,6 +149,14 @@ public abstract class AbstractAnimal implements Animal {
     @JsonProperty("name")
     public void setName(String name) {
         this.name = name;
+    }
+
+    public boolean isWild() {
+        return isWild;
+    }
+
+    public void setWild(boolean wild) {
+        isWild = wild;
     }
 
     @JsonProperty("cost")
@@ -195,7 +229,7 @@ public abstract class AbstractAnimal implements Animal {
      */
     @JsonIgnore
     public String getAnimalType() {
-        return this.getClass().getSimpleName().toUpperCase(Locale.ROOT);
+        return animalType;
     }
 
     /**

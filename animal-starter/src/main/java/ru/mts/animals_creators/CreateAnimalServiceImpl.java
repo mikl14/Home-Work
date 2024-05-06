@@ -76,7 +76,7 @@ public class CreateAnimalServiceImpl implements CreateAnimalService {
      */
     public AbstractAnimal getAnimal() {
         AbstractAnimal animal = animalFactory.getAnimal(animalType);
-        String type = animal.getClass().getSimpleName().toUpperCase(Locale.ROOT);
+        String type = animal.getAnimalType().toUpperCase(Locale.ROOT);
         if (animalType.toString().equals(type)) return animal;
         else throw new IllegalStateException();
 
@@ -125,5 +125,37 @@ public class CreateAnimalServiceImpl implements CreateAnimalService {
 
         return animalMap;
 
+    }
+
+    /**
+     * <b>getAnimalsList()</b>
+     *
+     * @param numberAnimals
+     * @return Список животных длинной numberAnimals
+     */
+
+    public List<AbstractAnimal> getAnimalsList(int numberAnimals) {
+
+        if (numberAnimals < 0) throw new IllegalArgumentException();
+        List<AbstractAnimal> animalList = new CopyOnWriteArrayList<>();
+        for (int i = 0; i < numberAnimals; i++) {
+            AbstractAnimal animal = getRandomAnimal();
+            animalList.add(animal);
+        }
+        return animalList;
+    }
+
+    /**
+     * <b>getAnimalsList()</b>
+     *
+     * @return Список животных длинной 10
+     */
+    public List<AbstractAnimal> getAnimalsList() {
+        List<AbstractAnimal> animalList = new CopyOnWriteArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            AbstractAnimal animal = getRandomAnimal();
+            animalList.add(animal);
+        }
+        return animalList;
     }
 }

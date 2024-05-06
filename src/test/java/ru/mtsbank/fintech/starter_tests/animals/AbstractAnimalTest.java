@@ -4,8 +4,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.mts.animals.AbstractAnimal;
-import ru.mts.animals.Cat;
-import ru.mts.animals.Fish;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -21,7 +19,7 @@ public class AbstractAnimalTest {
      */
     @BeforeEach
     void setUpAnimal() {
-        animal = new Cat("Abis", "Pan", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12,"secretInfo");
+        animal = new AbstractAnimal("FISH", "Gold Fish", "Goldie", LocalDate.now().minusYears(5), "corns", BigDecimal.valueOf(100), "Look Behind You!");
     }
 
     /**
@@ -33,16 +31,7 @@ public class AbstractAnimalTest {
      */
     @Test
     void equalsFalseTest() {
-        boolean res = animal.equals(new Cat("Abi", "Pan", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12,"secretInfo"));
-        Assertions.assertFalse(res);
-
-        res = animal.equals(new Cat("Abis", "Peter", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12,"secretInfo"));
-        Assertions.assertFalse(res);
-
-        res = animal.equals(new Cat("Abis", "Pan", "Evil", LocalDate.of(2021, 12, 1), BigDecimal.valueOf(123), "meat", 12,"secretInfo"));
-        Assertions.assertFalse(res);
-
-        res = animal.equals(new Fish("Abis", "Pan", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12,"secretInfo"));
+        boolean res = animal.equals(new AbstractAnimal("FISH", "Gold Fish", "NOT Goldie", LocalDate.now().minusYears(5), "corns", BigDecimal.valueOf(100), "Look Behind You!"));
         Assertions.assertFalse(res);
     }
 
@@ -54,10 +43,10 @@ public class AbstractAnimalTest {
      */
     @Test
     void equalsTrueTest() {
-        boolean res = animal.equals(new Cat("Abis", "Pan", "Evil", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12,"secretInfo"));
+        boolean res = animal.equals(new AbstractAnimal("FISH", "Gold Fish", "Goldie", LocalDate.now().minusYears(5), "corns", BigDecimal.valueOf(100), "Look Behind You!"));
         Assertions.assertTrue(res);
 
-        res = animal.equals(new Cat("Abis", "Pan", "Good", LocalDate.of(2015, 12, 1), BigDecimal.valueOf(123), "meat", 12,"secretInfo"));
+        res = animal.equals(new AbstractAnimal("FISH", "Gold Fish", "Goldie", LocalDate.now().minusYears(5), "corns", BigDecimal.valueOf(100), "Look"));
         Assertions.assertTrue(res);
     }
 
