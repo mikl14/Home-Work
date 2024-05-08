@@ -8,13 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
-import ru.mts.animals.AbstractAnimal;
-import ru.mts.exceptions.FileAccessException;
+
 import ru.mtsbank.fintech.animal_repository.AnimalRepositoryImpl;
 import ru.mtsbank.fintech.entity.Animal;
 import ru.mtsbank.fintech.exceptions.IllegalListSizeException;
 import ru.mtsbank.fintech.exceptions.IllegalValueException;
-import ru.mtsbank.fintech.starter_tests.test_config.TestsConfiguration;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -26,7 +24,6 @@ import java.util.stream.Collectors;
 
 @ActiveProfiles("test")
 @SpringBootTest
-@Import(TestsConfiguration.class)
 class FintechApplicationTests {
     @Autowired
     AnimalRepositoryImpl animalRepository;

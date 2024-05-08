@@ -1,4 +1,4 @@
-package ru.mts.exceptions;
+package ru.mtsbank.fintech.exceptions;
 
 public class FileAccessException extends RuntimeException {
     public FileAccessException()

@@ -1,17 +1,15 @@
 package ru.mtsbank.fintech.entity;
 
-import ru.mts.animals.AbstractAnimal;
-
 import javax.persistence.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.ArrayList;
 import java.util.Objects;
 
 @Table(name = "animal")
 @Entity
-public class Animal {
+public class Animal implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -35,13 +33,11 @@ public class Animal {
     public Animal() {
     }
 
-    public Animal(AbstractAnimal abstractAnimal) {
-        name = abstractAnimal.getName();
-        character = abstractAnimal.getCharacter();
-        birthDate = abstractAnimal.getBirthDate();
-        breed = new Breed(new ArrayList<>());
-        animalType = new AnimalType(abstractAnimal.getAnimalType(), abstractAnimal.isWild(), new ArrayList<>());
-        cost = abstractAnimal.getCost();
+    public Animal(String name, String character, BigDecimal cost,AnimalType animalType) {
+        this.name = name;
+        this.character = character;
+        this.cost = cost;
+        this.animalType = animalType;
     }
 
     public int getId() {

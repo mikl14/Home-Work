@@ -3,10 +3,6 @@ package ru.mtsbank.fintech.bpp;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.annotation.Configuration;
-import ru.mts.animals_creators.AnimalFactory;
-import ru.mts.animals_creators.CreateAnimalServiceImpl;
-
-import java.util.Random;
 
 @Configuration
 public class CreateAnimalServiceBeanPostProcessor implements BeanPostProcessor {
@@ -20,11 +16,6 @@ public class CreateAnimalServiceBeanPostProcessor implements BeanPostProcessor {
      */
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-        if (beanName.equalsIgnoreCase("createanimalserviceimpl")) {
-            CreateAnimalServiceImpl beanBuf = (CreateAnimalServiceImpl) bean;
-            beanBuf.setAnimalType(AnimalFactory.AnimalType.values()[new Random().nextInt(3)]);
-        }
-
         return bean;
     }
     /**

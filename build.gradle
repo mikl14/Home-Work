@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '2.7.4'
 	id 'io.spring.dependency-management' version '1.1.4'
+	id "org.flywaydb.flyway" version "10.12.0"
 }
 
 group = 'ru.mtsbank'
@@ -16,13 +17,14 @@ repositories {
 }
 
 dependencies {
+	implementation('org.flywaydb:flyway-core')
 	implementation 'org.springframework.boot:spring-boot-starter'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.16.0'
 	implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.16.0'
 	implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.3'
-	implementation (project(":animal-starter"))
-	implementation 'org.hibernate:hibernate-core:5.3.22.Final'
+
 }
 
 tasks.named('test') {

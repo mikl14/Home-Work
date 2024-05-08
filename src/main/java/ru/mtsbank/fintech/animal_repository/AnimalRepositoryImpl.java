@@ -1,20 +1,15 @@
 package ru.mtsbank.fintech.animal_repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
-import ru.mts.animals_creators.CreateAnimalServiceImpl;
-import ru.mts.exceptions.FileAccessException;
 import ru.mtsbank.fintech.entity.Animal;
-import ru.mtsbank.fintech.entity.AnimalType;
+import ru.mtsbank.fintech.exceptions.FileAccessException;
 import ru.mtsbank.fintech.exceptions.IllegalListSizeException;
 import ru.mtsbank.fintech.exceptions.IllegalValueException;
-import ru.mtsbank.fintech.util.HibernateUtil;
+import ru.mtsbank.fintech.service.AnimalService;
 
-import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -22,37 +17,21 @@ import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 @Service
 public class AnimalRepositoryImpl implements AnimalRepository {
-
-
-    private CreateAnimalServiceImpl createAnimalService;
     private ObjectMapper objectMapper;
+    private AnimalService animalService;
 
     /**
      * <b>AnimalRepositoryImpl</b>
-     * Передается бин CreateAnimalServiceLmpl и заполняется animalArray
-     *
-     * @param createAnimalServiceImpl
+     * Передается бин CreateAnimalServiceLmpl и заполняется animalArra
      */
 
-    public AnimalRepositoryImpl(CreateAnimalServiceImpl createAnimalServiceImpl, ObjectMapper objectMapper) {
-        createAnimalService = createAnimalServiceImpl;
+    public AnimalRepositoryImpl(AnimalService animalService, ObjectMapper objectMapper) {
+        this.animalService = animalService;
         this.objectMapper = objectMapper;
-    }
-
-
-    /**
-     * <b>init</b> запускается после конструктора
-     * Заполняет массив animalArray 10 случайными животными
-     */
-    @PostConstruct
-    public void init() {
-        List<Animal> animalList = createAnimalService.getAnimalsList().stream().map(Animal::new).collect(Collectors.toList());
-        saveAnimal(animalList);
     }
 
     /**
@@ -62,7 +41,7 @@ public class AnimalRepositoryImpl implements AnimalRepository {
      */
     @Override
     public Map<String, LocalDate> findLeapYearNames() {
-        Map<String, List<Animal>> animalMap = getAllAnimals();
+        Map<String, List<Animal>> animalMap = new HashMap<>();
         Map<String, LocalDate> leapYearBirthAnimal = new ConcurrentHashMap<>();
 
         for (Map.Entry<String, List<Animal>> entry : animalMap.entrySet()) {
@@ -84,7 +63,7 @@ public class AnimalRepositoryImpl implements AnimalRepository {
     public Map<Animal, Integer> findOlderAnimal(int age) {
         if (age < 0) throw new IllegalValueException("Incorrect Age!");
         Map<Animal, Integer> olderAnimals = new ConcurrentHashMap<>();
-        Map<String, List<Animal>> animalMap = getAllAnimals();
+        Map<String, List<Animal>> animalMap = new HashMap<>();
 
         List<Animal> animalList = new ArrayList<>();
         for (Map.Entry<String, List<Animal>> entry : animalMap.entrySet()) {
@@ -111,7 +90,7 @@ public class AnimalRepositoryImpl implements AnimalRepository {
      */
     @Override
     public Map<String, List<Animal>> findDuplicate() {
-        Map<String, List<Animal>> animalMap = getAllAnimals();
+        Map<String, List<Animal>> animalMap = new HashMap<>();
         Map<String, List<Animal>> result = animalMap.entrySet().stream()
                 .collect(Collectors.toConcurrentMap(Map.Entry::getKey, entry -> entry.getValue().stream()
                         .filter(animal -> entry.getValue().indexOf(animal) != entry.getValue().lastIndexOf(animal))
@@ -211,64 +190,6 @@ public class AnimalRepositoryImpl implements AnimalRepository {
         }
     }
 
-    /**
-     * <b>saveAnimal</b>
-     * Записывает данные полученные из CreateAnimalService в базу
-     */
-    private void saveAnimal(List<Animal> animalList) {
-
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Transaction transaction = null;
-            transaction = session.beginTransaction();
-
-            Set<AnimalType> animalTypes = animalList.stream().map(Animal::getAnimalType).collect(Collectors.toSet());
-
-
-            for (AnimalType animalType : animalTypes) {
-                for (Animal animal : animalList) {
-                    if (animal.getAnimalType().equals(animalType)) {
-                        animalType.addToAnimalList(animal);
-                        animal.setAnimalType(animalType);
-                    }
-                }
-            }
-
-            for (AnimalType animalType : animalTypes) session.save(animalType);
-
-            for (Animal animal : animalList) {
-                session.save(animal.getBreed());
-                session.save(animal);
-            }
-            transaction.commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * <b>getAllAnimals</b>
-     * Считывает все объекты Animal из базы данных
-     */
-    public Map<String, List<Animal>> getAllAnimals() {
-        Map<String, List<Animal>> animalMap = new ConcurrentHashMap<>();
-
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        List<Animal> animals = new ArrayList<>();
-        try {
-            animals = session.createQuery("FROM Animal", Animal.class).getResultList();
-            for (Animal animal : animals) {
-                if (!animalMap.containsKey(animal.getAnimalType().toString())) {
-                    animalMap.put(animal.getAnimalType().toString(), new CopyOnWriteArrayList<>());
-                }
-                animalMap.get(animal.getAnimalType().toString()).add(animal);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            session.close();
-        }
-        return animalMap;
-    }
 }
 
 
