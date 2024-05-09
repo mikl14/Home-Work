@@ -1,27 +1,19 @@
 package ru.mtsbank.fintech.animal_repository;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import ru.mtsbank.fintech.entity.Animal;
-import ru.mtsbank.fintech.exceptions.FileAccessException;
 import ru.mtsbank.fintech.exceptions.IllegalListSizeException;
 import ru.mtsbank.fintech.exceptions.IllegalValueException;
 import ru.mtsbank.fintech.service.AnimalService;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 @Service
-public class AnimalRepositoryImpl implements AnimalRepository {
-    private ObjectMapper objectMapper;
+public class AnimalRepositoryImpl {
     private AnimalService animalService;
 
     /**
@@ -29,9 +21,8 @@ public class AnimalRepositoryImpl implements AnimalRepository {
      * Передается бин CreateAnimalServiceLmpl и заполняется animalArra
      */
 
-    public AnimalRepositoryImpl(AnimalService animalService, ObjectMapper objectMapper) {
+    public AnimalRepositoryImpl(AnimalService animalService) {
         this.animalService = animalService;
-        this.objectMapper = objectMapper;
     }
 
     /**
@@ -39,9 +30,9 @@ public class AnimalRepositoryImpl implements AnimalRepository {
      *
      * @return Map<String, LocalDate> ключ: тип + имя животного, значение: дата рождения
      */
-    @Override
+
     public Map<String, LocalDate> findLeapYearNames() {
-        Map<String, List<Animal>> animalMap = new HashMap<>();
+        Map<String, List<Animal>> animalMap = getAnimals();
         Map<String, LocalDate> leapYearBirthAnimal = new ConcurrentHashMap<>();
 
         for (Map.Entry<String, List<Animal>> entry : animalMap.entrySet()) {
@@ -59,11 +50,11 @@ public class AnimalRepositoryImpl implements AnimalRepository {
      * @param age искомый возраст
      * @return Map<Animal, Integer> - ключ: животное, значение: возраст
      */
-    @Override
+
     public Map<Animal, Integer> findOlderAnimal(int age) {
         if (age < 0) throw new IllegalValueException("Incorrect Age!");
         Map<Animal, Integer> olderAnimals = new ConcurrentHashMap<>();
-        Map<String, List<Animal>> animalMap = new HashMap<>();
+        Map<String, List<Animal>> animalMap = getAnimals();
 
         List<Animal> animalList = new ArrayList<>();
         for (Map.Entry<String, List<Animal>> entry : animalMap.entrySet()) {
@@ -88,9 +79,9 @@ public class AnimalRepositoryImpl implements AnimalRepository {
      *
      * @return Map<String, Integer> ключ: тип животного, значение: количество дубликатов
      */
-    @Override
+
     public Map<String, List<Animal>> findDuplicate() {
-        Map<String, List<Animal>> animalMap = new HashMap<>();
+        Map<String, List<Animal>> animalMap = getAnimals();
         Map<String, List<Animal>> result = animalMap.entrySet().stream()
                 .collect(Collectors.toConcurrentMap(Map.Entry::getKey, entry -> entry.getValue().stream()
                         .filter(animal -> entry.getValue().indexOf(animal) != entry.getValue().lastIndexOf(animal))
@@ -108,7 +99,6 @@ public class AnimalRepositoryImpl implements AnimalRepository {
         if (animalList.isEmpty()) throw new IllegalValueException("animalList is empty!");
 
         double result = animalList.stream().mapToLong(Animal::getAge).average().orElse(0);
-        writeToFile(result, FileConstants.findAverageAgeFileName);
         return result;
     }
 
@@ -153,41 +143,21 @@ public class AnimalRepositoryImpl implements AnimalRepository {
         return result;
     }
 
-    /**
-     * <b>writeToFile</b>
-     * принимает объект для записи в файл и имя файла
-     * записывает объект в заданный файл
-     */
+    public Map<String, List<Animal>> getAnimals() {
+        Map<String, List<Animal>> animalMap = new ConcurrentHashMap<>();
 
-
-    public void writeToFile(Object obj, String fileName) {
+        List<Animal> animals = animalService.getAllAnimals();
         try {
-            Resource resource = new ClassPathResource("results");       // получаем ресурс results
-            Path resourceFolderPath;
-            if (!resource.exists()) {
-                Resource resourceInResFolder = new ClassPathResource("application.yaml"); // не нашел иного способа получить путь до папки resources
-                resourceFolderPath = Path.of(Path.of(resourceInResFolder.getFile().getAbsolutePath()).getParent() + "/results");  // объявляем новый путь
-                Files.createDirectory(resourceFolderPath.toAbsolutePath()); // создаем директорию
+            for (Animal animal : animals) {
+                if (!animalMap.containsKey(animal.getAnimalType().toString())) {
+                    animalMap.put(animal.getAnimalType().toString(), new CopyOnWriteArrayList<>());
+                }
+                animalMap.get(animal.getAnimalType().toString()).add(animal);
             }
-            resourceFolderPath = resource.getFile().toPath();
-            File fileToWrite = new File(resourceFolderPath.toAbsolutePath() + "/" + fileName);
-            objectMapper.writeValue(fileToWrite, obj);
-        } catch (IOException e) {
-            throw new FileAccessException("Ошибка создания или доступа к файлу для записи результата!" + e);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    }
-
-    /**
-     * <b>readFromFile</b>
-     * принимает имя файла для чтения и тип возвращаемого значения
-     */
-    public <T> T readFromFile(String fileName, Class<T> type) {
-        try {
-            Resource resource = new ClassPathResource("results/" + fileName);
-            return objectMapper.readValue(resource.getFile(), type);
-        } catch (IOException e) {
-            throw new FileAccessException("Ошибка доступа к файлу для чтения результата!" + e);
-        }
+        return animalMap;
     }
 
 }

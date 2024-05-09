@@ -40,6 +40,13 @@ public class Animal implements Serializable {
         this.animalType = animalType;
     }
 
+    public Animal(String character,String name,LocalDate birthDate, BigDecimal cost) {
+        this.name = name;
+        this.character = character;
+        this.cost = cost;
+        this.birthDate = birthDate;
+    }
+
     public int getId() {
         return id;
     }
