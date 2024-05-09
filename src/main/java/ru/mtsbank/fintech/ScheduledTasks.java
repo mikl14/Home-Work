@@ -21,7 +21,7 @@ public class ScheduledTasks {
     public ScheduledTasks(AnimalService animalService, AnimalTypeRepository animalTypeRepository) {
         this.animalService = animalService;
         this.animalTypeRepository = animalTypeRepository;
-        animalService.initAnimals(new AnimalType("CAT", false, new ArrayList<>()));
+       // animalService.initAnimals(new AnimalType("CAT", false, new ArrayList<>()));
     }
 
     /**
@@ -30,6 +30,6 @@ public class ScheduledTasks {
      */
     @Scheduled(fixedRate = 1000 * 20) // 20 секунд
     public void ScheduledLog() {
-        log.info(animalService.getAllAnimals().toString());
+       // log.info(animalService.getAllAnimals().toString());
     }
 }

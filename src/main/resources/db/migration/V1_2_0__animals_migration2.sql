@@ -1,0 +1,1 @@
+ALTER TABLE animals.animal ADD CONSTRAINT ani_type FOREIGN KEY (type) REFERENCES animals.animal_type (id_type);

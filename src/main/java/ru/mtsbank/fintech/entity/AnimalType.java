@@ -10,6 +10,7 @@ import java.util.Objects;
 public class AnimalType implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JoinColumn(name = "id_type")
     private int idType;
     private String type;
     private boolean isWild;

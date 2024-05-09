@@ -10,8 +10,9 @@ import java.io.Serializable;
 public class AnimalsHabitats implements Serializable {
     @Id
     @ManyToOne(targetEntity = AnimalType.class)
-    @JoinColumn(name = "type")
+    @JoinColumn(name = "id_animal_type")
     private int idAnimalType;
     @ManyToOne(targetEntity = Habitats.class)
+    @JoinColumn(name = "id_area")
     private int idArea;
 }
