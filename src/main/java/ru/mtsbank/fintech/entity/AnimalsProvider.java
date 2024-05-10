@@ -1,11 +1,9 @@
 package ru.mtsbank.fintech.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.io.Serializable;
 
+@Table(name = "animals_provider")
 @Entity
 public class AnimalsProvider implements Serializable {
     @Id

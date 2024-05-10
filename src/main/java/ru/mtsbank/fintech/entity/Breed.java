@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+@Table(name = "breed")
 @Entity
 public class Breed implements Serializable {
     @Id

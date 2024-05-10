@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Table(name = "animal_type")
 @Entity
 public class AnimalType implements Serializable {
     @Id
