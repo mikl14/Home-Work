@@ -15,7 +15,7 @@ public class AnimalType implements Serializable {
     private String type;
     private boolean isWild;
 
-    @OneToMany(targetEntity = Animal.class,fetch = FetchType.EAGER)
+    @OneToMany(targetEntity = Animal.class, fetch = FetchType.EAGER)
     private List<Animal> animalList = new ArrayList<>();
 
     public AnimalType(String type, boolean isWild, List<Animal> animalList) {

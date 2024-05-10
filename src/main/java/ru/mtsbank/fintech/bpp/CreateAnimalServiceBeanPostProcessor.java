@@ -8,9 +8,10 @@ import org.springframework.context.annotation.Configuration;
 public class CreateAnimalServiceBeanPostProcessor implements BeanPostProcessor {
     /**
      * <b>postProcessBeforeInitialization</b>
-     * @param bean the new bean instance
+     *
+     * @param bean     the new bean instance
      * @param beanName the name of the bean
-     * Если созданный бин это createanimalservicelmpl, то заполняет поле animalType случайным типом
+     *                 Если созданный бин это createanimalservicelmpl, то заполняет поле animalType случайным типом
      * @return bean
      * @throws BeansException
      */
@@ -18,9 +19,11 @@ public class CreateAnimalServiceBeanPostProcessor implements BeanPostProcessor {
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
         return bean;
     }
+
     /**
      * <b>postProcessAfterInitialization</b>
-     * @param bean the new bean instance
+     *
+     * @param bean     the new bean instance
      * @param beanName the name of the bean
      * @return bean
      * @throws BeansException

@@ -24,7 +24,6 @@ public class Animal implements Serializable {
     protected String name, character;
     protected BigDecimal cost;
 
-
     public Animal(Breed breed, AnimalType animalType) {
         this.breed = breed;
         this.animalType = animalType;
@@ -33,14 +32,14 @@ public class Animal implements Serializable {
     public Animal() {
     }
 
-    public Animal(String name, String character, BigDecimal cost,AnimalType animalType) {
+    public Animal(String name, String character, BigDecimal cost, AnimalType animalType) {
         this.name = name;
         this.character = character;
         this.cost = cost;
         this.animalType = animalType;
     }
 
-    public Animal(String character,String name,LocalDate birthDate, BigDecimal cost) {
+    public Animal(String character, String name, LocalDate birthDate, BigDecimal cost) {
         this.name = name;
         this.character = character;
         this.cost = cost;

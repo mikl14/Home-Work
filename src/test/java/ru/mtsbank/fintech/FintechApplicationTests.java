@@ -35,7 +35,7 @@ class FintechApplicationTests {
 
     /**
      * <b>animalRepositoryArrayTest</b>
-     * проверяет что после инициализации массив оказался заполнен
+     * проверяет что метод getAnimals возвращает не пустой Map
      */
     @Test
     void animalRepositoryArrayTest() {

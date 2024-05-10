@@ -18,7 +18,7 @@ public class AnimalRepositoryImpl {
 
     /**
      * <b>AnimalRepositoryImpl</b>
-     * Передается бин CreateAnimalServiceLmpl и заполняется animalArra
+     * Передается бин AnimalService
      */
 
     public AnimalRepositoryImpl(AnimalService animalService) {
@@ -26,7 +26,7 @@ public class AnimalRepositoryImpl {
     }
 
     /**
-     * <b>findLeapYearNames</b> выполняет поиск животных рожденных в високосный год, по массиву животных
+     * <b>findLeapYearNames</b> выполняет поиск животных рожденных в високосный год, взятых из базы
      *
      * @return Map<String, LocalDate> ключ: тип + имя животного, значение: дата рождения
      */
@@ -142,6 +142,12 @@ public class AnimalRepositoryImpl {
 
         return result;
     }
+
+    /**
+     * <b>getAnimals</b>
+     *
+     * @return Map<String, List < Animal>> со всеми животными находящимися в базе
+     */
 
     public Map<String, List<Animal>> getAnimals() {
         Map<String, List<Animal>> animalMap = new ConcurrentHashMap<>();

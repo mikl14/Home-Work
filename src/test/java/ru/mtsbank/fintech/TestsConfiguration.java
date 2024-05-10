@@ -17,7 +17,6 @@ import java.util.Map;
 
 public class TestsConfiguration {
 
-
     @Primary
     @Bean
     AnimalRepositoryImpl animalRepositoryImpli(AnimalService animalService) {
