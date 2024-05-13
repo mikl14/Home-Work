@@ -1,24 +1,11 @@
 package ru.mtsbank.fintech.animal_repository;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
-import ru.mts.animals_creators.CreateAnimalServiceImpl;
-import ru.mts.exceptions.FileAccessException;
 import ru.mtsbank.fintech.entity.Animal;
-import ru.mtsbank.fintech.entity.AnimalType;
 import ru.mtsbank.fintech.exceptions.IllegalListSizeException;
 import ru.mtsbank.fintech.exceptions.IllegalValueException;
-import ru.mtsbank.fintech.util.HibernateUtil;
+import ru.mtsbank.fintech.service.AnimalService;
 
-import javax.annotation.PostConstruct;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,43 +13,26 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 @Service
-public class AnimalRepositoryImpl implements AnimalRepository {
-
-
-    private CreateAnimalServiceImpl createAnimalService;
-    private ObjectMapper objectMapper;
+public class AnimalRepositoryImpl {
+    private AnimalService animalService;
 
     /**
      * <b>AnimalRepositoryImpl</b>
-     * Передается бин CreateAnimalServiceLmpl и заполняется animalArray
-     *
-     * @param createAnimalServiceImpl
+     * Передается бин AnimalService
      */
 
-    public AnimalRepositoryImpl(CreateAnimalServiceImpl createAnimalServiceImpl, ObjectMapper objectMapper) {
-        createAnimalService = createAnimalServiceImpl;
-        this.objectMapper = objectMapper;
-    }
-
-
-    /**
-     * <b>init</b> запускается после конструктора
-     * Заполняет массив animalArray 10 случайными животными
-     */
-    @PostConstruct
-    public void init() {
-        List<Animal> animalList = createAnimalService.getAnimalsList().stream().map(Animal::new).collect(Collectors.toList());
-        saveAnimal(animalList);
+    public AnimalRepositoryImpl(AnimalService animalService) {
+        this.animalService = animalService;
     }
 
     /**
-     * <b>findLeapYearNames</b> выполняет поиск животных рожденных в високосный год, по массиву животных
+     * <b>findLeapYearNames</b> выполняет поиск животных рожденных в високосный год, взятых из базы
      *
      * @return Map<String, LocalDate> ключ: тип + имя животного, значение: дата рождения
      */
-    @Override
+
     public Map<String, LocalDate> findLeapYearNames() {
-        Map<String, List<Animal>> animalMap = getAllAnimals();
+        Map<String, List<Animal>> animalMap = getAnimals();
         Map<String, LocalDate> leapYearBirthAnimal = new ConcurrentHashMap<>();
 
         for (Map.Entry<String, List<Animal>> entry : animalMap.entrySet()) {
@@ -80,11 +50,11 @@ public class AnimalRepositoryImpl implements AnimalRepository {
      * @param age искомый возраст
      * @return Map<Animal, Integer> - ключ: животное, значение: возраст
      */
-    @Override
+
     public Map<Animal, Integer> findOlderAnimal(int age) {
         if (age < 0) throw new IllegalValueException("Incorrect Age!");
         Map<Animal, Integer> olderAnimals = new ConcurrentHashMap<>();
-        Map<String, List<Animal>> animalMap = getAllAnimals();
+        Map<String, List<Animal>> animalMap = getAnimals();
 
         List<Animal> animalList = new ArrayList<>();
         for (Map.Entry<String, List<Animal>> entry : animalMap.entrySet()) {
@@ -109,9 +79,9 @@ public class AnimalRepositoryImpl implements AnimalRepository {
      *
      * @return Map<String, Integer> ключ: тип животного, значение: количество дубликатов
      */
-    @Override
+
     public Map<String, List<Animal>> findDuplicate() {
-        Map<String, List<Animal>> animalMap = getAllAnimals();
+        Map<String, List<Animal>> animalMap = getAnimals();
         Map<String, List<Animal>> result = animalMap.entrySet().stream()
                 .collect(Collectors.toConcurrentMap(Map.Entry::getKey, entry -> entry.getValue().stream()
                         .filter(animal -> entry.getValue().indexOf(animal) != entry.getValue().lastIndexOf(animal))
@@ -129,7 +99,6 @@ public class AnimalRepositoryImpl implements AnimalRepository {
         if (animalList.isEmpty()) throw new IllegalValueException("animalList is empty!");
 
         double result = animalList.stream().mapToLong(Animal::getAge).average().orElse(0);
-        writeToFile(result, FileConstants.findAverageAgeFileName);
         return result;
     }
 
@@ -175,87 +144,16 @@ public class AnimalRepositoryImpl implements AnimalRepository {
     }
 
     /**
-     * <b>writeToFile</b>
-     * принимает объект для записи в файл и имя файла
-     * записывает объект в заданный файл
+     * <b>getAnimals</b>
+     *
+     * @return Map<String, List < Animal>> со всеми животными находящимися в базе
      */
 
-
-    public void writeToFile(Object obj, String fileName) {
-        try {
-            Resource resource = new ClassPathResource("results");       // получаем ресурс results
-            Path resourceFolderPath;
-            if (!resource.exists()) {
-                Resource resourceInResFolder = new ClassPathResource("application.yaml"); // не нашел иного способа получить путь до папки resources
-                resourceFolderPath = Path.of(Path.of(resourceInResFolder.getFile().getAbsolutePath()).getParent() + "/results");  // объявляем новый путь
-                Files.createDirectory(resourceFolderPath.toAbsolutePath()); // создаем директорию
-            }
-            resourceFolderPath = resource.getFile().toPath();
-            File fileToWrite = new File(resourceFolderPath.toAbsolutePath() + "/" + fileName);
-            objectMapper.writeValue(fileToWrite, obj);
-        } catch (IOException e) {
-            throw new FileAccessException("Ошибка создания или доступа к файлу для записи результата!" + e);
-        }
-    }
-
-    /**
-     * <b>readFromFile</b>
-     * принимает имя файла для чтения и тип возвращаемого значения
-     */
-    public <T> T readFromFile(String fileName, Class<T> type) {
-        try {
-            Resource resource = new ClassPathResource("results/" + fileName);
-            return objectMapper.readValue(resource.getFile(), type);
-        } catch (IOException e) {
-            throw new FileAccessException("Ошибка доступа к файлу для чтения результата!" + e);
-        }
-    }
-
-    /**
-     * <b>saveAnimal</b>
-     * Записывает данные полученные из CreateAnimalService в базу
-     */
-    private void saveAnimal(List<Animal> animalList) {
-
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Transaction transaction = null;
-            transaction = session.beginTransaction();
-
-            Set<AnimalType> animalTypes = animalList.stream().map(Animal::getAnimalType).collect(Collectors.toSet());
-
-
-            for (AnimalType animalType : animalTypes) {
-                for (Animal animal : animalList) {
-                    if (animal.getAnimalType().equals(animalType)) {
-                        animalType.addToAnimalList(animal);
-                        animal.setAnimalType(animalType);
-                    }
-                }
-            }
-
-            for (AnimalType animalType : animalTypes) session.save(animalType);
-
-            for (Animal animal : animalList) {
-                session.save(animal.getBreed());
-                session.save(animal);
-            }
-            transaction.commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * <b>getAllAnimals</b>
-     * Считывает все объекты Animal из базы данных
-     */
-    public Map<String, List<Animal>> getAllAnimals() {
+    public Map<String, List<Animal>> getAnimals() {
         Map<String, List<Animal>> animalMap = new ConcurrentHashMap<>();
 
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        List<Animal> animals = new ArrayList<>();
+        List<Animal> animals = animalService.getAllAnimals();
         try {
-            animals = session.createQuery("FROM Animal", Animal.class).getResultList();
             for (Animal animal : animals) {
                 if (!animalMap.containsKey(animal.getAnimalType().toString())) {
                     animalMap.put(animal.getAnimalType().toString(), new CopyOnWriteArrayList<>());
@@ -264,11 +162,10 @@ public class AnimalRepositoryImpl implements AnimalRepository {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            session.close();
         }
         return animalMap;
     }
+
 }
 
 

@@ -1,19 +1,22 @@
 package ru.mtsbank.fintech.entity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Table(name = "animal_type")
 @Entity
-public class AnimalType {
+public class AnimalType implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JoinColumn(name = "id_type")
     private int idType;
     private String type;
     private boolean isWild;
 
-    @OneToMany(targetEntity = Animal.class,fetch = FetchType.EAGER)
+    @OneToMany(targetEntity = Animal.class, fetch = FetchType.EAGER)
     private List<Animal> animalList = new ArrayList<>();
 
     public AnimalType(String type, boolean isWild, List<Animal> animalList) {
