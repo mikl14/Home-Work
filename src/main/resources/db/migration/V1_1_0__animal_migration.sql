@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS animals.animal (
     "character" character varying(255),
     cost numeric(19,2),
     name character varying(255),
-    type integer NOT NULL,
+    type integer,
     breed integer
 );
 

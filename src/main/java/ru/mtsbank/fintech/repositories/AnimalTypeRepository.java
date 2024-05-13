@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import ru.mtsbank.fintech.entity.AnimalType;
 
 @Repository
-public interface AnimalTypeRepository extends JpaRepository<AnimalType,Long> {
+public interface AnimalTypeRepository extends JpaRepository<AnimalType, Long> {
 }
