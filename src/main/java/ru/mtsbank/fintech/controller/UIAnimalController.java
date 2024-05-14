@@ -1,6 +1,5 @@
 package ru.mtsbank.fintech.controller;
 
-import org.springframework.boot.Banner;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,9 +7,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import ru.mtsbank.fintech.entity.Animal;
 import ru.mtsbank.fintech.service.AnimalService;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
 
 @Controller
 public class UIAnimalController {
