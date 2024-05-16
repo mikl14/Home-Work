@@ -48,7 +48,6 @@ public class UIAnimalController {
     @PostMapping(value = "/add",params = "action=add")
     public String addAnimal(Model model, Animal animal)
     {
-       // animal.setId(animalService.getAllAnimals().size()+1);
         animalService.addAnimal(animal);
         return  "redirect:/index";
     }
