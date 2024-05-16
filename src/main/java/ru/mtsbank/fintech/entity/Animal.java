@@ -13,6 +13,7 @@ import java.util.Objects;
 @Entity
 public class Animal implements Serializable {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @ManyToOne(targetEntity = Breed.class)
     @JoinColumn(name = "breed")
