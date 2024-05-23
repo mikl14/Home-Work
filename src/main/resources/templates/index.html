@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<tbody>
+<table border="4">
+    <thead>
+    <title>ЗВЕРИ</title>
+                <th>ID</th>
+                <th>NAME</th>
+                <th>Birth Date</th>
+                <th>Cost</th>
+                <th>Действие</th>
+    </thead>
+
+    <tbody>
+    <tr th:each="animal : ${animalList}">
+        <th th:text="${animal.id}"></th>
+        <th th:text="${animal.name}"></th>
+        <th th:text="${animal.birthDate}"></th>
+        <th th:text="${animal.cost}"></th>
+        <th><a th:href="@{/delete/{id}(id=${animal.id})}">Удалить</a></th>
+
+    </tr>
+    </tbody>
+
+</table>
+
+</table>
+
+<a href="add">Добавить</a>
+
+</tbody>
+</html>

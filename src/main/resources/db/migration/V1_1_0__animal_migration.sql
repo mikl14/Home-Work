@@ -28,12 +28,12 @@ CREATE TABLE IF NOT EXISTS animals.breed (
 );
 
 CREATE TABLE IF NOT EXISTS animals.animal (
-    id integer PRIMARY KEY ,
+    id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     birth_date date,
     "character" character varying(255),
     cost numeric(19,2),
     name character varying(255),
-    type integer NOT NULL,
+    type integer,
     breed integer
 );
 

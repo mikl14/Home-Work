@@ -5,9 +5,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
 import ru.mtsbank.fintech.animal_repository.AnimalRepositoryImpl;
 import ru.mtsbank.fintech.entity.Animal;
 import ru.mtsbank.fintech.exceptions.IllegalListSizeException;
@@ -21,12 +24,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @ActiveProfiles("test")
 @SpringBootTest
+@AutoConfigureMockMvc
 @Import(TestsConfiguration.class)
 class FintechApplicationTests {
     @Autowired
     AnimalRepositoryImpl animalRepository;
+
+    @Autowired
+    MockMvc mockMvc;
 
     @Test
     void contextLoads() {
@@ -279,4 +289,37 @@ class FintechApplicationTests {
 
         Assertions.assertThrows(IllegalListSizeException.class, () -> animalRepository.findMinConstAnimals(animalList, limit)); // если limit больше длинны списка, то ожидается исключение
     }
+
+    @Test
+    void addRestTest() throws Exception {
+        mockMvc.perform(
+                post("/animals/api/add")
+                        .content(
+                                "{\n" +
+                                        "    \"id\": 5,\n" +
+                                        "    \"name\": \"GetAnimal\",\n" +
+                                        "    \"birthDate\":\"2023-05-09\",\n" +
+                                        "    \"character\": \"good\",\n" +
+                                        "    \"cost\":221\n" +
+                                        "}")
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isOk());
+    }
+
+    @Test
+    void deleteRestTest() throws Exception {
+        mockMvc.perform(
+                post("/animals/api/delete")
+                        .content(
+                                "{\n" +
+                                        "    \"id\": 5,\n" +
+                                        "    \"name\": \"GetAnimal\",\n" +
+                                        "    \"birthDate\":\"2023-05-09\",\n" +
+                                        "    \"character\": \"good\",\n" +
+                                        "    \"cost\":221\n" +
+                                        "}")
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isOk());
+    }
+
 }

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<tbody>
+<form action="#"
+      th:action="@{/add}"
+      th:object="${animal}"
+      method="post">
+
+  <label for="name">Имя</label>
+  <input type="text" id="name" th:field="*{name}">
+  <label for="bdate">Дата Рождения</label>
+  <input type="text" id="bdate"  th:field="*{birthDate}" >
+  <label for="cost">Цена</label>
+  <input type="text" id="cost"  th:field="*{cost}" >
+
+<input type="submit" name="action" value="add" >
+<input type="submit" name="action" value="cancel" >
+</form>
+</tbody>
+</html>

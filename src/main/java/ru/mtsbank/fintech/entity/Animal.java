@@ -1,5 +1,7 @@
 package ru.mtsbank.fintech.entity;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -16,10 +18,11 @@ public class Animal implements Serializable {
     @ManyToOne(targetEntity = Breed.class)
     @JoinColumn(name = "breed")
     private Breed breed;
-    @ManyToOne(targetEntity = AnimalType.class, cascade = CascadeType.ALL)
+    @ManyToOne(targetEntity = AnimalType.class)
     @JoinColumn(name = "type")
     private AnimalType animalType;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     protected LocalDate birthDate;
     protected String name, character;
     protected BigDecimal cost;
@@ -32,12 +35,13 @@ public class Animal implements Serializable {
     public Animal() {
     }
 
-    public Animal(String name, String character, BigDecimal cost, AnimalType animalType) {
+    public Animal(String name, String character, LocalDate birthDate, BigDecimal cost, AnimalType animalType) {
         this.name = name;
         this.character = character;
         this.cost = cost;
         this.animalType = animalType;
     }
+
 
     public Animal(String character, String name, LocalDate birthDate, BigDecimal cost) {
         this.name = name;

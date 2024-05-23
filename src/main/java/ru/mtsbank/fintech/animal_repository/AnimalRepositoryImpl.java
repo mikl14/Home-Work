@@ -155,10 +155,12 @@ public class AnimalRepositoryImpl {
         List<Animal> animals = animalService.getAllAnimals();
         try {
             for (Animal animal : animals) {
-                if (!animalMap.containsKey(animal.getAnimalType().toString())) {
-                    animalMap.put(animal.getAnimalType().toString(), new CopyOnWriteArrayList<>());
+                if(animal.getAnimalType() != null) {
+                    if (!animalMap.containsKey(animal.getAnimalType().toString())) {
+                        animalMap.put(animal.getAnimalType().toString(), new CopyOnWriteArrayList<>());
+                    }
+                    animalMap.get(animal.getAnimalType().toString()).add(animal);
                 }
-                animalMap.get(animal.getAnimalType().toString()).add(animal);
             }
         } catch (Exception e) {
             e.printStackTrace();

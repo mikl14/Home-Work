@@ -13,13 +13,13 @@ VALUES
 (2,'FOREST');
 
 INSERT INTO animals.animal
-(id,name,birth_date,"character",cost,type)
+(name,birth_date,"character",cost,type)
 VALUES
-(1,'Boris','2023-05-09','Bad',200,3),
-(2,'Goldie','2002-01-01','Silence',50,2),
-(3,'Beluga','2001-07-03','White',5000,1),
-(4,'Tomas','2004-05-01','Beer Bear',250,1),
-(5,'Grey','2007-04-02','Grey',400,4);
+('Boris','2023-05-09','Bad',200,3),
+('Goldie','2002-01-01','Silence',50,2),
+('Beluga','2001-07-03','White',5000,1),
+('Tomas','2004-05-01','Beer Bear',250,1),
+('Grey','2007-04-02','Grey',400,4);
 
 INSERT INTO animals.animals_habitats
 (id_animal_type,id_area)
