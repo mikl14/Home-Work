@@ -1,6 +1,7 @@
 package ru.mtsbank.fintech.animal_repository;
 
 import org.springframework.stereotype.Service;
+import ru.mtsbank.fintech.annotations.Logging;
 import ru.mtsbank.fintech.entity.Animal;
 import ru.mtsbank.fintech.exceptions.IllegalListSizeException;
 import ru.mtsbank.fintech.exceptions.IllegalValueException;
@@ -30,7 +31,7 @@ public class AnimalRepositoryImpl {
      *
      * @return Map<String, LocalDate> ключ: тип + имя животного, значение: дата рождения
      */
-
+    @Logging(value = "findLeapYearNames method", entering = true, exiting = true)
     public Map<String, LocalDate> findLeapYearNames() {
         Map<String, List<Animal>> animalMap = getAnimals();
         Map<String, LocalDate> leapYearBirthAnimal = new ConcurrentHashMap<>();
@@ -50,12 +51,11 @@ public class AnimalRepositoryImpl {
      * @param age искомый возраст
      * @return Map<Animal, Integer> - ключ: животное, значение: возраст
      */
-
+    @Logging(value = "findOlderAnimal method", entering = true, exiting = true)
     public Map<Animal, Integer> findOlderAnimal(int age) {
         if (age < 0) throw new IllegalValueException("Incorrect Age!");
         Map<Animal, Integer> olderAnimals = new ConcurrentHashMap<>();
         Map<String, List<Animal>> animalMap = getAnimals();
-
         List<Animal> animalList = new ArrayList<>();
         for (Map.Entry<String, List<Animal>> entry : animalMap.entrySet()) {
             animalList.addAll(entry.getValue());
@@ -79,7 +79,7 @@ public class AnimalRepositoryImpl {
      *
      * @return Map<String, Integer> ключ: тип животного, значение: количество дубликатов
      */
-
+    @Logging(value = "findDuplicate method", entering = true, exiting = true)
     public Map<String, List<Animal>> findDuplicate() {
         Map<String, List<Animal>> animalMap = getAnimals();
         Map<String, List<Animal>> result = animalMap.entrySet().stream()
@@ -95,6 +95,7 @@ public class AnimalRepositoryImpl {
      *
      * @return double средний возраст животных в переданном списке
      */
+    @Logging(value = "findAverageAge method", entering = true, exiting = true)
     public double findAverageAge(List<Animal> animalList) {
         if (animalList.isEmpty()) throw new IllegalValueException("animalList is empty!");
 
@@ -107,6 +108,7 @@ public class AnimalRepositoryImpl {
      *
      * @return List<AbstractAnimal> старше olds и с ценой выше средней
      */
+    @Logging(value = "findOldAndExpensive method", entering = true, exiting = true)
     public List<Animal> findOldAndExpensive(int olds, List<Animal> animalList) throws IllegalListSizeException {
         if (olds < 0) throw new IllegalValueException("Incorrect olds!");
         if (animalList.isEmpty()) throw new IllegalListSizeException("animalList is empty!");
@@ -129,6 +131,7 @@ public class AnimalRepositoryImpl {
      *
      * @return List<AbstractAnimal> с limit самыми дешевыми животными отсортированный в обратном алфавитном порядке по именам
      */
+    @Logging(value = "findMinConstAnimals method", entering = true, exiting = true)
     public List<String> findMinConstAnimals(List<Animal> animalList, int limit) throws IllegalListSizeException {
         if (animalList.isEmpty() || animalList.size() < limit)
             throw new IllegalListSizeException("Incorrect list size!");
@@ -149,13 +152,14 @@ public class AnimalRepositoryImpl {
      * @return Map<String, List < Animal>> со всеми животными находящимися в базе
      */
 
+    @Logging(value = "getAnimals method", entering = true, exiting = true)
     public Map<String, List<Animal>> getAnimals() {
         Map<String, List<Animal>> animalMap = new ConcurrentHashMap<>();
 
         List<Animal> animals = animalService.getAllAnimals();
         try {
             for (Animal animal : animals) {
-                if(animal.getAnimalType() != null) {
+                if (animal.getAnimalType() != null) {
                     if (!animalMap.containsKey(animal.getAnimalType().toString())) {
                         animalMap.put(animal.getAnimalType().toString(), new CopyOnWriteArrayList<>());
                     }
