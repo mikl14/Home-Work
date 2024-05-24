@@ -17,10 +17,11 @@ import ru.mtsbank.fintech.annotations.Logging;
 @Log4j2
 @Component
 public class LogAspect {
+
+    private static final Logger logger = LogManager.getLogger(LogAspect.class);
+
     @Before("@annotation(logging)")
     public void logMethodCall(JoinPoint joinPoint, Logging logging) {
-        Logger logger = LogManager.getLogger(joinPoint);
-
         if (logging.entering()) {
             if (!logging.value().isEmpty()) {
                 logger.log(Level.toLevel(logging.level()), ">> " + logging.value());
@@ -33,8 +34,6 @@ public class LogAspect {
 
     @After("@annotation(logging)")
     public void logMethodExit(JoinPoint joinPoint, Logging logging) {
-        Logger logger = LogManager.getLogger(joinPoint);
-
         if (!logging.value().isEmpty()) {
             logger.log(Level.toLevel(logging.level()), "<< " + logging.value());
         } else {
@@ -44,7 +43,6 @@ public class LogAspect {
 
     @Before("execution(* ru.mtsbank.fintech.controller.UIAnimalController.*(..))")
     public void logMethodCall(JoinPoint joinPoint) throws Throwable {
-        Logger logger = LogManager.getLogger(joinPoint);
 
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         String methodName = methodSignature.getMethod().getName();
