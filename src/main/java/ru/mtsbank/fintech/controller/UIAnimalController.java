@@ -13,48 +13,42 @@ public class UIAnimalController {
 
     private final AnimalService animalService;
 
-
     public UIAnimalController(AnimalService animalService) {
         this.animalService = animalService;
     }
 
     @GetMapping("/index")
-    public String index(Model model)
-    {
+    public String index(Model model) {
         model.addAttribute("animalList", animalService.getAllAnimals());
         return "index";
     }
 
     @GetMapping("/edit/{id}")
-    public String edit(@PathVariable("id") int id, Model model)
-    {
+    public String edit(@PathVariable("id") int id, Model model) {
         model.addAttribute("animal", animalService.findAnimalbyId(id));
         return "edit";
     }
 
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable("id") int id, Model model)
-    {
+    public String delete(@PathVariable("id") int id, Model model) {
         animalService.deleteAnimal(id);
         return "redirect:/index";
     }
+
     @GetMapping("/add")
-    public String add(Model model)
-    {
+    public String add(Model model) {
         model.addAttribute("animal", new Animal());
         return "add";
     }
 
-    @PostMapping(value = "/add",params = "action=add")
-    public String addAnimal(Model model, Animal animal)
-    {
+    @PostMapping(value = "/add", params = "action=add")
+    public String addAnimal(Model model, Animal animal) {
         animalService.addAnimal(animal);
-        return  "redirect:/index";
+        return "redirect:/index";
     }
 
-    @PostMapping(value = "/add",params = "action=cancel")
-    public String cancel(Model model)
-    {
-        return  "redirect:/index";
+    @PostMapping(value = "/add", params = "action=cancel")
+    public String cancel(Model model) {
+        return "redirect:/index";
     }
 }

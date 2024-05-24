@@ -9,9 +9,10 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 import ru.mtsbank.fintech.annotations.Logging;
-import org.aspectj.lang.annotation.Pointcut;
+
 @Aspect
 @Log4j2
 @Component
@@ -39,5 +40,16 @@ public class LogAspect {
         } else {
             logger.log(Level.toLevel(logging.level()), "<< " + joinPoint.getSignature().getName());
         }
+    }
+
+    @Before("execution(* ru.mtsbank.fintech.controller.UIAnimalController.*(..))")
+    public void logMethodCall(JoinPoint joinPoint) throws Throwable {
+        Logger logger = LogManager.getLogger(joinPoint);
+
+        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+        String methodName = methodSignature.getMethod().getName();
+        Object[] args = joinPoint.getArgs();
+
+        logger.info(">> {} with args: {}", methodName, args);
     }
 }
