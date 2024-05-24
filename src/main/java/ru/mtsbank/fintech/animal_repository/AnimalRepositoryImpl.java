@@ -152,7 +152,7 @@ public class AnimalRepositoryImpl {
      * @return Map<String, List < Animal>> со всеми животными находящимися в базе
      */
 
-    @Logging(value = "getAnimals method", entering = true, exiting = true)
+    @Logging(value = "getAnimals method", exiting = true)
     public Map<String, List<Animal>> getAnimals() {
         Map<String, List<Animal>> animalMap = new ConcurrentHashMap<>();
 

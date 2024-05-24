@@ -28,16 +28,17 @@ public class LogAspect {
             } else {
                 logger.log(Level.toLevel(logging.level()), ">> " + joinPoint.getSignature().getName());
             }
-
         }
     }
 
     @After("@annotation(logging)")
     public void logMethodExit(JoinPoint joinPoint, Logging logging) {
-        if (!logging.value().isEmpty()) {
-            logger.log(Level.toLevel(logging.level()), "<< " + logging.value());
-        } else {
-            logger.log(Level.toLevel(logging.level()), "<< " + joinPoint.getSignature().getName());
+        if (logging.exiting()) {
+            if (!logging.value().isEmpty()) {
+                logger.log(Level.toLevel(logging.level()), "<< " + logging.value());
+            } else {
+                logger.log(Level.toLevel(logging.level()), "<< " + joinPoint.getSignature().getName());
+            }
         }
     }
 
