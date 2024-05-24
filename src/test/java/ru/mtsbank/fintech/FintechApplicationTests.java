@@ -1,9 +1,15 @@
 package ru.mtsbank.fintech;
 
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,6 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.mtsbank.fintech.animal_repository.AnimalRepositoryImpl;
+import ru.mtsbank.fintech.aop.LogAspect;
 import ru.mtsbank.fintech.entity.Animal;
 import ru.mtsbank.fintech.exceptions.IllegalListSizeException;
 import ru.mtsbank.fintech.exceptions.IllegalValueException;
@@ -24,8 +31,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -34,13 +43,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class FintechApplicationTests {
     @Autowired
     AnimalRepositoryImpl animalRepository;
-
     @Autowired
     MockMvc mockMvc;
+    public static final Logger logger = (Logger) LoggerFactory.getLogger(LogAspect.class);
+    ListAppender<ILoggingEvent> listAppender;
 
-    @Test
-    void contextLoads() {
-        Assertions.assertNotNull(animalRepository);
+    @BeforeEach
+    void setUp() {
+        listAppender = new ListAppender<>();
+        listAppender.start();
+        logger.addAppender(listAppender);
+    }
+
+    @AfterEach
+    void tearDown() {
+        logger.detachAppender(listAppender);
     }
 
     /**
@@ -72,7 +89,7 @@ class FintechApplicationTests {
         Map<String, LocalDate> leapYearsAnimalsNames = animalRepository.findLeapYearNames();
 
         for (Map.Entry<String, LocalDate> animal : leapYearsAnimalsNames.entrySet()) {
-            Assertions.assertTrue(animal.getValue().isLeapYear()); // Ожидается что все возвращенные животные рождены в високосный год
+            assertTrue(animal.getValue().isLeapYear()); // Ожидается что все возвращенные животные рождены в високосный год
         }
     }
 
@@ -94,9 +111,9 @@ class FintechApplicationTests {
 
             if (animal.getKey().equals(theOlderAnimal) && olds >= animal.getKey().getAge()) //если было возвращено самое старое животное и при этом заданный возраст больше или равен его возрасту
             {
-                Assertions.assertTrue(true);
+                assertTrue(true);
             } else {
-                Assertions.assertTrue(animal.getKey().getAge() > olds); //проверяем что все животные в массиве больше заданного возраста
+                assertTrue(animal.getKey().getAge() > olds); //проверяем что все животные в массиве больше заданного возраста
             }
         }
     }
@@ -322,4 +339,11 @@ class FintechApplicationTests {
         ).andExpect(status().isOk());
     }
 
+/*    @Test
+    void testMyMethod() {
+        animalRepository.getAnimals();
+        List<ILoggingEvent> loggingEvents = listAppender.list;
+
+        assertEquals(2, loggingEvents.size());
+    }*/
 }

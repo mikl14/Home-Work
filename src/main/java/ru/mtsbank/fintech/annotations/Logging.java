@@ -12,6 +12,10 @@ public @interface Logging {
 
     boolean entering() default false; // Флаг для логирования входа в метод
 
+    boolean argsData() default false;
+
+    boolean returnData() default false;
+
     boolean exiting() default false; // Флаг для логирования выхода из метода
 
     String level() default "INFO"; // Уровень логирования по умолчанию
