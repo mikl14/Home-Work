@@ -44,3 +44,19 @@ VALUES
 (2,2),
 (3,3),
 (4,4);
+
+INSERT INTO animals.role
+(role_name)
+VALUES
+('USER'),
+('ADMIN');
+
+INSERT INTO animals.animal_user
+(name,password)
+VALUES
+('mikl','schef2002');
+
+INSERT INTO animals.user_roles
+(user_id,role_id)
+VALUES
+(1,2);
