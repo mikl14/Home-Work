@@ -1,12 +1,11 @@
 package ru.mtsbank.fintech.entity;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 public class AnimalUser implements UserDetails {
@@ -23,12 +22,21 @@ public class AnimalUser implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
+    @Transient
+    private List<GrantedAuthority> authorities = new ArrayList<>();
+
     public AnimalUser() {
     }
 
 
     public AnimalUser(String name) {
         this.name = name;
+    }
+
+    public AnimalUser(String username, String password, List<GrantedAuthority> authorities) {
+        this.name = username;
+        this.password = password;
+        this.authorities = authorities;
     }
 
     public Long getId() {
@@ -49,7 +57,9 @@ public class AnimalUser implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        authorities.add(new SimpleGrantedAuthority( "USER"));
+        authorities.add(new SimpleGrantedAuthority( "ADMIN"));
+        return authorities;
     }
 
     public String getPassword() {

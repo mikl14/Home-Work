@@ -3,60 +3,68 @@ package ru.mtsbank.fintech.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import ru.mtsbank.fintech.service.UserService;
+import ru.mtsbank.fintech.entity.AnimalUser;
+import ru.mtsbank.fintech.repositories.AnimalUserRepository;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig {
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
-    @Lazy
-    private UserService userDetailsService;
+    private AnimalUserRepository animalUserRepository;
 
-@Bean
-public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-    return authConfig.getAuthenticationManager();
-}
+    @Override
+    protected void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
 
-@Bean
-public AuthenticationProvider authenticationProvider(@Autowired PasswordEncoder passwordEncoder){
-    DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-    daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
-    daoAuthenticationProvider.setUserDetailsService(userDetailsService);
-    return daoAuthenticationProvider;
-}
+    /*   authenticationManagerBuilder.inMemoryAuthentication()
+                .withUser("jam")
+                .password(passwordEncoder().encode("pass"))
+                .roles("ADMIN")
+                .and()
+                .withUser("mikl")
+                .password(passwordEncoder().encode("ss"))
+                .roles("USER");
+*/
+        authenticationManagerBuilder.userDetailsService(new UserDetailsService() {
+            @Override
+            public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+                AnimalUser user = animalUserRepository.findByName(username).orElseThrow(() -> new UsernameNotFoundException("no user " + username));
+                if (user == null) {
+                    throw new UsernameNotFoundException("User not found");
+                }
+                Set<SimpleGrantedAuthority> testSet = new HashSet<>();
 
-@Bean
-public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    return http.csrf(AbstractHttpConfigurer::disable)
-            .authorizeHttpRequests(request ->
-                    request.requestMatchers(new AntPathRequestMatcher("/index")).authenticated()
-                            .requestMatchers(new AntPathRequestMatcher("/login")).permitAll()
-                            .anyRequest().authenticated()
-            )
-            .httpBasic(Customizer.withDefaults())
-            .build();
+       //         new SimpleGrantedAuthority("ROLE_" + role)
+                testSet.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+                return new User(user.getUsername(), passwordEncoder().encode(user.getPassword()), testSet);
+            }
+        });
+    }
 
-}
+    @Override
+    public void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+                .antMatchers("/add").hasRole("ADMIN")
+                .antMatchers("/index").hasAnyRole("USER", "ADMIN")
+                .and().formLogin();
+    }
 
-@Bean
-public PasswordEncoder passwordEncoder(){
-    return new BCryptPasswordEncoder();
-}
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }
