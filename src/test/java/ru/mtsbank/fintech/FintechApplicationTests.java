@@ -339,11 +339,4 @@ class FintechApplicationTests {
         ).andExpect(status().isOk());
     }
 
-/*    @Test
-    void testMyMethod() {
-        animalRepository.getAnimals();
-        List<ILoggingEvent> loggingEvents = listAppender.list;
-
-        assertEquals(2, loggingEvents.size());
-    }*/
 }

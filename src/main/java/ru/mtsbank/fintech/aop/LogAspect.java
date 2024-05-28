@@ -84,14 +84,4 @@ public class LogAspect {
         }
         return result;
     }
-
-    @Around("allMethodsPointcut()")
-    public Object logMethodCall(ProceedingJoinPoint joinPoint) throws Throwable {
-
-        String methodName = joinPoint.getSignature().getName();
-        logger.info("Calling method: {}", methodName);
-        Object result = joinPoint.proceed();
-        logger.info("Method {} returned: {}", methodName, result);
-        return joinPoint.proceed();
-    }
 }

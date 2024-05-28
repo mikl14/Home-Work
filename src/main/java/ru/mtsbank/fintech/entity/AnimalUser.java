@@ -5,7 +5,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 public class AnimalUser implements UserDetails {
@@ -16,14 +19,11 @@ public class AnimalUser implements UserDetails {
 
     private String password;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
-
-    @Transient
-    private List<GrantedAuthority> authorities = new ArrayList<>();
 
     public AnimalUser() {
     }
@@ -36,7 +36,6 @@ public class AnimalUser implements UserDetails {
     public AnimalUser(String username, String password, List<GrantedAuthority> authorities) {
         this.name = username;
         this.password = password;
-        this.authorities = authorities;
     }
 
     public Long getId() {
@@ -57,8 +56,11 @@ public class AnimalUser implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        authorities.add(new SimpleGrantedAuthority( "USER"));
-        authorities.add(new SimpleGrantedAuthority( "ADMIN"));
+        Set<SimpleGrantedAuthority> authorities = new HashSet<>();
+
+        for (Role role : roles) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRoleName().name()));
+        }
         return authorities;
     }
 
