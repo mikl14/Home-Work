@@ -1,24 +1,21 @@
 package ru.mtsbank.fintech;
 
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.read.ListAppender;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 import ru.mtsbank.fintech.animal_repository.AnimalRepositoryImpl;
-import ru.mtsbank.fintech.aop.LogAspect;
 import ru.mtsbank.fintech.entity.Animal;
 import ru.mtsbank.fintech.exceptions.IllegalListSizeException;
 import ru.mtsbank.fintech.exceptions.IllegalValueException;
@@ -43,22 +40,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class FintechApplicationTests {
     @Autowired
     AnimalRepositoryImpl animalRepository;
+
     @Autowired
+    private WebApplicationContext context;
     MockMvc mockMvc;
-    public static final Logger logger = (Logger) LoggerFactory.getLogger(LogAspect.class);
-    ListAppender<ILoggingEvent> listAppender;
 
     @BeforeEach
     void setUp() {
-        listAppender = new ListAppender<>();
-        listAppender.start();
-        logger.addAppender(listAppender);
+        mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
     }
 
-    @AfterEach
-    void tearDown() {
-        logger.detachAppender(listAppender);
-    }
 
     /**
      * <b>animalRepositoryArrayTest</b>
@@ -308,6 +299,7 @@ class FintechApplicationTests {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void addRestTest() throws Exception {
         mockMvc.perform(
                 post("/animals/api/add")
@@ -324,6 +316,7 @@ class FintechApplicationTests {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void deleteRestTest() throws Exception {
         mockMvc.perform(
                 post("/animals/api/delete")
