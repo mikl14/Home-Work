@@ -1,6 +1,5 @@
 package ru.mtsbank.fintech.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -19,8 +18,12 @@ import ru.mtsbank.fintech.repositories.AnimalUserRepository;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    @Autowired
+
     private AnimalUserRepository animalUserRepository;
+
+    public SecurityConfig(AnimalUserRepository animalUserRepository) {
+        this.animalUserRepository = animalUserRepository;
+    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
@@ -31,9 +34,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 if (user == null) {
                     throw new UsernameNotFoundException("User not found");
                 }
-                User test = new User(user.getUsername(), passwordEncoder().encode(user.getPassword()), user.getAuthorities());
 
-                return test;
+                return new User(user.getUsername(), passwordEncoder().encode(user.getPassword()), user.getAuthorities());
             }
         });
     }
