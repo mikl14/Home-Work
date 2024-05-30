@@ -51,6 +51,17 @@ public class UIAnimalController {
         return "add";
     }
 
+    @GetMapping("/error")
+    public String error(Model model) {
+        return "error";
+    }
+
+    @GetMapping("/exit")
+    public String exit(Model model) {
+        return "redirect:/logout";
+    }
+
+
     @PostMapping(value = "/add", params = "action=add")
     public String addAnimal(Model model, Animal animal) {
         animalService.addAnimal(animal);
