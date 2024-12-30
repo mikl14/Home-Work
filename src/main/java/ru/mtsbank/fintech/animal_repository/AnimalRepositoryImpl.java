@@ -155,7 +155,6 @@ public class AnimalRepositoryImpl {
     @Logging(value = "getAnimals method", entering = true, exiting = true, returnData = true, argsData = true, level = "INFO")
     public Map<String, List<Animal>> getAnimals() {
         Map<String, List<Animal>> animalMap = new ConcurrentHashMap<>();
-
         List<Animal> animals = animalService.getAllAnimals();
         try {
             for (Animal animal : animals) {
@@ -171,7 +170,6 @@ public class AnimalRepositoryImpl {
         }
         return animalMap;
     }
-
 }
 
 

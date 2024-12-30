@@ -11,6 +11,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 import ru.mtsbank.fintech.annotations.Logging;
@@ -26,13 +27,15 @@ import java.util.Map;
 @Log4j2
 @Component
 public class LogAspect {
+    @Pointcut("execution(* ru.mtsbank.fintech.controller.UIAnimalController.*(..))")
+    public void allMethodsPointcut() {}
 
     private static final Logger logger = LogManager.getLogger(LogAspect.class);
     private final ObjectMapper objectMapper = new ObjectMapper();
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 
-    @Around(value = "@annotation(logging)")
+    @Around(value = "@annotation(logging)  && execution(* ru.mtsbank..*(..)) ")
     public Object logMethodExit(ProceedingJoinPoint joinPoint, Logging logging) throws Throwable {
         Map<String, Object> logMap = new HashMap<>();
 
@@ -80,15 +83,5 @@ public class LogAspect {
             }
         }
         return result;
-    }
-
-    @Before("execution(* ru.mtsbank.fintech.controller.UIAnimalController.*(..))")
-    public void logMethodCall(JoinPoint joinPoint) throws Throwable {
-
-        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
-        String methodName = methodSignature.getMethod().getName();
-        Object[] args = joinPoint.getArgs();
-
-        logger.info(">> {} with args: {}", methodName, args);
     }
 }

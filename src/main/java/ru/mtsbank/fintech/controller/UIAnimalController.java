@@ -7,14 +7,24 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import ru.mtsbank.fintech.entity.Animal;
 import ru.mtsbank.fintech.service.AnimalService;
+import ru.mtsbank.fintech.service.UserService;
 
 @Controller
 public class UIAnimalController {
 
     private final AnimalService animalService;
 
-    public UIAnimalController(AnimalService animalService) {
+    private final UserService userService;
+
+
+    public UIAnimalController(AnimalService animalService, UserService userService) {
         this.animalService = animalService;
+        this.userService = userService;
+    }
+
+    @GetMapping("/")
+    public String basic(Model model) {
+        return "redirect:/index";
     }
 
     @GetMapping("/index")
@@ -40,6 +50,17 @@ public class UIAnimalController {
         model.addAttribute("animal", new Animal());
         return "add";
     }
+
+    @GetMapping("/error")
+    public String error(Model model) {
+        return "error";
+    }
+
+    @GetMapping("/exit")
+    public String exit(Model model) {
+        return "redirect:/logout";
+    }
+
 
     @PostMapping(value = "/add", params = "action=add")
     public String addAnimal(Model model, Animal animal) {
